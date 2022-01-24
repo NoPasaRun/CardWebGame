@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/index/styles/normalise.css">
+    <link rel="stylesheet" href="/static/index/styles/main.css">
+    <title>GameZone</title>
+</head>
+<body>
+    <header class="header">
+        <div class="wrapper-header">
+            <div class="header__logo-block">
+                <img class="logo-block__image" src="/static/index/images/logo-1.svg" alt="LogoImage">
+            </div>
+            <ul class="header__nav-list">
+                {% if is_auth %}
+                    <li class="nav-list__item"><a href="/logout/" class="nav-list__link">LOG OUT</a></li>
+                {% else %}
+                    <li class="nav-list__item"><a href="/login/" class="nav-list__link">LOG IN</a></li>
+                {% endif %}
+                <li class="nav-list__item"><a href="/sign_up/" class="nav-list__link">REGISTER</a></li>
+            </ul>
+        </div>
+    </header>
+    <main class="main">
+        <section class="section-hero">
+            <div class="wrapper-section">
+                <div class="section-hero__hero-block">
+                    <h3 class="section-hero__alert">Play online and earn</h3>
+                    <h1 class="section-hero__heading">BEST ONLINE GAMING CLUB FOR ALL TIME</h1>
+                    <ul class="section-hero__action-list section-hero__action-list_margin-bottom">
+                        <li class="action-list__item action-list__item_margin-right">SIGN UP</li>
+                        <li class="action-list__item action-list__item_margin"></li>
+                        <li class="action-list__item action-list__item_margin">DEPOSIT</li>
+                        <li class="action-list__item action-list__item_margin"></li>
+                        <li class="action-list__item action-list__item_margin-left">PLAY!</li>
+                    </ul>
+                    <ul class="section-hero__nav-list">
+                        <li class="nav-list__item nav-list__item_modify-size nav-list__item_color-yellow"><a href="#" class="nav-list__link nav-list__link_color-yellow">PLAY NOW ✔</a></li>
+                        <li class="nav-list__item nav-list__item_modify-size nav-list__item_color-white"><a href="#" class="nav-list__link nav-list__link_color-white">HOW TO PLAY ✔</a></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        <section class="section-game">
+            <div class="wrapper-section wrapper-section__game">
+                <div class="section-game__intro">
+                    <h2 class="section-game__heading section-game__heading_margin-bottom">GAMEZONE</h2>
+                    <p class="section-game__description">
+                        Card games are the most popular games in these sections
+                    </p>
+                </div>
+                <ul class="section-game__game-list">
+                    <li class="game-list__item"></li>
+                    <li class="game-list__item"></li>
+                    <li class="game-list__item"></li>
+                    <li class="game-list__item"></li>
+                </ul>
+            </div>
+        </section>
+    </main>
+    <footer class="footer">
+        <div class="wrapper-section wrapper-section__footer">
+            <h2 class="footer__heading footer__heading_margin-bottom">PLAY GAMES AND DO NOT CARE ABOUT TIME AND MONEY</h2>
+            <p class="footer__description footer__description_margin-bottom">
+                To play online, you do not need to leave your own house – just choose a convenient time and give yourself
+                to the fascinating action unfolding on the screen. Interface quickly gained the sympathy of different categories of gamers.
+                And true – their plots are diverse, and the design makes you feel delighted.
+            </p>
+            <span class="nav-list__item nav-list__item_modify-size nav-list__item_color-yellow nav-list__item_correct-form"><a href="#" class="nav-list__link nav-list__link_color-yellow">MORE ABOUT ✔</a></span>
+        </div>
+    </footer>
+</body>
+</html>
