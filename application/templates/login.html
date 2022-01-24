@@ -5,14 +5,27 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/static/login/styles/normalise.css">
+    <link rel="stylesheet" href="/static/login/styles/main.css">
     <title>Login</title>
 </head>
 <body>
-    <form method="post">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-        <input type="text" name="username" placeholder="Enter username..." />
-        <input type="password" name="password" placeholder="Enter password" />
-        <input type="submit">
-    </form>
+    <main class="main">
+        <div class="wrapper">
+            <h2>Login</h2>
+            <form class="form" method="post" action="">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                <div class="field">
+                    <label for="username" class="label-field">Username</label>
+                    <input id="username" type="text" name="username" placeholder="Enter username..." required/>
+                </div>
+                <div class="field">
+                    <label for="password" class="label-field">Password</label>
+                    <input id="password" type="password" name="password" placeholder="Enter password" required/>
+                </div>
+                <input class="submit-but" type="submit">
+            </form>
+        </div>
+    </main>
 </body>
 </html>

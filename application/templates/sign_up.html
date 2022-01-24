@@ -5,18 +5,43 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/static/register/styles/normalise.css">
+    <link rel="stylesheet" href="/static/register/styles/main.css">
     <title>Sign Up</title>
 </head>
 <body>
-    <form method="post">
-        <input name="csrf_token" type="hidden" value="{{ csrf_token() }}" />
-        <input placeholder="Enter nickname..." name="username" type="text" required />
-        <input placeholder="Enter password..." name="password" type="password" minlength="10" required />
-        <input placeholder="Select your age..." name="age" type="number" required />
-        <input placeholder="Enter email..." name="email" type="email" required />
-        <input placeholder="(Optional) Enter your name..." name="name" type="text" />
-        <input placeholder="(Optional) Enter your surname..." name="surname" type="text" />
-        <input type="submit">
-    </form>
+    <main class="main">
+        <div class="wrapper">
+            <h2>Sign up</h2>
+            <form method="post" action="" class="form">
+                <input name="csrf_token" type="hidden" value="{{ csrf_token() }}" />
+                <div class="field">
+                    <label for="username" class="label-field">Username</label>
+                    <input id="username" placeholder="Enter nickname..." name="username" type="text" required />
+                </div>
+                <div class="field">
+                    <label for="password" class="label-field">Password</label>
+                    <input id="password" placeholder="Enter password..." name="password" type="password" minlength="10" required />
+                </div>
+                <div class="field">
+                    <label for="age" class="label-field">Age</label>
+                    <input id="age" placeholder="Select your age..." name="age" type="number" required />
+                </div>
+                <div class="field">
+                    <label for="email" class="label-field">Email</label>
+                    <input id="email" placeholder="Enter email..." name="email" type="email" required />
+                </div>
+                <div class="field">
+                    <label for="name" class="label-field">Name</label>
+                    <input id="name" placeholder="(Optional) Enter your name..." name="name" type="text" />
+                </div>
+                <div class="field">
+                    <label for="surname" class="label-field">Surname</label>
+                    <input id="surname" placeholder="(Optional) Enter your surname..." name="surname" type="text" />
+                </div>
+                <input type="submit" class="submit-but">
+            </form>
+        </div>
+    </main>
 </body>
 </html>

@@ -91,12 +91,17 @@ class User(Model):
                 INSERT INTO `users` (group_id, username, password, age, email, name, surname, balance)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?);
             """
-            cursor = connection.cursor()
-            cursor.execute(sql_request, (self.group_id, self.username, generate_password_hash(self.password),
-                                         self.age, self.email, self.name, self.surname, self.balance,))
             sql_request_get_id = "SELECT id FROM `users`;"
-            cursor.execute(sql_request_get_id)
-            self.id = cursor.lastrowid
+            cursor = connection.cursor()
+            try:
+                cursor.execute(sql_request, (self.group_id, self.username, generate_password_hash(self.password),
+                                             self.age, self.email, self.name, self.surname, self.balance,))
+                cursor.execute(sql_request_get_id)
+                self.id = cursor.lastrowid
+            except sqlite3.IntegrityError:
+                return {"message": "Change username", "status_code": "400"}
+            else:
+                return {"message": "Successfully created", "status_code": "202"}
 
 
 class Group(Model):

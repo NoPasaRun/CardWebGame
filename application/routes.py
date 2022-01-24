@@ -54,9 +54,13 @@ def load_user(user_id):
 
 
 @app.route("/", methods=["GET"])
-@login_required
 def main():
-    return render_template("index.html")
+    user = session.get("_user_id", False)
+    if user:
+        is_authenticated = True
+    else:
+        is_authenticated = False
+    return render_template("index.html", is_auth=is_authenticated)
 
 
 @app.route("/admin/", methods=["GET"])
@@ -83,7 +87,9 @@ def sign_up():
         if form.validate_on_submit():
             data = form.data
             data.pop("csrf_token")
-            User(**data).save()
+            output = User(**data).save()
+            if output["status_code"].startswith("4"):
+                return output["message"], output["status_code"]
             return redirect("/login/")
         return form.errors, 404
 
