@@ -1,0 +1,58 @@
+{% block head %}{% endblock %}
+    <main class="poker-table">
+        <ul class="player-nav-list">
+            <ul class="placeholder-card-list">
+                <li class="placeholder-card-field"></li>
+                <li class="placeholder-card-field"></li>
+                <li class="placeholder-card-field"></li>
+                <li class="placeholder-card-field"></li>
+                <li class="placeholder-card-field"></li>
+                <li class="placeholder-card-field"></li>
+            </ul>
+            {% for player in game.players %}
+                <li class="player-item">
+                    <span class="player-icon"><img src="/static/game/images/avatar.png"></span>
+                    <strong class="player-description">
+                        {% if player.player_id == i_player.player_id %}
+                            <span class="player-name">You</span>
+                            <div class="player-cards">
+                                {% for card in player.cards %}
+                                    <div class="card my-card" draggable=true>
+                                        <div class="card-info card-info_top-pos">
+                                        </div>
+                                        <div class="card-layout" alt="{{ card }}"></div>
+                                        <div class="card-info card-info_low-pos">
+                                        </div>
+                                        <input type="hidden" value="{{ card }}" />
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <span class="player-name">{{ player.user.username }}</span>
+                            <div class="player-cards">
+                                {% for card in player.cards %}
+                                    <div class="card">
+                                        <img class="card-layout" src="/static/game/images/card-back-layout.png">
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </strong>
+                </li>
+            {% endfor %}
+        </ul>
+    </main>
+    <footer class="footer">
+        <input type="hidden" id="csrf_token" value="{{ csrf_token() }}" />
+        {% if not game.start %}
+            {% if game.creator == i_player.user %}
+                <form class="get-started-form" method="post" action="">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                    <input type="hidden" name="start-game" value="true" />
+                    <input type="hidden" name="update-page" value="true" />
+                    <input class="submit-button" type="submit" value="Start game"/>
+                </form>
+            {% endif %}
+        {% endif %}
+    </footer>
+{% block body %}{% endblock %}

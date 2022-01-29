@@ -1,0 +1,122 @@
+* {
+    margin: 0;
+    padding: 0;
+    user-select: none;
+}
+
+body {
+    position: relative;
+    height: 100vh;
+    background-image: url("/static/game/images/poker-table.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.footer {
+    position: absolute;
+    height: 50vh;
+    width: 20%;
+    top: 0;
+    right: 0;
+}
+
+.poker-table {
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+}
+
+.player-nav-list {
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    border: 1px solid red;
+    height: 70%;
+    width: 70%;
+}
+
+.placeholder-card-list {
+    display: flex;
+    justify-content: space-between;
+    width: 320px;
+    height: 260px;
+    flex-wrap: wrap;
+}
+
+.placeholder-card-field {
+    position: relative;
+    width: 80px;
+    height: 110px;
+    border: 1px solid #333;
+    margin-bottom: auto;
+}
+
+.player-item {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.player-icon {
+    display: block;
+}
+
+.player-icon img {
+    max-width: 50px;
+    max-height: 50px;
+}
+
+.player-description {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.player-cards {
+    display: flex;
+    position: relative;
+    justify-content: space-between;
+    align-items: flex-end;
+    width: 200px;
+    height: 80px;
+    margin-top: 20px;
+}
+
+.card {
+    position: absolute;
+    box-shadow: -1px 1px 2px 2px rgba(0, 0, 0, 0.4);
+}
+
+.card-info {
+    position: absolute;
+    font-size: 20px;
+}
+
+.card-info_top-pos {
+    top: 8px;
+    left: 8px;
+}
+
+.card-info_low-pos {
+    bottom: 8px;
+    right: 8px;
+}
+
+.card-layout {
+    background-color: white;
+    border-radius: 5px;
+    width: 80px;
+    height: 110px;
+}
+
+.using-card {
+    display: none;
+}
+
+.hover-placeholder {
+    filter: brightness(110%);
+}

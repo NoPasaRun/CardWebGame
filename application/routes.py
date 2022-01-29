@@ -2,10 +2,12 @@ from flask import Flask, send_from_directory, render_template, request, redirect
 from werkzeug.security import check_password_hash
 from application.models import create_db, User, Group
 from application.settings import static_folder
+from application.game import Game
 from flask_wtf import FlaskForm, CSRFProtect
 from wtforms import StringField, IntegerField
 from wtforms.validators import InputRequired, Email, Length
 from flask_login import LoginManager, login_user, login_required, logout_user
+import threading
 import os
 
 
@@ -114,7 +116,59 @@ def logout():
     return redirect("/login/")
 
 
+@app.route('/game/<int:game_id>/', methods=["GET", "POST"])
+@login_required
+def game(game_id):
+    user = User.get(session["_user_id"])
+    user = {"id": user.id, "username": user.username, "age": user.age}
+    return_to_post = False
+    if request.method == "GET":
+        if Game.exist(game_id):
+            game_ses = Game.get(game_id)
+            if game_ses.start:
+                if user["id"] not in [player.player_id for player in game_ses.players]:
+                    return "Game has already started", 400
+            else:
+                if user["id"] not in [player.player_id for player in game_ses.players]:
+                    if len(game_ses.players) == 6:
+                        return "The game is full of people", 400
+                    game_ses.add_player(user)
+            i_player, *_ = [i_player for i_player in game_ses.players if i_player.player_id == user["id"]]
+            return render_template("game.html", game=game_ses, i_player=i_player)
+        else:
+            Game(game_id, user)
+            return redirect(f"/game/{game_id}/")
+    if request.method == "POST" or return_to_post:
+        if request.form.get("start-game", False):
+            if Game.exist(game_id):
+                game_ses = Game.get(game_id)
+                if user["id"] == game_ses.creator["id"]:
+                    game_ses.start = True
+                    game_ses.initialize_game()
+                    return redirect(f"/game/{game_id}/")
+                else:
+                    return "You have no rights", 300
+            else:
+                return "This game is not existing", 400
+        if request.form.get("update-cards", False):
+            if Game.exist(game_id):
+                game_ses = Game.get(game_id)
+                player_id = request.form.get
+                cards = request.form.get("update-cards")
+                game_ses.update_player_cards(player_id, cards)
+        if request.form.get("update-page", False):
+            if Game.exist(game_id):
+                game_ses = Game.get(game_id)
+                game_ses.initialize_move()
+                i_player, *_ = [i_player for i_player in game_ses.players if i_player.player_id == user["id"]]
+                return render_template("game-info.html", game=game_ses, i_player=i_player)
+
+
 if __name__ == '__main__':
+    test = True
+    if test:
+        game = Game(1, {"id": 1, "username": "NoPasaRan", "age": 16})
+        [game.add_player({"id": i, "username": User.get(i).username, "age": User.get(i).age}) for i in range(2, 7)]
     create_db(create_superuser=True)
     csrf.init_app(app)
     app.run(host="0.0.0.0", port=8000)
