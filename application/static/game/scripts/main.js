@@ -98,7 +98,7 @@ window.addEventListener("load", function(){
             async: false,
             data: request_data,
             success: function(data) {
-                $("body").html(data)
+                $(".body").html(data)
                 change_color()
                 placeholder_constructor()
                 dragAndDrop()
@@ -236,6 +236,6 @@ window.addEventListener("load", function(){
     placeholder_constructor()
     dragAndDrop()
     player_constructor()
-    const looper = setInterval(ajax_loop, 5000)
+    setInterval(ajax_loop, 5000)
 })
 

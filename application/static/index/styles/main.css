@@ -263,7 +263,7 @@ ul {
     bottom: 5%;
     right: 5%;
     background-size: contain;
-    background-image: url("../images/play-button-png.png");
+    background-image: url("../images/play-button.png");
     transition-duration: 0.2s;
     cursor: pointer;
     border-radius: 50%;
