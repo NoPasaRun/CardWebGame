@@ -1,5 +1,16 @@
 window.addEventListener("load", function(){
 
+    function placeholder_constructor() {
+        let placeholders = document.querySelectorAll(".placeholder-card-field")
+        placeholders.forEach(function(el){
+            if ($(el).children(".card").length == 0) {
+                el.classList.add("placeholder-card-field-free")
+            } else {
+                el.classList.add("placeholder-card-field-locked")
+            }
+        })
+    }
+
     function card_constructor(all_cards) {
         var angle = -25
         var index = 1
@@ -61,17 +72,29 @@ window.addEventListener("load", function(){
             async: false,
             data: request_data,
             success: function(data) {
-                // $("body").html(data)
-                // dragAndDrop()
-                // player_constructor()
+                $("body").html(data)
+                placeholder_constructor()
+                dragAndDrop()
+                player_constructor()
             }
         });
     }
 
-    const dragAndDrop = () => {
-        const zones = document.querySelectorAll(".placeholder-card-field")
-        const cards = document.querySelectorAll(".my-card")
+    function get_zones() {
+        var card = document.querySelector(".my-card")
+        var state = $(card).attr("state")
+        if (state == "attack") {
+            return document.querySelectorAll(".placeholder-card-field-free")
+        } else if (state == "defend") {
+            return document.querySelectorAll(".placeholder-card-field-locked")
+        } else {
+            return document.querySelectorAll(".placeholder-card-field")
+        }
+    }
 
+    const dragAndDrop = () => {
+        const zones = get_zones()
+        const cards = document.querySelectorAll(".my-card")
         const dragStart = function () {
             setTimeout(() => {
                 $(this).attr("is_dragging", true)
@@ -97,23 +120,25 @@ window.addEventListener("load", function(){
         }
 
         const dragDrop = function () {
-            my_card = $(this).children(".my-card")
-            let csrf_token = document.querySelector("#csrf_token").value;
-            if (my_card.length == 0) {
-                let card = document.querySelector(".using-card")
-                this.append(card)
-                card.style.top = 0
-                card.style.left = 0
-                card.style.transform = "rotateZ(45deg)"
+            let card = document.querySelector(".using-card")
+            if ($(card).hasClass("my-card")) {
+                my_card = $(this).children(".card")
+                let csrf_token = document.querySelector("#csrf_token").value;
+                if (my_card.length < 2) {
+                    this.append(card)
 
-                card.classList.remove(".my-card")
-                this.classList.remove("hover-placeholder")
-
-                card_value = $(card).children(".card-layout").attr("alt")
-                data = {"csrf_token": csrf_token, "update-table": true, 
-                        "update-page": true, "card": card_value, "place_id": $(this).attr("id")}
-
-                ajax_request(data)
+                    card.style.top = 0
+                    card.style.left = 0
+                    card.style.transform = "rotateZ(0deg)"
+    
+                    this.classList.remove("hover-placeholder")
+    
+                    card_value = $(card).children(".card-layout").attr("alt")
+                    data = {"csrf_token": csrf_token, "update-table": true, "continue-move": true,
+                            "update-page": true, "card": card_value, "place_id": $(this).attr("id")}
+    
+                    ajax_request(data)
+                }
             }
         }
 
@@ -146,6 +171,7 @@ window.addEventListener("load", function(){
     window.onresize = function() {
         player_constructor()
     };
+    placeholder_constructor()
     dragAndDrop()
     player_constructor()
     const looper = setInterval(ajax_loop, 5000)

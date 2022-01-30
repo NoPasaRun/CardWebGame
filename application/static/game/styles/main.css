@@ -91,6 +91,20 @@ body {
     box-shadow: -1px 1px 2px 2px rgba(255, 3, 3, 0.4);
 }
 
+.attack_card {
+    top: 0px;
+    left: 8px;
+    z-index: 0;
+    transform: rotateZ(40deg);
+}
+
+.defend_card {
+    top: 10px;
+    left: -10px;
+    z-index: 1;
+    transform: rotateZ(-45deg);
+}
+
 .active-player-card {
     box-shadow: -1px 1px 2px 2px rgb(0, 122, 47);
 }

@@ -7,8 +7,8 @@
                         {{ game.table_cards.place_id }}
                         {% for card_place, cards in game.table_cards.items() %}
                             {% if card_place == place_id %}
-                                {% for card in cards %}
-                                    <div class="card" style="top: 0; left: 0; transform: rotateZ(45deg);">
+                                {% for num_value, card in [1, 2]|zip(cards) %}
+                                    <div class="card {% if num_value == 1 %}attack_card{% else %}defend_card{% endif %}">
                                         <div class="card-info card-info_top-pos">
                                             {{ card }}
                                         </div>
@@ -31,7 +31,7 @@
                             <span class="player-name">You</span>
                             <div class="player-cards">
                                 {% for card in player.cards %}
-                                    <div {% if player.state %} class="card my-card active-player-card" draggable=true {% else %} class="card my-card" {% endif %} is_dragging=false>
+                                    <div {% if player.active %} class="card my-card active-player-card" draggable=true {% else %} class="card my-card" {% endif %} state={{player.classname}} is_dragging=false>
                                         <div class="card-info card-info_top-pos">
                                             {{ card }}
                                         </div>
@@ -46,7 +46,7 @@
                             <span class="player-name">{{ player.user.username }}</span>
                             <div class="player-cards">
                                 {% for card in player.cards %}
-                                    <div draggable=false {% if player.state %} class="card active-player-card" {% else %} class="card" {% endif %}>
+                                    <div draggable=false {% if player.active %} class="card active-player-card" {% else %} class="card" {% endif %}>
                                         <img class="card-layout" src="/static/game/images/card-back-layout.png">
                                     </div>
                                 {% endfor %}
@@ -64,7 +64,6 @@
                 <form class="get-started-form" method="post" action="">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                     <input type="hidden" name="start-game" value="true" />
-                    <input type="hidden" name="update-page" value="true" />
                     <input class="submit-button" type="submit" value="Start game"/>
                 </form>
             {% endif %}

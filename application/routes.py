@@ -7,7 +7,6 @@ from flask_wtf import FlaskForm, CSRFProtect
 from wtforms import StringField, IntegerField
 from wtforms.validators import InputRequired, Email, Length
 from flask_login import LoginManager, login_user, login_required, logout_user
-import threading
 import os
 
 
@@ -15,6 +14,8 @@ app = Flask(__name__, template_folder='templates')
 csrf = CSRFProtect(app)
 SECRET_KEY = os.urandom(32)
 app.config['SECRET_KEY'] = SECRET_KEY
+
+app.jinja_env.filters['zip'] = zip
 
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
@@ -139,31 +140,33 @@ def game(game_id):
             Game(game_id, user)
             return redirect(f"/game/{game_id}/")
     if request.method == "POST" or return_to_post:
-        game_ses = Game.get(game_id)
-        i_player, *_ = [i_player for i_player in game_ses.players if i_player.player_id == user["id"]]
-        if request.form.get("start-game", False):
-            if Game.exist(game_id):
-                if user["id"] == game_ses.creator["id"]:
-                    game_ses.start = True
-                    game_ses.initialize_game()
-                    return redirect(f"/game/{game_id}/")
-                else:
-                    return "You have no rights", 300
-            else:
-                return "This game is not existing", 400
-        if request.form.get("update-cards", False):
-            if Game.exist(game_id):
-                player_id = request.form.get
-                cards = request.form.get("update-cards")
-                game_ses.update_player_cards(player_id, cards)
-        if request.form.get("update-table", False):
-            if Game.exist(game_id):
-                value_of_card = request.form.get("card")
-                place_id = request.form.get("place_id")
-                game_ses.fill_table(i_player=i_player, place_id=place_id, value_of_card=value_of_card)
-        if request.form.get("update-page", False):
-            if Game.exist(game_id):
-                return render_template("game-info.html", game=game_ses, i_player=i_player)
+        if Game.exist(game_id):
+            game_ses = Game.get(game_id)
+            i_player = [i_player for i_player in game_ses.players if i_player.player_id == user["id"]]
+            if i_player:
+                i_player = i_player[0]
+                if request.form.get("start-game", False):
+                    if user["id"] == game_ses.creator["id"]:
+                        game_ses.start = True
+                        game_ses.initialize_game()
+                        game_ses.init_move()
+                        return redirect(f"/game/{game_id}/")
+                    else:
+                        return "You have no rights", 300
+                if request.form.get("update-table", False):
+                    value_of_card = request.form.get("card")
+                    place_id = request.form.get("place_id")
+                    game_ses.fill_table(i_player=i_player, place_id=place_id, value_of_card=value_of_card)
+                if request.form.get("continue-move", False):
+                    game_ses.continue_move()
+                if request.form.get("update-cards", False):
+                    player_id = request.form.get
+                    cards = request.form.get("update-cards")
+                    game_ses.update_player_cards(player_id, cards)
+                if request.form.get("update-page", False):
+                    return render_template("game-info.html", game=game_ses, i_player=i_player)
+            return redirect("/")
+        return "The game is ended or has not created yet", 400
 
 
 if __name__ == '__main__':
