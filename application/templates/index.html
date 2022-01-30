@@ -10,22 +10,30 @@
     <title>GameZone</title>
 </head>
 <body>
+    <!-- Header -->
     <header class="header">
         <div class="wrapper-header">
+            <!-- Header logo -->
             <div class="header__logo-block">
                 <img class="logo-block__image" src="/static/index/images/logo-1.svg" alt="LogoImage">
             </div>
+            <!-- Header list of links -->
             <ul class="header__nav-list">
                 {% if is_auth %}
+                    <!-- Log out link -->
                     <li class="nav-list__item"><a href="/logout/" class="nav-list__link">LOG OUT</a></li>
                 {% else %}
+                    <!-- Log in link -->
                     <li class="nav-list__item"><a href="/login/" class="nav-list__link">LOG IN</a></li>
                 {% endif %}
+                <!-- Register link -->
                 <li class="nav-list__item"><a href="/sign_up/" class="nav-list__link">REGISTER</a></li>
             </ul>
         </div>
     </header>
+    <!-- Main -->
     <main class="main">
+        <!-- Hero section -->
         <section class="section-hero">
             <div class="wrapper-section">
                 <div class="section-hero__hero-block">
@@ -45,6 +53,7 @@
                 </div>
             </div>
         </section>
+        <!-- Game section -->
         <section class="section-game">
             <div class="wrapper-section wrapper-section__game">
                 <div class="section-game__intro">
@@ -62,6 +71,7 @@
             </div>
         </section>
     </main>
+    <!-- Footer -->
     <footer class="footer">
         <div class="wrapper-section wrapper-section__footer">
             <h2 class="footer__heading footer__heading_margin-bottom">PLAY GAMES AND DO NOT CARE ABOUT TIME AND MONEY</h2>

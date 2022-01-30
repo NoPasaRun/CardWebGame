@@ -1,5 +1,8 @@
 window.addEventListener("load", function(){
 
+    //  Function adds special classes for card's cells 
+    // in order they are free or locked
+
     function placeholder_constructor() {
         let placeholders = document.querySelectorAll(".placeholder-card-field")
         placeholders.forEach(function(el){
@@ -10,6 +13,23 @@ window.addEventListener("load", function(){
             }
         })
     }
+
+    // Function changes the color of cards to red if they
+    // have these images "♦", "♥"
+
+    function change_color() {
+        $(".card").each(function(){
+            var mast = $(this).children(".card-layout").attr("alt")
+            if(mast) {
+                if (mast.includes("♦") || mast.includes("♥")) {
+                    this.style.color = "red"
+                }
+            }
+        })
+    }
+
+    // Function transforms cards in the right position
+    // and adds an Z-angle for them
 
     function card_constructor(all_cards) {
         var angle = -25
@@ -35,6 +55,9 @@ window.addEventListener("load", function(){
         })
 
     }
+
+    // Function transforms positions of players in a way
+    // the distances would be the same between them
 
     function player_constructor() {
         var width = document.querySelector('.player-nav-list').clientWidth/2
@@ -63,6 +86,9 @@ window.addEventListener("load", function(){
         })
     }
 
+    // The function send ajax request to update page
+    // without reloading
+
     function ajax_request(request_data) {
         $.ajax({
             url: '/game/1/',
@@ -73,12 +99,16 @@ window.addEventListener("load", function(){
             data: request_data,
             success: function(data) {
                 $("body").html(data)
+                change_color()
                 placeholder_constructor()
                 dragAndDrop()
                 player_constructor()
             }
         });
     }
+
+    // Function sends a NodeList of card's cells
+    // which can be used by user
 
     function get_zones() {
         var card = document.querySelector(".my-card")
@@ -92,9 +122,16 @@ window.addEventListener("load", function(){
         }
     }
 
+    // Function creates functions of dragging and dropping
+    // cards into cells
+
     const dragAndDrop = () => {
         const zones = get_zones()
         const cards = document.querySelectorAll(".my-card")
+
+        // Function which adds a class to hide card
+        // while it is moving
+
         const dragStart = function () {
             setTimeout(() => {
                 $(this).attr("is_dragging", true)
@@ -102,22 +139,38 @@ window.addEventListener("load", function(){
             }, 0)
         }
 
+        // Function which remove a hide class
+        // when card returns to its origin place
+
         const dragEnd = function (card) {
             $(card).attr("is_dragging", false)
             card.classList.remove('using-card')
         }
 
+        // Function prevents smth when card is over
+        // the cell
+
         const dragOver = function (event) {
             event.preventDefault()
         }
+
+        // Function which add a style class
+        // for cell when a card is over
 
         const dragEnter = function () {
             this.classList.add("hover-placeholder")
         }
 
+        // Function which removes a style class
+        // from cell when card leaves an area
+
         const dragLeave = function () {
             this.classList.remove("hover-placeholder")
         }
+
+        // If card is user's card and there are no more
+        // then 1 card in a cell this Function sends
+        // request to backend to save the card in the cell
 
         const dragDrop = function () {
             let card = document.querySelector(".using-card")
@@ -142,6 +195,8 @@ window.addEventListener("load", function(){
             }
         }
 
+        // Adding event listeners
+
         zones.forEach((el) => {
             el.addEventListener("dragover", dragOver)
             el.addEventListener("dragenter", dragEnter)
@@ -154,6 +209,9 @@ window.addEventListener("load", function(){
             card.addEventListener("dragend", () => dragEnd(card))
         })
     }
+
+    // Infinite functions which call an ajax_request function
+    // to update page
 
     function ajax_loop() {
         let csrf_token = document.querySelector("#csrf_token").value;
@@ -168,9 +226,13 @@ window.addEventListener("load", function(){
         }
     }
 
+    // Calling methods if page was updated by
+    // user (GET request)
+
     window.onresize = function() {
         player_constructor()
     };
+    change_color() 
     placeholder_constructor()
     dragAndDrop()
     player_constructor()

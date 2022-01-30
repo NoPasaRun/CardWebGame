@@ -1,9 +1,10 @@
 import random
+from typing import Iterable
 
 
 class Player:
 
-    def __init__(self, user: dict, player_id):
+    def __init__(self, user: dict, player_id: int):
         self.user = user
         self.player_id = player_id
         self.classname = None
@@ -18,7 +19,7 @@ class Move:
     pas = "pas"
     bit = "bit"
 
-    def __init__(self, attack, defend, attack_2):
+    def __init__(self, attack: Player, defend: Player, attack_2: Player):
         self.attacker = attack
         attack.classname = "attack"
         self.defender = defend
@@ -29,10 +30,10 @@ class Move:
         self.next_function = None
         Move.move = self
 
-    def get_players(self):
+    def get_players(self) -> Iterable[Player]:
         return self.attacker, self.defender, self.attacker_2
 
-    def attack(self):
+    def attack(self) -> str:
         if self.attacker.state != Move.bit:
             self.attacker_2.active = False
             self.defender.active = False
@@ -46,7 +47,7 @@ class Move:
             self.attack_2()
         return "finish"
 
-    def defend(self):
+    def defend(self) -> str:
         if self.defender.state != self.pas:
             self.attacker_2.active = False
             self.defender.active = True
@@ -62,7 +63,7 @@ class Move:
             self.attack_2()
         return "finish"
 
-    def attack_2(self):
+    def attack_2(self) -> str:
         if self.attacker_2.state != self.bit:
             self.attacker_2.active = True
             self.defender.active = False
@@ -76,7 +77,7 @@ class Move:
             self.attack()
         return "finish"
 
-    def move_prediction(self):
+    def move_prediction(self) -> str:
         if self.is_now:
             output = self.attack()
             self.is_now = False
@@ -97,6 +98,7 @@ class Game:
         self.pos = 0
         self.coloda = [f"{image}{number}" for image in ["♠", "♣", "♦", "♥"]
                        for number in [6, 7, 8, 9, 10, "V", "D", "K", "T"]]
+        self.kozir = None
         player = Player(user, user["id"])
         self.creator = user
         self.table_cards = {}
@@ -104,18 +106,18 @@ class Game:
         Game.games.append(self)
 
     @classmethod
-    def exist(cls, game_id):
+    def exist(cls, game_id) -> bool:
         return game_id in [obj.id for obj in cls.games]
 
     @classmethod
-    def get(cls, game_id):
+    def get(cls, game_id: int):
         obj = [game_obj for game_obj in cls.games if game_obj.id == game_id]
         if obj:
             obj, *_ = obj
             return obj
         return None
 
-    def delete_player(self, i_player):
+    def delete_player(self, i_player: Player) -> None:
         self.players.remove(i_player)
         del i_player
 
@@ -123,7 +125,7 @@ class Game:
         player = Player(user, user["id"])
         self.players.append(player)
 
-    def fill_table(self, i_player, place_id, value_of_card):
+    def fill_table(self, i_player: Player, place_id: str, value_of_card: str) -> None:
         if self.table_cards.get(place_id, False):
             if len(self.table_cards[place_id]) < 2:
                 self.table_cards[place_id].append(value_of_card)
@@ -132,7 +134,7 @@ class Game:
             self.table_cards[place_id] = [value_of_card, ]
             i_player.cards.remove(value_of_card)
 
-    def update_cards_for_all(self, players):
+    def update_cards_for_all(self, players: Iterable[Player]) -> None:
         self.table_cards.clear()
         for player in players:
             for i in range(6-len(player.cards)):
@@ -143,17 +145,18 @@ class Game:
                 except IndexError:
                     pass
 
-    def update_cards_defender_lost(self, attack_player: Player, lost_player: Player, attack_2_player: Player):
+    def update_cards_defender_lost(self, attack_player: Player, lost_player: Player, attack_2_player: Player) -> None:
         lost_player.cards.extend(self.table_cards.values())
         self.update_cards_for_all([attack_player, attack_2_player])
 
-    def initialize_game(self):
+    def initialize_game(self) -> None:
         random.shuffle(self.coloda)
         for i, i_player in zip(range(0, len(self.players)*6, 6), self.players):
             cards_have_used = self.coloda[i:i+6]
             i_player.cards = cards_have_used
+        self.kozir = self.coloda[-1]
 
-    def init_move(self, move_num=0):
+    def init_move(self, move_num: int = 0) -> None:
         for player in self.players:
             if len(player.cards) == 0:
                 self.players.remove(player)
@@ -168,7 +171,7 @@ class Game:
             Game.games.remove(self)
             del self
 
-    def continue_move(self):
+    def continue_move(self) -> None:
         if Move.move:
             if len([val for val_list in self.table_cards.values()
                     for val in val_list]) < 12:

@@ -1,7 +1,14 @@
+ /* Общая конфигурации - настройка фона, шрифтов и отступов */
+
 * {
     margin: 0;
     padding: 0;
     user-select: none;
+}
+
+@font-face {
+    font-family: PokerFace;
+    src: url("../fonts/poker_font.ttf");
 }
 
 body {
@@ -12,6 +19,8 @@ body {
     background-size: cover;
 }
 
+/* Позицианирование footer */
+
 .footer {
     position: absolute;
     height: 50vh;
@@ -20,6 +29,8 @@ body {
     right: 0;
 }
 
+/* Позицианирование колоды */
+
 .poker-table {
     display: flex;
     height: 100vh;
@@ -27,16 +38,46 @@ body {
     align-items: center;
 }
 
+.coloda {
+    position: absolute;
+    height: 80px;
+    width: 140px;
+    left: 5%;
+    top: 48%;
+}
+
+/* Позицианирование и трансформация содержимого колоды */
+
+.card_transform {
+    transform: rotateZ(90deg);
+    top: 0;
+    left: 30px;
+    box-shadow: none!important;
+}
+
+.coloda-card {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 80px;
+    height: 110px;
+    z-index: 2;
+    transform: rotateZ(90deg);
+}
+
+/* Позицианирование и размеры поля для игры */
+
 .player-nav-list {
     display: flex;
     position: relative;
     justify-content: center;
     align-items: center;
     border-radius: 50%;
-    border: 1px solid red;
     height: 70%;
     width: 70%;
 }
+
+/* Позицианирование и размеры ячеек для карт */
 
 .placeholder-card-list {
     display: flex;
@@ -46,19 +87,37 @@ body {
     flex-wrap: wrap;
 }
 
+/* Стилизация ячеек для карт */
+
 .placeholder-card-field {
     position: relative;
     width: 80px;
     height: 110px;
-    border: 1px solid #333;
+    border: 2px solid #333;
+    border-radius: 5px;
     margin-bottom: auto;
 }
+
+/* Позицианирование пользовательской информации */
 
 .player-item {
     position: absolute;
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.player-description {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Стилизация пользовательской информации */
+
+.player-name {
+    font-family: PokerFace;
+    font-size: 30px;
 }
 
 .player-icon {
@@ -70,11 +129,7 @@ body {
     max-height: 50px;
 }
 
-.player-description {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
+/* Позицианирование карт пользователя */
 
 .player-cards {
     display: flex;
@@ -86,10 +141,16 @@ body {
     margin-top: 20px;
 }
 
+/* Стилизация карт пользователя */
+
+/* Подсветка неактивных карт */
+
 .card {
     position: absolute;
     box-shadow: -1px 1px 2px 2px rgba(255, 3, 3, 0.4);
 }
+
+/* Стиль для карт расположенных в ячейках для карт(снизу) */
 
 .attack_card {
     top: 0px;
@@ -98,6 +159,8 @@ body {
     transform: rotateZ(40deg);
 }
 
+/* Стиль для карт расположенных в ячейках для карт(сверху) */
+
 .defend_card {
     top: 10px;
     left: -10px;
@@ -105,9 +168,13 @@ body {
     transform: rotateZ(-45deg);
 }
 
+/* Подсветка активных карт */
+
 .active-player-card {
     box-shadow: -1px 1px 2px 2px rgb(0, 122, 47);
 }
+
+/* Позицианирование и размеры масти и цифры на карте */
 
 .card-info {
     position: absolute;
@@ -124,6 +191,8 @@ body {
     right: 8px;
 }
 
+/* Задний фон и размеры карт */
+
 .card-layout {
     background-color: white;
     border-radius: 5px;
@@ -131,10 +200,31 @@ body {
     height: 110px;
 }
 
+/* Стиль для карт, перетаскиваемых пользователем */
+
 .using-card {
     display: none;
 }
 
+/* Стиль для ячеек при наведении на них карт */
+
 .hover-placeholder {
-    filter: brightness(110%);
+    box-shadow: 1px -1px 2px 2px rgb(73, 73, 73), -1px 1px 2px 2px rgb(73, 73, 73);
+    filter: brightness(200%);
+}
+
+/* Стилизация кнопки Начать Игру */
+
+.submit-button {
+    margin-top: 60px;
+    padding: 5px 7px;
+    cursor: pointer;
+    outline: none;
+    border: none;
+    border-radius: 10px;
+    color: darkgreen;
+    font-family: PokerFace;
+    font-size: 30px;
+    background: linear-gradient(45deg, rgb(4, 37, 4), rgb(0, 14, 0));
+    box-shadow: 3px 3px 5px 5px rgb(0, 14, 0);
 }

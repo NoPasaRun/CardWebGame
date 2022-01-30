@@ -1,4 +1,5 @@
 from werkzeug.security import generate_password_hash
+from settings import db_dir
 import sqlite3
 import abc
 
@@ -21,7 +22,7 @@ class Model(abc.ABC):
 
     @classmethod
     def get(cls, object_id: int):
-        with sqlite3.connect("base.db") as connection:
+        with sqlite3.connect(db_dir) as connection:
             if cls.table == "users":
                 sql_request = f"SELECT username, password, age, email," \
                               f" name, surname, balance, group_id, id FROM `users` WHERE id = ?;"
@@ -39,7 +40,7 @@ class Model(abc.ABC):
 
     def delete(self):
         if self.id is not None:
-            with sqlite3.connect("base.db") as connection:
+            with sqlite3.connect(db_dir) as connection:
                 sql_request = "DELETE FROM ? WHERE id = ?;"
 
                 cursor = connection.cursor()
@@ -47,7 +48,7 @@ class Model(abc.ABC):
 
     def update(self, values: dict):
         if self.id is not None:
-            with sqlite3.connect("base.db") as connection:
+            with sqlite3.connect(db_dir) as connection:
                 sql_values = ", ".join(self.create_filter(values))
                 sql_request = f"UPDATE ? SET {sql_values} WHERE id = ?;"
                 if sql_values:
@@ -74,7 +75,7 @@ class User(Model):
 
     @classmethod
     def get_by_username(cls, username):
-        with sqlite3.connect("base.db") as connection:
+        with sqlite3.connect(db_dir) as connection:
             sql_request = """
                 SELECT username, password, age, email, 
                 name, surname, balance, group_id, id FROM `users` WHERE username = ?;
@@ -86,7 +87,7 @@ class User(Model):
                 return User(*data)
 
     def save(self):
-        with sqlite3.connect("base.db") as connection:
+        with sqlite3.connect(db_dir) as connection:
             sql_request = """
                 INSERT INTO `users` (group_id, username, password, age, email, name, surname, balance)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?);
@@ -113,7 +114,7 @@ class Group(Model):
         self.id = id
 
     def save(self):
-        with sqlite3.connect("base.db") as connection:
+        with sqlite3.connect(db_dir) as connection:
             sql_request = """
                 INSERT INTO `groups` (title)
                 VALUES (?);
@@ -126,7 +127,7 @@ class Group(Model):
 
 
 def create_db(create_superuser=False):
-    with sqlite3.connect("base.db") as connection:
+    with sqlite3.connect(db_dir) as connection:
         sql_test_request = """
             SELECT name FROM `sqlite_master`
             WHERE type='table' AND name='users';
