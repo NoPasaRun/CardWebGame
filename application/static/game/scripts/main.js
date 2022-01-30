@@ -7,11 +7,6 @@ window.addEventListener("load", function(){
         var top = 0
         $(all_cards).each(function() {
             var card = this
-            let card_info = $(card).children(".card-layout").attr("alt")
-            let card_info_fields = $(card).children(".card-info")
-            $(card_info_fields).each(function() {
-                $(this).text(String(card_info))
-            })
             if ([-25, 25].includes(angle)) {
                 top = 15
             } else if ([-15, 15].includes(angle)) {
@@ -57,17 +52,35 @@ window.addEventListener("load", function(){
         })
     }
 
+    function ajax_request(request_data) {
+        $.ajax({
+            url: '/game/1/',
+            type: 'post',
+            dataType: 'html',
+            cache: false,
+            async: false,
+            data: request_data,
+            success: function(data) {
+                // $("body").html(data)
+                // dragAndDrop()
+                // player_constructor()
+            }
+        });
+    }
+
     const dragAndDrop = () => {
         const zones = document.querySelectorAll(".placeholder-card-field")
         const cards = document.querySelectorAll(".my-card")
 
         const dragStart = function () {
             setTimeout(() => {
+                $(this).attr("is_dragging", true)
                 this.classList.add('using-card')
             }, 0)
         }
 
-        const dragEnd = function (card, left, top, transform) {
+        const dragEnd = function (card) {
+            $(card).attr("is_dragging", false)
             card.classList.remove('using-card')
         }
 
@@ -85,14 +98,22 @@ window.addEventListener("load", function(){
 
         const dragDrop = function () {
             my_card = $(this).children(".my-card")
+            let csrf_token = document.querySelector("#csrf_token").value;
             if (my_card.length == 0) {
                 let card = document.querySelector(".using-card")
                 this.append(card)
                 card.style.top = 0
                 card.style.left = 0
                 card.style.transform = "rotateZ(45deg)"
+
                 card.classList.remove(".my-card")
                 this.classList.remove("hover-placeholder")
+
+                card_value = $(card).children(".card-layout").attr("alt")
+                data = {"csrf_token": csrf_token, "update-table": true, 
+                        "update-page": true, "card": card_value, "place_id": $(this).attr("id")}
+
+                ajax_request(data)
             }
         }
 
@@ -104,7 +125,6 @@ window.addEventListener("load", function(){
         })
 
         cards.forEach(function(card){
-            var info = $(card).css("left")
             card.addEventListener("dragstart", dragStart)
             card.addEventListener("dragend", () => dragEnd(card))
         })
@@ -112,19 +132,15 @@ window.addEventListener("load", function(){
 
     function ajax_loop() {
         let csrf_token = document.querySelector("#csrf_token").value;
-        $.ajax({
-            url: '/game/1/',
-            type: 'post',
-            dataType: 'html',
-            cache: false,
-            async: false,
-            data: {"csrf_token": csrf_token, "update-page": true},
-            success: function(data) {
-                $("body").html(data)
-                dragAndDrop()
-                player_constructor()
+        var loop_is_allowed = true
+        $(".my-card").each(function() {
+            if ($(this).attr("is_dragging") == 'true') {
+                loop_is_allowed = false
             }
-        });
+        })
+        if (loop_is_allowed == true) {
+            ajax_request({"csrf_token": csrf_token, "update-page": true})
+        }
     }
 
     window.onresize = function() {
@@ -132,6 +148,6 @@ window.addEventListener("load", function(){
     };
     dragAndDrop()
     player_constructor()
-    setInterval(ajax_loop, 5000)
+    const looper = setInterval(ajax_loop, 5000)
 })
 

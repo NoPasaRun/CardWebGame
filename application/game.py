@@ -6,6 +6,7 @@ class Player:
     def __init__(self, user: dict, player_id):
         self.user = user
         self.player_id = player_id
+        self.active = False
         self.cards = []
 
 
@@ -23,7 +24,7 @@ class Game:
                        for number in [6, 7, 8, 9, 10, "V", "D", "K", "T"]]
         player = Player(user, user["id"])
         self.creator = user
-        self.current_player, self.bit_player, self.next_player = (None, None, None)
+        self.table_cards = {}
         self.players = [player,]
         Game.games.append(self)
 
@@ -39,17 +40,22 @@ class Game:
             return obj
         return None
 
+    def delete_player(self, i_player):
+        self.players.remove(i_player)
+        del i_player
+
     def add_player(self, user: dict):
         player = Player(user, user["id"])
         self.players.append(player)
 
-    def update_player_cards(self, player_id: int, cards: list):
-        update_player, *_ = [player for player in self.players
-                             if player.player_id == player_id]
-        [update_player.remove(card) for card in cards]
-        new_cards = self.coloda[:len(update_player.cards)]
-        update_player.cards.extend(new_cards)
-        [self.coloda.remove(card) for card in new_cards]
+    def fill_table(self, i_player, place_id, value_of_card):
+        if self.table_cards.get(place_id, False):
+            if len(self.table_cards[place_id]) < 2:
+                self.table_cards[place_id].append(value_of_card)
+                i_player.cards.remove(value_of_card)
+        else:
+            self.table_cards[place_id] = [value_of_card,]
+            i_player.cards.remove(value_of_card)
 
     def initialize_game(self):
         random.shuffle(self.coloda)
@@ -57,9 +63,3 @@ class Game:
             cards_have_used = self.coloda[i:i+6]
             i_player.cards = cards_have_used
         self.current_player_pos = 0
-
-    def initialize_move(self):
-        if self.start:
-            self.current_player = self.players[self.current_player_pos % len(self.players)]
-            self.current_player_pos += 1
-

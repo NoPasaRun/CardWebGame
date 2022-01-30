@@ -139,9 +139,10 @@ def game(game_id):
             Game(game_id, user)
             return redirect(f"/game/{game_id}/")
     if request.method == "POST" or return_to_post:
+        game_ses = Game.get(game_id)
+        i_player, *_ = [i_player for i_player in game_ses.players if i_player.player_id == user["id"]]
         if request.form.get("start-game", False):
             if Game.exist(game_id):
-                game_ses = Game.get(game_id)
                 if user["id"] == game_ses.creator["id"]:
                     game_ses.start = True
                     game_ses.initialize_game()
@@ -152,15 +153,16 @@ def game(game_id):
                 return "This game is not existing", 400
         if request.form.get("update-cards", False):
             if Game.exist(game_id):
-                game_ses = Game.get(game_id)
                 player_id = request.form.get
                 cards = request.form.get("update-cards")
                 game_ses.update_player_cards(player_id, cards)
+        if request.form.get("update-table", False):
+            if Game.exist(game_id):
+                value_of_card = request.form.get("card")
+                place_id = request.form.get("place_id")
+                game_ses.fill_table(i_player=i_player, place_id=place_id, value_of_card=value_of_card)
         if request.form.get("update-page", False):
             if Game.exist(game_id):
-                game_ses = Game.get(game_id)
-                game_ses.initialize_move()
-                i_player, *_ = [i_player for i_player in game_ses.players if i_player.player_id == user["id"]]
                 return render_template("game-info.html", game=game_ses, i_player=i_player)
 
 

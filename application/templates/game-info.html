@@ -2,12 +2,26 @@
     <main class="poker-table">
         <ul class="player-nav-list">
             <ul class="placeholder-card-list">
-                <li class="placeholder-card-field"></li>
-                <li class="placeholder-card-field"></li>
-                <li class="placeholder-card-field"></li>
-                <li class="placeholder-card-field"></li>
-                <li class="placeholder-card-field"></li>
-                <li class="placeholder-card-field"></li>
+                {% for place_id in ['1', '2', '3', '4', '5', '6'] %}
+                    <li id="{{ place_id }}" class="placeholder-card-field">
+                        {{ game.table_cards.place_id }}
+                        {% for card_place, cards in game.table_cards.items() %}
+                            {% if card_place == place_id %}
+                                {% for card in cards %}
+                                    <div class="card" style="top: 0; left: 0; transform: rotateZ(45deg);">
+                                        <div class="card-info card-info_top-pos">
+                                            {{ card }}
+                                        </div>
+                                        <div class="card-layout" alt="{{ card }}"></div>
+                                        <div class="card-info card-info_low-pos">
+                                            {{ card }}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        {% endfor %}
+                    </li>
+                {% endfor %}
             </ul>
             {% for player in game.players %}
                 <li class="player-item">
@@ -17,13 +31,14 @@
                             <span class="player-name">You</span>
                             <div class="player-cards">
                                 {% for card in player.cards %}
-                                    <div class="card my-card" draggable=true>
+                                    <div {% if player.state %} class="card my-card active-player-card" draggable=true {% else %} class="card my-card" {% endif %} is_dragging=false>
                                         <div class="card-info card-info_top-pos">
+                                            {{ card }}
                                         </div>
                                         <div class="card-layout" alt="{{ card }}"></div>
                                         <div class="card-info card-info_low-pos">
+                                            {{ card }}
                                         </div>
-                                        <input type="hidden" value="{{ card }}" />
                                     </div>
                                 {% endfor %}
                             </div>
@@ -31,7 +46,7 @@
                             <span class="player-name">{{ player.user.username }}</span>
                             <div class="player-cards">
                                 {% for card in player.cards %}
-                                    <div class="card">
+                                    <div draggable=false {% if player.state %} class="card active-player-card" {% else %} class="card" {% endif %}>
                                         <img class="card-layout" src="/static/game/images/card-back-layout.png">
                                     </div>
                                 {% endfor %}
