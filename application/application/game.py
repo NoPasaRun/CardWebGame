@@ -1,4 +1,5 @@
 import random
+from inspect import stack
 from typing import Dict, List, Tuple, Union
 # from models import get_users
 
@@ -186,6 +187,7 @@ class GameSession:
     """
     Класс описывающий методы и атрибуты Игровой Сессии
     """
+    __games_count: int = 0
 
     def __init__(self, user_data: Union[List[Dict]]) -> None:
         """
@@ -193,6 +195,26 @@ class GameSession:
         """
         self.__cards, self.trump = self.make_deck()
         self.__players: List = self.shuffle_players(user_data)
+        self.__game_index: int = self.games_count
+        self.games_count += 1
+
+    @property
+    def games_count(self) -> int:
+        return GameSession.__games_count
+
+    @games_count.setter
+    def games_count(self, value):
+        function = stack()[1].function
+        if function.__str__() == "__init__":
+            GameSession.__games_count += 1 + value*0
+
+    @property
+    def game_index(self):
+        return self.__game_index
+
+    @game_index.setter
+    def game_index(self, val):
+        return
 
     @property
     def players(self) -> List[Player]:
@@ -292,6 +314,7 @@ class Pair:
         :param game_ses: объект Игровой Сессии
         """
         self.table: Dict = {}
+        self.__pair_index = game_ses.game_index
 
         # Два первых Игрока в списке - Подкидывающий/Покрывающий
         self.__pair_players: List[Player] = game_ses.players[:2]
@@ -313,6 +336,14 @@ class Pair:
     def pair_players(self) -> List[Player]:
         return self.__pair_players
 
+    @property
+    def pair_index(self):
+        return self.__pair_index
+
+    @pair_index.setter
+    def pair_index(self, val):
+        return
+
     def do_someone_go_on(self, defender_card: Card) -> Union[Union[Attacker, Defender], bool]:
         """
         Функция, определяющая, кто ходит (или никто не ходит вообще)
@@ -331,25 +362,26 @@ class Pair:
             return False
         return self.active_player
 
-    def get_current_player(self, game_ses: GameSession) -> Union[Union[Attacker, Defender], GameSession]:
+    def get_current_player(self, game_ses: GameSession) -> Union[Attacker, Defender]:
         """
         Функция, возвращающая активного игрока завершающая Игровую Пару
         :param game_ses: Игровая Сессия
         :return:
         Игрок или Игровая Сессия с измененными параметрами (атрибутами)
         """
-        if self.table:
-            last_attacker_card: Card = list(self.table.keys())[-1]
-        else:
-            last_attacker_card: bool = False
-        last_defender_card: Card = self.table.get(last_attacker_card, True)
-        # Получаем текущего пользователя
-        current_player: Union[Union[Attacker, Defender], bool] = self.do_someone_go_on(last_defender_card)
-        if current_player:
-            return current_player
-        else:
-            # Заканчиваем Игровую Пару
-            return self.finish_pair(game_ses)
+        if game_ses.game_index == self.pair_index:
+            if self.table:
+                last_attacker_card: Card = list(self.table.keys())[-1]
+            else:
+                last_attacker_card: bool = False
+            last_defender_card: Card = self.table.get(last_attacker_card, True)
+            # Получаем текущего пользователя
+            current_player: Union[Union[Attacker, Defender], bool] = self.do_someone_go_on(last_defender_card)
+            if current_player:
+                return current_player
+            else:
+                # Заканчиваем Игровую Пару
+                self.finish_pair(game_ses)
 
     def change_attacker(self, thrower: Player) -> None:
         """
@@ -371,34 +403,35 @@ class Pair:
             self.pair_players.pop()
 
     @staticmethod
-    def give_cards_to_players(giver_ses: GameSession):
+    def give_cards_to_players(players: List[Player], cards: List[Card]) -> List[Player]:
         """
         Функция, раздающая недостающие Карты Игрокам
-        :param giver_ses: Игровая Сессия
+        :param players: Список Игроков
+        :param cards: Список Карт из колоды
         :return:
-        Игровая Сессия
+        Список Игроков
         """
-        for i_player in giver_ses.players:
+        for i_player in players:
             cards_to_add: int = CARDS_FOR_PLAYER - len(i_player.cards)
             if cards_to_add > 0:
-                i_player.cards.extend(giver_ses.cards[:cards_to_add])
-        return giver_ses
+                i_player.cards.extend(cards[:cards_to_add])
+        return players
 
-    def replace_players(self, replacer_ses: GameSession) -> GameSession:
+    def replace_players(self, players: List[Player]) -> List[Player]:
         """
         Функция, меняющая порядок Игроков
-        :param replacer_ses: Игровая Сессия
+        :param players: Список Игроков
         :return:
-        Игровая Сессия
+        Список Игроков
         """
         # Первые два (или один - в зависимости от исхода Пары) игрока отправляются в конец списка
-        new_players_list: List = replacer_ses.players[len(self.pair_players):]
+        new_players_list: List = players[len(self.pair_players):]
         new_players_list.extend(self.pair_players)
-        replacer_ses.players = new_players_list
+        players = new_players_list
 
-        return replacer_ses
+        return players
 
-    def finish_pair(self, end_ses: GameSession) -> GameSession:
+    def finish_pair(self, end_ses: GameSession) -> None:
         """
         Функция, закрывающая Пару и обновляющая данные Игровой Сессии
         :param end_ses: Игровая Сессия
@@ -407,6 +440,6 @@ class Pair:
         """
         # Перед сменой мест Игроков в списке, важно определить нового Подкидывающего
         self.leave_loser()
-        end_ses: GameSession = self.replace_players(Pair.give_cards_to_players(end_ses))
-
-        return end_ses
+        player_data: List[Player] = self.replace_players(self.give_cards_to_players(end_ses.players, end_ses.cards))
+        if end_ses.game_index == self.pair_index:
+            end_ses.players = player_data

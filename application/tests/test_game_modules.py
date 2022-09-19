@@ -45,3 +45,26 @@ class PairPlayerActivityTestCase(unittest.TestCase):
 
     def tearDown(self) -> None:
         del self.game_session
+
+
+class PairGameSessionSharingDataTestCase(unittest.TestCase):
+    def setUp(self) -> None:
+        user_data = get_users()
+        self.first_game_session = GameSession(user_data=user_data)
+        self.second_game_session = GameSession(user_data=user_data)
+        self.pair = Pair(self.second_game_session)
+
+    def test_pair_no_rights_to_change_game_data(self):
+        players_data_before_end = self.first_game_session.players
+        self.pair.table = {key: value for key, value in [(1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6)]}
+        self.pair.get_current_player(self.first_game_session)
+        self.assertEqual(self.first_game_session.players, players_data_before_end)
+
+    def test_pair_rights_to_change_game_data(self):
+        players_data_before_end = self.second_game_session.players
+        self.pair.table = {key: value for key, value in [(1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6)]}
+        self.pair.get_current_player(self.second_game_session)
+        self.assertNotEqual(self.second_game_session.players, players_data_before_end)
+
+    def tearDown(self) -> None:
+        del self.first_game_session, self.second_game_session

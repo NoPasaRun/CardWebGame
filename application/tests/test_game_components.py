@@ -85,10 +85,10 @@ class PairPlayerMoveTestCase(unittest.TestCase):
         test_player = self.pair.get_current_player(self.game_session)
         self.assertEqual(test_player, self.pair.defender)
 
-    def test_end_pair_return_session(self):
+    def test_end_pair_return_none(self):
         self.pair.table = {key: value for key, value in [(1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6)]}
         game_session = self.pair.get_current_player(self.game_session)
-        self.assertEqual(game_session, self.game_session)
+        self.assertEqual(game_session, None)
 
     def tearDown(self) -> None:
         del self.game_session
@@ -105,21 +105,21 @@ class PairPlayerLeaveTestCase(unittest.TestCase):
     def test_give_cards_to_players(self):
         test_player = self.game_session.players[0]
         test_player.cards = [1, 2, 3, 4]
-        self.pair.give_cards_to_players(self.game_session)
+        self.pair.give_cards_to_players(self.game_session.players, self.game_session.cards)
         self.assertEqual(len(test_player.cards), 6)
 
     def test_replace_players_with_loser(self):
         test_player = self.game_session.players[0]
         expected_index = 0 - len(self.pair.pair_players)
-        self.pair.replace_players(self.game_session)
-        self.assertEqual(self.game_session.players[expected_index], test_player)
+        actual_players = self.pair.replace_players(self.game_session.players)
+        self.assertEqual(actual_players[expected_index], test_player)
 
     def test_replace_with_no_losers(self):
         test_player = self.game_session.players[0]
         self.pair.leave_loser()
         expected_index = 0 - len(self.pair.pair_players)
-        self.pair.replace_players(self.game_session)
-        self.assertEqual(self.game_session.players[expected_index], test_player)
+        actual_players = self.pair.replace_players(self.game_session.players)
+        self.assertEqual(actual_players[expected_index], test_player)
 
     def tearDown(self) -> None:
         del self.game_session
