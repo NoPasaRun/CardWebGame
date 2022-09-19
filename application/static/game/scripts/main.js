@@ -1,12 +1,24 @@
 window.addEventListener("load", function(){
 
+    function set_change_state_function() {
+        const change_state_button = document.querySelector("#change-state-button")
+        if (change_state_button) {
+            change_state_button.addEventListener("click", function(){
+                let csrf_token = document.querySelector("#csrf_token").value;
+                let state = document.querySelector("#change-state").value;
+                ajax_request({"csrf_token": csrf_token, "change-state": state,
+                    "continue-move": true, "update-page": true})
+            })
+        }
+    }
+
     //  Function adds special classes for card's cells 
     // in order they are free or locked
 
     function placeholder_constructor() {
         let placeholders = document.querySelectorAll(".placeholder-card-field")
         placeholders.forEach(function(el){
-            if ($(el).children(".card").length == 0) {
+            if ($(el).children(".card").length === 0) {
                 el.classList.add("placeholder-card-field-free")
             } else {
                 el.classList.add("placeholder-card-field-locked")
@@ -19,7 +31,7 @@ window.addEventListener("load", function(){
 
     function change_color() {
         $(".card").each(function(){
-            var mast = $(this).children(".card-layout").attr("alt")
+            let mast = $(this).children(".card-layout").attr("alt")
             if(mast) {
                 if (mast.includes("♦") || mast.includes("♥")) {
                     this.style.color = "red"
@@ -31,13 +43,12 @@ window.addEventListener("load", function(){
     // Function transforms cards in the right position
     // and adds an Z-angle for them
 
-    function card_constructor(all_cards) {
-        var angle = -25
-        var index = 1
-        var left = 0
-        var top = 0
+    function card_constructor(all_cards, angle_dif=10) {
+        let amount = all_cards.length
+        let angle = -angle_dif*amount
+        let index, left, top = [1, 0, 0]
         $(all_cards).each(function() {
-            var card = this
+            let card = this
             if ([-25, 25].includes(angle)) {
                 top = 15
             } else if ([-15, 15].includes(angle)) {
@@ -51,7 +62,7 @@ window.addEventListener("load", function(){
             $(card).css("top", top + "px")
             angle += 10
             index++
-            left += $(".player-cards").width()/6
+            left += $(".player-cards").width()/amount
         })
 
     }
@@ -60,26 +71,26 @@ window.addEventListener("load", function(){
     // the distances would be the same between them
 
     function player_constructor() {
-        var width = document.querySelector('.player-nav-list').clientWidth/2
-        var height = document.querySelector('.player-nav-list').clientHeight/2
-        var angle = 360/document.querySelectorAll(".player-item").length
+        let width = document.querySelector('.player-nav-list').clientWidth/2
+        let height = document.querySelector('.player-nav-list').clientHeight/2
+        let angle = 360/document.querySelectorAll(".player-item").length
         
-        var sin_beta = Math.sin(-360 * (Math.PI / 180))
-        var cos_beta = Math.cos(-360 * (Math.PI / 180))
+        let sin_beta = Math.sin(-360 * (Math.PI / 180))
+        let cos_beta = Math.cos(-360 * (Math.PI / 180))
 
-        var i = 0
+        let i = 0
         $(".player-item").each(function() {
             let cards = $(this).children(".player-description").children(".player-cards").children(".card")
             card_constructor(cards)
             i += angle
-            var sin_alpha = Math.sin(i * (Math.PI / 180))
-            var cos_alpha = Math.cos(i * (Math.PI / 180))
+            let sin_alpha = Math.sin(i * (Math.PI / 180))
+            let cos_alpha = Math.cos(i * (Math.PI / 180))
 
-            var X = Math.floor(height + height * cos_alpha * cos_beta - width * sin_alpha * sin_beta)  
-            var Y = Math.floor(width + height * cos_alpha * sin_beta + width * sin_alpha * cos_beta)  
+            let X = Math.floor(height + height * cos_alpha * cos_beta - width * sin_alpha * sin_beta)
+            let Y = Math.floor(width + height * cos_alpha * sin_beta + width * sin_alpha * cos_beta)
             
-            y_add_offset = this.clientWidth/2
-            x_add_offset = this.clientHeight/1.5
+            let y_add_offset = this.clientWidth/2
+            let x_add_offset = this.clientHeight/1.5
 
             $(this).css("top", X-x_add_offset + "px")
             $(this).css("left", Y-y_add_offset + "px")
@@ -99,6 +110,7 @@ window.addEventListener("load", function(){
             data: request_data,
             success: function(data) {
                 $(".body").html(data)
+                set_change_state_function()
                 change_color()
                 placeholder_constructor()
                 dragAndDrop()
@@ -111,8 +123,8 @@ window.addEventListener("load", function(){
     // which can be used by user
 
     function get_zones() {
-        var card = document.querySelector(".my-card")
-        var state = $(card).attr("state")
+        let card = document.querySelector(".my-card")
+        let state = $(card).attr("state")
         if (state == "attack") {
             return document.querySelectorAll(".placeholder-card-field-free")
         } else if (state == "defend") {
@@ -175,19 +187,19 @@ window.addEventListener("load", function(){
         const dragDrop = function () {
             let card = document.querySelector(".using-card")
             if ($(card).hasClass("my-card")) {
-                my_card = $(this).children(".card")
+                let my_card = $(this).children(".card")
                 let csrf_token = document.querySelector("#csrf_token").value;
                 if (my_card.length < 2) {
                     this.append(card)
 
-                    card.style.top = 0
-                    card.style.left = 0
+                    card.style.top = "0"
+                    card.style.left = "0"
                     card.style.transform = "rotateZ(0deg)"
     
                     this.classList.remove("hover-placeholder")
     
-                    card_value = $(card).children(".card-layout").attr("alt")
-                    data = {"csrf_token": csrf_token, "update-table": true, "continue-move": true,
+                    let card_value = $(card).children(".card-layout").attr("alt")
+                    let data = {"csrf_token": csrf_token, "update-table": true, "continue-move": true,
                             "update-page": true, "card": card_value, "place_id": $(this).attr("id")}
     
                     ajax_request(data)
@@ -215,7 +227,7 @@ window.addEventListener("load", function(){
 
     function ajax_loop() {
         let csrf_token = document.querySelector("#csrf_token").value;
-        var loop_is_allowed = true
+        let loop_is_allowed = true
         $(".my-card").each(function() {
             if ($(this).attr("is_dragging") == 'true') {
                 loop_is_allowed = false

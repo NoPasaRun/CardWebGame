@@ -1,3 +1,6 @@
 /venv/
 token.txt
 /application/application/base.db
+application/application/__pycache__/
+application/tests/__pycache__/
+.idea

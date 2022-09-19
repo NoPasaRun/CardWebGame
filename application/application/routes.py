@@ -179,6 +179,8 @@ def game(game_id: int):
                     value_of_card = request.form.get("card")
                     place_id = request.form.get("place_id")
                     game_ses.fill_table(i_player=i_player, place_id=place_id, value_of_card=value_of_card)
+                if request.form.get("change-state", False):
+                    i_player.change_state(request.form.get("change-state"))
                 # Initialize the player who gonna move next
                 if request.form.get("continue-move", False):
                     game_ses.continue_move()

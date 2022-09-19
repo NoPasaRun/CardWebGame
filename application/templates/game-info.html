@@ -104,5 +104,13 @@
                 </form>
             {% endif %}
         {% endif %}
+        {% if i_player.active %}
+            <div>
+                <input type="hidden" id="change-state" name="change-state"
+                       value="{% if i_player.classname == 'attack'%}bit{% else %}pas{% endif %}" />
+                <input id="change-state-button" class="submit-button" type="submit"
+                       value="{% if i_player.classname == 'attack'%}Bito{% else %}Pass{% endif %}"/>
+            </div>
+        {% endif %}
     </footer>
 {% block body %}{% endblock %}
