@@ -1,19 +1,22 @@
 import random
-from inspect import stack
 from typing import Dict, List, Tuple, Union
-# from models import get_users
+
+from application.application.models import User
 
 
-def get_users() -> List[Union[Dict]]:
+def get_users() -> List[User]:
     """
     Функция возвращающая информацию о пользователях
     :return:
     Список данных пользователя или объекты модели User
     """
-    return [{"name": name} for name in ["Bogdan", "Dan", "Nick"]]
+    data = User.all()
+    return data
 
 
 CARDS_IN_DECK: int = 36
+DEF = "defender_card"
+OFF = "offensive_card"
 
 HEARTS, DIAMONDS, SPADES, CLUBS = SIGNS = ("❤", "♦", "♠", "♣")
 DECK: List[Tuple] = [(number, suit) for suit in SIGNS for number in range(6, 15)]
@@ -21,6 +24,26 @@ EXTRA_NUMBERS: Dict = {11: "V", 12: "D", 13: "K", 14: "T"}
 
 PLAYER_LOW_AMOUNT, PLAYER_HIGH_AMOUNT = 2, 6
 CARDS_FOR_PLAYER: int = 6
+
+
+class Deck(list):
+    def __getitem__(self, index):
+        output = super().__getitem__(index)
+        values = [output] if not isinstance(output, list) else output
+        for val in values:
+            self.remove(val)
+        return output
+
+    def shuffle(self):
+        shuffled_deck = self.copy()
+        random_indexes = list(range(len(self)))
+
+        random.shuffle(random_indexes)
+        for index, random_index in enumerate(random_indexes):
+            self[index] = shuffled_deck[random_index]
+
+    def __str__(self):
+        return str([str(card) for card in self])
 
 
 class Card:
@@ -87,6 +110,12 @@ class Card:
             return False
         return card_with_min_val
 
+    @staticmethod
+    def remove_cards_from_dec(deck: List['Card'], cards: List['Card']) -> List['Card']:
+        deck, cards = set(deck), set(cards)
+        deck.difference_update(cards)
+        return list(deck)
+
 
 class Player:
     """
@@ -101,6 +130,9 @@ class Player:
         """
         self.user_data: Dict = user_data
         self.cards: List = cards
+
+    def __eq__(self, other: Union['Player', 'Attacker', 'Defender', User]) -> bool:
+        return self.user_data == other.user_data
 
     def __getargs__(self) -> Tuple:
         """
@@ -187,26 +219,29 @@ class GameSession:
     """
     Класс описывающий методы и атрибуты Игровой Сессии
     """
-    __games_count: int = 0
+    __games: Dict = {}
 
-    def __init__(self, user_data: Union[List[Dict]]) -> None:
+    def __init__(self, user_data: List[User], game_index: int) -> None:
         """
         Функция конструктор
         """
         self.__cards, self.trump = self.make_deck()
         self.__players: List = self.shuffle_players(user_data)
-        self.__game_index: int = self.games_count
-        self.games_count += 1
+        self.__game_index: int = game_index
+        self.__pair = Pair(self)
+        self.__games[game_index] = self
 
     @property
-    def games_count(self) -> int:
-        return GameSession.__games_count
+    def pair(self):
+        return self.__pair
 
-    @games_count.setter
-    def games_count(self, value):
-        function = stack()[1].function
-        if function.__str__() == "__init__":
-            GameSession.__games_count += 1 + value*0
+    @pair.setter
+    def pair(self, val):
+        return
+
+    @classmethod
+    def get_game(cls, index: int):
+        return cls.__games.get(index)
 
     @property
     def game_index(self):
@@ -235,7 +270,7 @@ class GameSession:
         self.__cards = list(set_of_cards)
 
     @classmethod
-    def make_deck(cls) -> Tuple[List[Card], Card]:
+    def make_deck(cls) -> Tuple[Deck[Card], Card]:
         """
         Функция создания колоды Карт
         :return:
@@ -248,9 +283,9 @@ class GameSession:
 
         # конвертируем данные карт в объекты Карт
         trump, _ = Card(*random_card_value, is_not_trump=False), deck.remove(random_card_value)
-        deck: List = [Card(*card_value, is_not_trump=trump) for card_value in deck]
+        deck: Deck = Deck([Card(*card_value, is_not_trump=trump) for card_value in deck])
         # мешаем колоду
-        random.shuffle(deck)
+        deck.shuffle()
 
         deck.append(trump)
         assert len(deck) == CARDS_IN_DECK
@@ -278,6 +313,9 @@ class GameSession:
                 break
         return shuffled_players
 
+    def set_pair(self):
+        self.__pair = Pair(self)
+
     def shuffle_players(self, users: Union[List[Dict]]) -> List[Player]:
         """
         Функция создания Игроков и раздачи Карт
@@ -286,7 +324,6 @@ class GameSession:
         Список Игроков
         """
         cards_for_player: List = []
-
         # Сортировка Карт
         for i in range(0, CARDS_FOR_PLAYER*len(users), CARDS_FOR_PLAYER):
             cards_for_player.append(self.cards[i: i+CARDS_FOR_PLAYER])
@@ -303,6 +340,90 @@ class GameSession:
         return players
 
 
+class LobbySession:
+
+    __lobbies: Dict = {}
+
+    def __init__(self, lobby_index: int):
+        if LobbySession.get_lobby(lobby_index) is None:
+            self.__users = []
+            self.__ready_to_play = False
+            self.__lobby_index = lobby_index
+            LobbySession.__lobbies[lobby_index] = self
+
+    def __new__(cls, lobby_index, *args, **kwargs):
+        if LobbySession.get_lobby(lobby_index) is not None:
+            return LobbySession.get_lobby(lobby_index)
+        return super(LobbySession, cls).__new__(cls, *args, **kwargs)
+
+    @property
+    def users(self):
+        return self.__users
+
+    @classmethod
+    def get_lobby(cls, lobby_index: int) -> 'LobbySession':
+        lobby = cls.__lobbies.get(lobby_index, None)
+        return lobby
+
+    @property
+    def lobby_index(self):
+        return self.__lobby_index
+
+    @lobby_index.setter
+    def lobby_index(self, val):
+        return
+
+    @property
+    def game_status(self):
+        return self.__ready_to_play
+
+    @game_status.setter
+    def game_status(self, status_bool):
+        self.__ready_to_play = status_bool
+
+    def add_user(self, user: User):
+        if user not in self.users:
+            self.users.append(user)
+
+
+def compair_pair_and_session(func):
+    def wrapper(*args, **kwargs):
+        self: Pair = args[0]
+        try:
+            game_session: GameSession = args[1]
+        except IndexError:
+            game_session: GameSession = kwargs.get("game_ses", None)
+        if isinstance(game_session, GameSession):
+            if self == game_session.pair:
+                return func(*args, **kwargs)
+            else:
+                raise PermissionError("Game.pair and Pair are not the same")
+        return func(*args, **kwargs)
+    return wrapper
+
+
+class Table:
+    def __init__(self):
+        self.data = {key: {OFF: None, DEF: None} for key in range(1, 7)}
+
+    def get_last_def_card(self) -> Union[Card, None]:
+        values = [(data_cell[OFF], data_cell[DEF]) for data_cell in self.data.values()]
+        for off_card, def_card in reversed(values):
+            if def_card is not None:
+                return def_card
+        else:
+            return None
+
+    def get_items(self) -> List[Tuple[int, Tuple]]:
+        items = [(index, (data_cell[OFF], data_cell[DEF])) for index, data_cell in self.data.items()]
+        return items
+
+    @property
+    def free_cells(self) -> int:
+        values = list(self.data.values())
+        return values.count(None)
+
+
 class Pair:
     """
     Класс описывающий Пару Игроков (Подкидывающий/Покрывающий)
@@ -313,8 +434,7 @@ class Pair:
         Функция конструктор
         :param game_ses: объект Игровой Сессии
         """
-        self.table: Dict = {}
-        self.__pair_index = game_ses.game_index
+        self.table: Table = Table()
 
         # Два первых Игрока в списке - Подкидывающий/Покрывающий
         self.__pair_players: List[Player] = game_ses.players[:2]
@@ -336,25 +456,18 @@ class Pair:
     def pair_players(self) -> List[Player]:
         return self.__pair_players
 
-    @property
-    def pair_index(self):
-        return self.__pair_index
-
-    @pair_index.setter
-    def pair_index(self, val):
-        return
-
-    def do_someone_go_on(self, defender_card: Card) -> Union[Union[Attacker, Defender], bool]:
+    def do_someone_go_on(self, defender_card: Union[Card, None]) -> Union[Union[Attacker, Defender], bool]:
         """
         Функция, определяющая, кто ходит (или никто не ходит вообще)
         :param defender_card: Карта Покрывающего
         :return:
         Игрок, который ходит, или логическое "никто не ходит"
         """
-        if defender_card and self.attacker.is_awaken and len(self.table.keys()) < CARDS_FOR_PLAYER:
+        free_cells = self.table.free_cells
+        if defender_card is not None and self.attacker.is_awaken and free_cells > 1:
             # Если до этого сходил Покрывающий, а Подкидывающий активен (не бито), то он ходит | макс 6 Карт
             self.active_player: Attacker = self.attacker
-        elif not defender_card and self.defender.is_awaken and len(self.table.keys()) <= CARDS_FOR_PLAYER:
+        elif defender_card is None and self.defender.is_awaken and free_cells >= 1:
             # Если до этого сходил Подкидывающий, а Покрывающий активен (не пас), то он ходит | макс 6 Карт
             self.active_player: Defender = self.defender
         else:
@@ -362,6 +475,7 @@ class Pair:
             return False
         return self.active_player
 
+    @compair_pair_and_session
     def get_current_player(self, game_ses: GameSession) -> Union[Attacker, Defender]:
         """
         Функция, возвращающая активного игрока завершающая Игровую Пару
@@ -369,19 +483,14 @@ class Pair:
         :return:
         Игрок или Игровая Сессия с измененными параметрами (атрибутами)
         """
-        if game_ses.game_index == self.pair_index:
-            if self.table:
-                last_attacker_card: Card = list(self.table.keys())[-1]
-            else:
-                last_attacker_card: bool = False
-            last_defender_card: Card = self.table.get(last_attacker_card, True)
-            # Получаем текущего пользователя
-            current_player: Union[Union[Attacker, Defender], bool] = self.do_someone_go_on(last_defender_card)
-            if current_player:
-                return current_player
-            else:
-                # Заканчиваем Игровую Пару
-                self.finish_pair(game_ses)
+        last_defender_card = self.table.get_last_def_card()
+        # Получаем текущего пользователя
+        current_player: Union[Union[Attacker, Defender], bool] = self.do_someone_go_on(last_defender_card)
+        if current_player:
+            return current_player
+        else:
+            # Заканчиваем Игровую Пару
+            self.finish_pair(game_ses)
 
     def change_attacker(self, thrower: Player) -> None:
         """
@@ -390,7 +499,7 @@ class Pair:
         :return:
         """
         # Если у текущего Подкидывающего бито, то новый Подкидывающий - переданный Игрок
-        if not self.attacker.is_awaken and thrower.user_data != self.defender.user_data:
+        if not self.attacker.is_awaken and thrower != self.defender:
             self.attacker: Attacker = Attacker(thrower)
 
     def leave_loser(self) -> None:
@@ -402,44 +511,40 @@ class Pair:
         if self.defender.is_awaken:
             self.pair_players.pop()
 
-    @staticmethod
-    def give_cards_to_players(players: List[Player], cards: List[Card]) -> List[Player]:
+    @compair_pair_and_session
+    def give_cards_to_players(self, game_ses: GameSession) -> None:
         """
         Функция, раздающая недостающие Карты Игрокам
-        :param players: Список Игроков
-        :param cards: Список Карт из колоды
+        :game_ses: Игровая Сессия
         :return:
-        Список Игроков
         """
-        for i_player in players:
+        for i_player in game_ses.players:
             cards_to_add: int = CARDS_FOR_PLAYER - len(i_player.cards)
             if cards_to_add > 0:
-                i_player.cards.extend(cards[:cards_to_add])
-        return players
+                cards_to_add: List[Card] = game_ses.cards[:cards_to_add]
+                i_player.cards.extend(cards_to_add)
 
-    def replace_players(self, players: List[Player]) -> List[Player]:
+    @compair_pair_and_session
+    def replace_players(self, game_ses: GameSession) -> None:
         """
         Функция, меняющая порядок Игроков
-        :param players: Список Игроков
+        :game_ses: Игровая Сессия
         :return:
-        Список Игроков
         """
         # Первые два (или один - в зависимости от исхода Пары) игрока отправляются в конец списка
-        new_players_list: List = players[len(self.pair_players):]
+        new_players_list: List = game_ses.players[len(self.pair_players):]
         new_players_list.extend(self.pair_players)
-        players = new_players_list
+        game_ses.players = new_players_list
 
-        return players
-
-    def finish_pair(self, end_ses: GameSession) -> None:
+    @compair_pair_and_session
+    def finish_pair(self, game_ses: GameSession) -> None:
         """
         Функция, закрывающая Пару и обновляющая данные Игровой Сессии
-        :param end_ses: Игровая Сессия
+        :param game_ses: Игровая Сессия
         :return:
         Игровая Сессия
         """
         # Перед сменой мест Игроков в списке, важно определить нового Подкидывающего
         self.leave_loser()
-        player_data: List[Player] = self.replace_players(self.give_cards_to_players(end_ses.players, end_ses.cards))
-        if end_ses.game_index == self.pair_index:
-            end_ses.players = player_data
+        self.give_cards_to_players(game_ses)
+        self.replace_players(game_ses)

@@ -1,116 +1,93 @@
-{% block head %}{% endblock %}
-{#    <!-- Main -->#}
-{#    <main class="poker-table">#}
-{#        <!-- Coloda of cards -->#}
-{#        <div class="coloda">#}
-{#            {% if game.coloda|length > 1 %}#}
-{#                <!-- An image which lies over the coloda -->#}
-{#                <img class="coloda-card card_rotation-transform" src="/static/game/images/card-back-layout.png">#}
-{#            {% endif %}#}
-{#            {% if game.coloda %}#}
-{#                <!-- Kozir card -->#}
-{#                <div class="card card_transform">#}
-{#                    <div class="card-info card-info_top-pos">#}
-{#                        {{ game.kozir }}#}
-{#                    </div>#}
-{#                    <div class="card-layout" alt="{{ game.kozir }}"></div>#}
-{#                    <div class="card-info card-info_low-pos">#}
-{#                        {{ game.kozir }}#}
-{#                    </div>#}
-{#                </div>#}
-{#            {% endif %}#}
-{#        </div>#}
-{#        <!-- List of players -->#}
-{#        <ul class="player-nav-list">#}
-{#            <!-- List of card cells -->#}
-{#            <ul class="placeholder-card-list">#}
-{#                {% for place_id in ['1', '2', '3', '4', '5', '6'] %}#}
-{#                    <!-- Card cell -->#}
-{#                    <li id="{{ place_id }}" class="placeholder-card-field">#}
-{#                        {{ game.table_cards.place_id }}#}
-{#                        {% for card_place, cards in game.table_cards.items() %}#}
-{#                            {% if card_place == place_id %}#}
-{#                                {% for num_value, card in [1, 2]|zip(cards) %}#}
-{#                                    <!-- Here may lay cards -->#}
-{#                                    <div class="card {% if num_value == 1 %}attack_card{% else %}defend_card{% endif %}">#}
-{#                                        <div class="card-info card-info_top-pos">#}
-{#                                            {{ card }}#}
-{#                                        </div>#}
-{#                                        <div class="card-layout" alt="{{ card }}"></div>#}
-{#                                        <div class="card-info card-info_low-pos">#}
-{#                                            {{ card }}#}
-{#                                        </div>#}
-{#                                    </div>#}
-{#                                {% endfor %}#}
-{#                            {% endif %}#}
-{#                        {% endfor %}#}
-{#                    </li>#}
-{#                {% endfor %}#}
-{#            </ul>#}
-{#            {% for player in game.players %}#}
-{#                <!-- Player -->#}
-{#                <li class="player-item">#}
-{#                    <!-- Player icon -->#}
-{#                    <span class="player-icon"><img src="/static/game/images/avatar.png"></span>#}
-{#                    <!-- Player info -->#}
-{#                    <strong class="player-description">#}
-{#                        {% if player.player_id == i_player.player_id %}#}
-{#                            <!-- Current player name -->#}
-{#                            <span class="player-name">You</span>#}
-{#                            <!-- Current player cards -->#}
-{#                            <div class="player-cards">#}
-{#                                {% for card in player.cards %}#}
-{#                                    <!-- Current player card -->#}
-{#                                    <div {% if player.active %} class="card my-card active-player-card" draggable=true {% else %} class="card my-card" {% endif %} state={{player.classname}} is_dragging=false>#}
-{#                                        <div class="card-info card-info_top-pos">#}
-{#                                            {{ card }}#}
-{#                                        </div>#}
-{#                                        <div class="card-layout" alt="{{ card }}"></div>#}
-{#                                        <div class="card-info card-info_low-pos">#}
-{#                                            {{ card }}#}
-{#                                        </div>#}
-{#                                    </div>#}
-{#                                {% endfor %}#}
-{#                            </div>#}
-{#                        {% else %}#}
-{#                            <!-- Another player -->#}
-{#                            <span class="player-name">{{ player.user.username }}</span>#}
-{#                            <!-- Another player cards -->#}
-{#                            <div class="player-cards">#}
-{#                                {% for card in player.cards %}#}
-{#                                    <!-- Another player card -->#}
-{#                                    <div draggable=false {% if player.active %} class="card active-player-card" {% else %} class="card" {% endif %}>#}
-{#                                        <img class="card-layout" src="/static/game/images/card-back-layout.png">#}
-{#                                    </div>#}
-{#                                {% endfor %}#}
-{#                            </div>#}
-{#                        {% endif %}#}
-{#                    </strong>#}
-{#                </li>#}
-{#            {% endfor %}#}
-{#        </ul>#}
-{#    </main>#}
-{#    <!-- Footer -->#}
-{#    <footer class="footer">#}
-{#        <!-- CSRF TOKEN -->#}
-{#        <input type="hidden" id="csrf_token" value="{{ csrf_token() }}" />#}
-{#        {% if not game.start %}#}
-{#            {% if game.creator == i_player.user %}#}
-{#                <!-- Form for starting game -->#}
-{#                <form class="get-started-form" method="post" action="">#}
-{#                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />#}
-{#                    <input type="hidden" name="start-game" value="true" />#}
-{#                    <input class="submit-button" type="submit" value="Start game"/>#}
-{#                </form>#}
-{#            {% endif %}#}
-{#        {% endif %}#}
-{#        {% if i_player.active %}#}
-{#            <div>#}
-{#                <input type="hidden" id="change-state" name="change-state"#}
-{#                       value="{% if i_player.classname == 'attack'%}bit{% else %}pas{% endif %}" />#}
-{#                <input id="change-state-button" class="submit-button" type="submit"#}
-{#                       value="{% if i_player.classname == 'attack'%}Bito{% else %}Pass{% endif %}"/>#}
-{#            </div>#}
-{#        {% endif %}#}
-{#    </footer>#}
-{% block body %}{% endblock %}
+<!-- Main -->
+<main class="poker-table">
+    <!-- Coloda of cards -->
+    <div class="coloda">
+        {% if game.cards|length > 1 %}
+            <!-- An image which lies over the coloda -->
+            <img class="coloda-card card_rotation-transform" src="/static/game/images/card-back-layout.png">
+        {% endif %}
+        {% if game.cards %}
+            <!-- Trump card -->
+            <div class="card card_transform">
+                <div class="card-info card-info_top-pos">
+                    {{ game.trump }}
+                </div>
+                <div class="card-layout" alt="{{ game.trump }}"></div>
+                <div class="card-info card-info_low-pos">
+                    {{ game.trump }}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    <!-- List of players -->
+    <ul class="player-nav-list">
+        <!-- List of card cells -->
+        <ul class="placeholder-card-list">
+            {% for place_id in ['1', '2', '3', '4', '5', '6'] %}
+                <!-- Card cell -->
+                <li id="{{ place_id }}" class="placeholder-card-field">
+                    {% for card_place, cards in pair.table.get_items() %}
+                        {% if card_place == place_id %}
+                            {% for num_value, card in [1, 2]|zip(cards) %}
+                                <!-- Here may lay cards -->
+                                <div class="card {% if num_value == 1 %}attack_card{% else %}defend_card{% endif %}">
+                                    <div class="card-info card-info_top-pos">
+                                        {{ card }}
+                                    </div>
+                                    <div class="card-layout" alt="{{ card }}"></div>
+                                    <div class="card-info card-info_low-pos">
+                                        {{ card }}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+                </li>
+            {% endfor %}
+        </ul>
+        {% for player in game.players %}
+            <!-- Player -->
+            <li class="player-item">
+                <!-- Player icon -->
+                <span class="player-icon"><img src="/static/game/images/avatar.png"></span>
+                <!-- Player info -->
+                <strong class="player-description">
+                    {% if player == user %}
+                        <!-- Current player name -->
+                        <span class="player-name">You</span>
+                        <!-- Current player cards -->
+                        <div class="player-cards">
+                            {% for card in player.cards %}
+                                <!-- Current player card -->
+                                <div {% if player.is_awaken %} class="card my-card active-player-card" draggable=true {% else %} class="card my-card" {% endif %} state={{player.classname}} is_dragging=false>
+                                    <div class="card-info card-info_top-pos">
+                                        {{ card }}
+                                    </div>
+                                    <div class="card-layout" alt="{{ card }}"></div>
+                                    <div class="card-info card-info_low-pos">
+                                        {{ card }}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <!-- Another player -->
+                        <span class="player-name">{{ player.user_data.username }}</span>
+                        <!-- Another player cards -->
+                        <div class="player-cards">
+                            {% for card in player.cards %}
+                                <!-- Another player card -->
+                                <div draggable=false {% if player.is_awaken %} class="card active-player-card" {% else %} class="card" {% endif %}>
+                                    <img class="card-layout" src="/static/game/images/card-back-layout.png">
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </strong>
+            </li>
+        {% endfor %}
+    </ul>
+</main>
+<!-- Footer -->
+<footer class="footer">
+</footer>

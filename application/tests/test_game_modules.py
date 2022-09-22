@@ -7,7 +7,7 @@ class PlayerCardsTestCase(unittest.TestCase):
     def setUp(self) -> None:
         user_data = get_users()[:2]
         assert len(user_data) == 2
-        self.game_session = GameSession(user_data=user_data)
+        self.game_session = GameSession(user_data=user_data, game_index=1)
         self.game_session.trump = Card(12, HEARTS, False)
         self.trump = self.game_session.trump
         self.first_player = self.game_session.players[0]
@@ -33,7 +33,7 @@ class PairPlayerActivityTestCase(unittest.TestCase):
     def setUp(self) -> None:
         user_data = get_users()[:3]
         assert len(user_data) == 3
-        self.game_session = GameSession(user_data=user_data)
+        self.game_session = GameSession(user_data=user_data, game_index=1)
         self.pair = Pair(self.game_session)
         self.first_player = self.game_session.players[0]
         self.second_player = self.game_session.players[1]
@@ -50,14 +50,19 @@ class PairPlayerActivityTestCase(unittest.TestCase):
 class PairGameSessionSharingDataTestCase(unittest.TestCase):
     def setUp(self) -> None:
         user_data = get_users()
-        self.first_game_session = GameSession(user_data=user_data)
-        self.second_game_session = GameSession(user_data=user_data)
+        self.first_game_session = GameSession(user_data=user_data, game_index=1)
+        self.second_game_session = GameSession(user_data=user_data, game_index=2)
         self.pair = Pair(self.second_game_session)
 
     def test_pair_no_rights_to_change_game_data(self):
         players_data_before_end = self.first_game_session.players
         self.pair.table = {key: value for key, value in [(1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6)]}
-        self.pair.get_current_player(self.first_game_session)
+        try:
+            self.pair.get_current_player(self.first_game_session)
+            error = None
+        except PermissionError as err:
+            error = err
+        self.assertEqual(type(error), PermissionError)
         self.assertEqual(self.first_game_session.players, players_data_before_end)
 
     def test_pair_rights_to_change_game_data(self):

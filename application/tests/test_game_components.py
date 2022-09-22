@@ -6,17 +6,21 @@ from application.application.game import CARDS_IN_DECK, SIGNS, HEARTS, SPADES, D
 class SessionGameTestCase(unittest.TestCase):
     def setUp(self) -> None:
         user_data = get_users()
-        self.game_session = GameSession(user_data=user_data)
-        self.cards = self.game_session.cards
+        self.game_session = GameSession(user_data=user_data, game_index=1)
+        self.players = self.game_session.players
+        players_cards = []
+        for player in self.players:
+            players_cards.extend(player.cards)
+        self.all_cards = self.game_session.cards + players_cards
 
     def test_deck(self):
-        self.assertEqual(len(set(self.cards)), CARDS_IN_DECK)
-        self.assertTrue(all([card.val in range(6, 15) for card in self.cards]))
+        self.assertEqual(len(set(self.all_cards)), CARDS_IN_DECK)
+        self.assertTrue(all([card.val in range(6, 15) for card in self.all_cards]))
         for sign in SIGNS:
-            self.assertEqual(CARDS_IN_DECK//4, len([card for card in self.cards if card.suit == sign]))
+            self.assertEqual(CARDS_IN_DECK//4, len([card for card in self.all_cards if card.suit == sign]))
 
     def test_create_players(self):
-        for test_player in self.game_session.players:
+        for test_player in self.players:
             self.assertTrue(isinstance(test_player, Player))
             self.assertEqual(len(test_player.cards), 6)
 
@@ -27,7 +31,7 @@ class SessionGameTestCase(unittest.TestCase):
 class CardsTestCase(unittest.TestCase):
     def setUp(self) -> None:
         user_data = get_users()
-        self.game_session = GameSession(user_data=user_data)
+        self.game_session = GameSession(user_data=user_data, game_index=1)
         self.game_session.trump = Card(9, HEARTS, False)
         self.trump = self.game_session.trump
 
@@ -57,14 +61,14 @@ class CardsTestCase(unittest.TestCase):
 class PairPlayerMoveTestCase(unittest.TestCase):
     def setUp(self) -> None:
         user_data = get_users()
-        self.game_session = GameSession(user_data=user_data)
+        self.game_session = GameSession(user_data=user_data, game_index=1)
         self.game_session.trump = Card(9, HEARTS, False)
         self.trump = self.game_session.trump
         self.pair = Pair(self.game_session)
 
     def test_attacker_is_first_player(self):
         first_player = self.game_session.players[0]
-        self.assertEqual(first_player.user_data, self.pair.attacker.user_data)
+        self.assertEqual(first_player, self.pair.attacker)
 
     def test_move_first_attacker(self):
         test_player = self.pair.get_current_player(self.game_session)
@@ -97,7 +101,7 @@ class PairPlayerMoveTestCase(unittest.TestCase):
 class PairPlayerLeaveTestCase(unittest.TestCase):
     def setUp(self) -> None:
         user_data = get_users()
-        self.game_session = GameSession(user_data=user_data)
+        self.game_session = GameSession(user_data=user_data, game_index=1)
         self.game_session.trump = Card(9, HEARTS, False)
         self.trump = self.game_session.trump
         self.pair = Pair(self.game_session)
@@ -105,21 +109,30 @@ class PairPlayerLeaveTestCase(unittest.TestCase):
     def test_give_cards_to_players(self):
         test_player = self.game_session.players[0]
         test_player.cards = [1, 2, 3, 4]
-        self.pair.give_cards_to_players(self.game_session.players, self.game_session.cards)
+        self.pair.give_cards_to_players(self.game_session)
         self.assertEqual(len(test_player.cards), 6)
 
     def test_replace_players_with_loser(self):
         test_player = self.game_session.players[0]
         expected_index = 0 - len(self.pair.pair_players)
-        actual_players = self.pair.replace_players(self.game_session.players)
-        self.assertEqual(actual_players[expected_index], test_player)
+        self.pair.replace_players(self.game_session)
+        self.assertEqual(self.game_session.players[expected_index], test_player)
 
     def test_replace_with_no_losers(self):
         test_player = self.game_session.players[0]
         self.pair.leave_loser()
         expected_index = 0 - len(self.pair.pair_players)
-        actual_players = self.pair.replace_players(self.game_session.players)
-        self.assertEqual(actual_players[expected_index], test_player)
+        self.pair.replace_players(self.game_session)
+        self.assertEqual(self.game_session.players[expected_index], test_player)
 
     def tearDown(self) -> None:
         del self.game_session
+
+
+class PlayerAttackerDefenderTestCase(unittest.TestCase):
+    def setUp(self):
+        user_data = get_users()
+        self.game_session = GameSession(user_data=user_data, game_index=1)
+        self.pair = Pair(self.game_session)
+        self.first_player = self.game_session.players[0]
+        self.pair.attacker = self.first_player
