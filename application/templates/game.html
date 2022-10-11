@@ -1,18 +1,18 @@
 <!-- Main -->
 <main class="poker-table">
-    <!-- Coloda of cards -->
-    <div class="coloda">
+    <!-- Deck of cards -->
+    <div class="deck">
         {% if game.cards|length > 1 %}
             <!-- An image which lies over the coloda -->
-            <img class="coloda-card card_rotation-transform" src="/static/game/images/card-back-layout.png">
+            <img class="deck-card card_rotation-transform" src="/static/game/images/card-back-layout.png" alt>
         {% endif %}
         {% if game.cards %}
             <!-- Trump card -->
-            <div class="card card_transform">
+            <div class="card card_transform" style="color: {{ game.trump.color }}">
                 <div class="card-info card-info_top-pos">
                     {{ game.trump }}
                 </div>
-                <div class="card-layout" alt="{{ game.trump }}"></div>
+                <div class="card-layout"></div>
                 <div class="card-info card-info_low-pos">
                     {{ game.trump }}
                 </div>
@@ -23,22 +23,24 @@
     <ul class="player-nav-list">
         <!-- List of card cells -->
         <ul class="placeholder-card-list">
-            {% for place_id in ['1', '2', '3', '4', '5', '6'] %}
+            {% for place_id in [1, 2, 3, 4, 5, 6] %}
                 <!-- Card cell -->
                 <li id="{{ place_id }}" class="placeholder-card-field">
                     {% for card_place, cards in pair.table.get_items() %}
                         {% if card_place == place_id %}
                             {% for num_value, card in [1, 2]|zip(cards) %}
-                                <!-- Here may lay cards -->
-                                <div class="card {% if num_value == 1 %}attack_card{% else %}defend_card{% endif %}">
-                                    <div class="card-info card-info_top-pos">
-                                        {{ card }}
+                                {% if card %}
+                                    <!-- Here may lay cards -->
+                                    <div class="card {% if num_value == 1 %}attack_card{% else %}defend_card{% endif %}" style="color: {{ card.color }}">
+                                        <div class="card-info card-info_top-pos">
+                                            {{ card }}
+                                        </div>
+                                        <div class="card-layout"></div>
+                                        <div class="card-info card-info_low-pos">
+                                            {{ card }}
+                                        </div>
                                     </div>
-                                    <div class="card-layout" alt="{{ card }}"></div>
-                                    <div class="card-info card-info_low-pos">
-                                        {{ card }}
-                                    </div>
-                                </div>
+                                {% endif %}
                             {% endfor %}
                         {% endif %}
                     {% endfor %}
@@ -57,19 +59,33 @@
                         <span class="player-name">You</span>
                         <!-- Current player cards -->
                         <div class="player-cards">
-                            {% for card in player.cards %}
+                            {% for card_index, card in [1, 2, 3, 4, 5, 6]|zip(player.cards) %}
                                 <!-- Current player card -->
-                                <div {% if player.is_awaken %} class="card my-card active-player-card" draggable=true {% else %} class="card my-card" {% endif %} state={{player.classname}} is_dragging=false>
+                                <div draggable="true"
+                                {% if player == pair.get_current_player(game) %}
+                                     class="
+                                     card my-card active-player-card
+                                     {% if player == pair.attacker %}
+                                        attacker_card
+                                     {% else %}
+                                        defender_card
+                                     {% endif %}"
+                                {% else %}
+                                     class="card my-card"
+                                {% endif %}
+                                data-value="{{ card }}"
+                                style="color: {{ card.color }}">
                                     <div class="card-info card-info_top-pos">
                                         {{ card }}
                                     </div>
-                                    <div class="card-layout" alt="{{ card }}"></div>
+                                    <div class="card-layout"></div>
                                     <div class="card-info card-info_low-pos">
                                         {{ card }}
                                     </div>
                                 </div>
                             {% endfor %}
                         </div>
+                        <button id="change_status_button">Change Status</button>
                     {% else %}
                         <!-- Another player -->
                         <span class="player-name">{{ player.user_data.username }}</span>
@@ -77,8 +93,13 @@
                         <div class="player-cards">
                             {% for card in player.cards %}
                                 <!-- Another player card -->
-                                <div draggable=false {% if player.is_awaken %} class="card active-player-card" {% else %} class="card" {% endif %}>
-                                    <img class="card-layout" src="/static/game/images/card-back-layout.png">
+                                <div draggable=false
+                                {% if player == pair.get_current_player(game) %}
+                                    class="card active-player-card"
+                                {% else %}
+                                    class="card"
+                                {% endif %}>
+                                    <img class="card-layout" src="/static/game/images/card-back-layout.png" alt="'card layout'">
                                 </div>
                             {% endfor %}
                         </div>
@@ -90,4 +111,5 @@
 </main>
 <!-- Footer -->
 <footer class="footer">
+    <input type="hidden" id="csrf_token" value="{{ csrf_token() }}" />
 </footer>

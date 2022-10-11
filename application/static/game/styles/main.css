@@ -14,12 +14,12 @@
 body {
     position: relative;
     height: 100vh;
-    background-image: url("/static/game/images/poker-table.jpg");
+    background-image: url('../images/poker-table.jpg');
     background-repeat: no-repeat;
     background-size: cover;
 }
 
-/* Позицианирование footer */
+/* Позиционирование footer */
 
 .footer {
     position: absolute;
@@ -29,7 +29,7 @@ body {
     right: 0;
 }
 
-/* Позицианирование колоды */
+/* Позиционирование колоды */
 
 .poker-table {
     display: flex;
@@ -38,7 +38,7 @@ body {
     align-items: center;
 }
 
-.coloda {
+.deck {
     position: absolute;
     height: 80px;
     width: 140px;
@@ -46,7 +46,7 @@ body {
     top: 48%;
 }
 
-/* Позицианирование и трансформация содержимого колоды */
+/* Позиционирование и трансформация содержимого колоды */
 
 .card_transform {
     transform: rotateZ(90deg);
@@ -55,7 +55,7 @@ body {
     box-shadow: none!important;
 }
 
-.coloda-card {
+.deck-card {
     position: absolute;
     top: 0;
     left: 0;
@@ -65,7 +65,7 @@ body {
     transform: rotateZ(90deg);
 }
 
-/* Позицианирование и размеры поля для игры */
+/* Позиционирование и размеры поля для игры */
 
 .player-nav-list {
     display: flex;
@@ -77,7 +77,7 @@ body {
     width: 70%;
 }
 
-/* Позицианирование и размеры ячеек для карт */
+/* Позиционирование и размеры ячеек для карт */
 
 .placeholder-card-list {
     display: flex;
@@ -98,7 +98,7 @@ body {
     margin-bottom: auto;
 }
 
-/* Позицианирование пользовательской информации */
+/* Позиционирование пользовательской информации */
 
 .player-item {
     position: absolute;
@@ -116,7 +116,7 @@ body {
 /* Стилизация пользовательской информации */
 
 .player-name {
-    font-family: PokerFace;
+    font-family: sans-serif, PokerFace;
     font-size: 30px;
 }
 
@@ -129,7 +129,7 @@ body {
     max-height: 50px;
 }
 
-/* Позицианирование карт пользователя */
+/* Позиционирование карт пользователя */
 
 .player-cards {
     display: flex;
@@ -148,12 +148,13 @@ body {
 .card {
     position: absolute;
     box-shadow: -1px 1px 2px 2px rgba(255, 3, 3, 0.4);
+    transition: 0.05s transform linear;
 }
 
 /* Стиль для карт расположенных в ячейках для карт(снизу) */
 
 .attack_card {
-    top: 0px;
+    top: 0;
     left: 8px;
     z-index: 0;
     transform: rotateZ(40deg);
@@ -174,7 +175,12 @@ body {
     box-shadow: -1px 1px 2px 2px rgb(0, 122, 47);
 }
 
-/* Позицианирование и размеры масти и цифры на карте */
+.my-card:active {
+    cursor: pointer;
+    transform: rotateZ(0deg) translateY(-30px);
+}
+
+/* Позиционирование и размеры масти и цифры на карте */
 
 .card-info {
     position: absolute;
@@ -223,7 +229,7 @@ body {
     border: none;
     border-radius: 10px;
     color: darkgreen;
-    font-family: PokerFace;
+    font-family: sans-serif, PokerFace;
     font-size: 30px;
     background: linear-gradient(45deg, rgb(4, 37, 4), rgb(0, 14, 0));
     box-shadow: 3px 3px 5px 5px rgb(0, 14, 0);
@@ -236,7 +242,7 @@ body {
     bottom: 5%;
     right: 5%;
     background-size: contain;
-    background-image: url("/static/index/images/play-button.png");
+    background-image: url("../../index/images/play-button.png");
     transition-duration: 0.2s;
     cursor: pointer;
     border-radius: 50%;

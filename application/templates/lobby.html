@@ -21,7 +21,9 @@
                 <input type="submit" value="Start game" />
             </form>
         {% else %}
-            {% include "game.html" %}
+            <div class="game">
+                {% include "game.html" %}
+            </div>
         {% endif %}
         </div>
         <button id="music-button" class="music-button"></button>

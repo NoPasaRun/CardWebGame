@@ -1,5 +1,5 @@
 import random
-from typing import Dict, List, Tuple, Union
+from typing import Dict, List, Tuple, Union, Callable
 
 from application.application.models import User
 
@@ -26,13 +26,71 @@ PLAYER_LOW_AMOUNT, PLAYER_HIGH_AMOUNT = 2, 6
 CARDS_FOR_PLAYER: int = 6
 
 
-class Deck(list):
-    def __getitem__(self, index):
+def update_method(func: Callable):
+    def wrapper(self, *args, **kwargs):
+        self.game_ses.modified = True
+        result = func(self, *args, **kwargs)
+        return result
+    return wrapper
+
+
+def init_trackable_functions(func: Callable):
+    def wrapper(cls):
+        trackable_methods = ["pop", "append", "extend", "insert", "remove",
+                             "clear", "reverse", "sort", "popitem", "update"]
+        for i_method in trackable_methods:
+            if hasattr(cls, i_method):
+                updated_method = func(getattr(cls, i_method))
+                setattr(cls, i_method, updated_method)
+        return cls
+    return wrapper
+
+
+class GameSessionAddon:
+    def __init__(self, game_ses: 'GameSession'):
+        self.__game_ses = game_ses
+
+    @property
+    def game_ses(self):
+        return self.__game_ses
+
+    @game_ses.setter
+    def game_ses(self, value):
+        return
+
+    def __setattr__(self, key, value):
+        super(GameSessionAddon, self).__setattr__(key, value)
+        if hasattr(self, "__game_ses"):
+            self.game_ses.modified = True
+
+    def __setitem__(self, key, value):
+        self[key] = value
+        if hasattr(self, "__game_ses"):
+            self.game_ses.modified = True
+
+
+@init_trackable_functions(update_method)
+class TrackableDict(dict, GameSessionAddon):
+    def __init__(self, game_ses: 'GameSession', obj: dict = None):
+        dict.__init__(self, obj if type(obj) == dict else {})
+        GameSessionAddon.__init__(self, game_ses)
+
+
+@init_trackable_functions(update_method)
+class TrackableList(list, GameSessionAddon):
+    def __init__(self, game_ses: 'GameSession', obj: list = None):
+        list.__init__(self, obj if type(obj) == list else [])
+        GameSessionAddon.__init__(self, game_ses)
+
+
+class Deck(TrackableList):
+
+    def __getitem__(self, index) -> Union['Deck', 'Card']:
         output = super().__getitem__(index)
         values = [output] if not isinstance(output, list) else output
         for val in values:
             self.remove(val)
-        return output
+        return output if not isinstance(output, list) else Deck(self.game_ses, output)
 
     def shuffle(self):
         shuffled_deck = self.copy()
@@ -42,14 +100,18 @@ class Deck(list):
         for index, random_index in enumerate(random_indexes):
             self[index] = shuffled_deck[random_index]
 
-    def __str__(self):
-        return str([str(card) for card in self])
+    def get_card_by_string(self, value: str) -> 'Card':
+        list_of_string_cards = [str(card) for card in self]
+        if value in list_of_string_cards:
+            index = list_of_string_cards.index(value)
+            return super().__getitem__(index)
 
 
 class Card:
     """
     Класс, описывающий поведение Карт
     """
+
     def __init__(self, number: int, sign: str, is_not_trump: Union['Card', bool]) -> None:
         """
         Функция конструктор
@@ -60,6 +122,7 @@ class Card:
         """
         self.val: int = number
         self.suit: str = sign
+        self.color: str = "red" if sign in (HEARTS, DIAMONDS) else "black"
         if is_not_trump:
             # если карта не выбрана козырем, но масть совпадает с мастью козыря, то карта - козырь
             self.is_trump = sign == is_not_trump.suit
@@ -67,7 +130,7 @@ class Card:
             # если карта козырь, то "не козырная карта" меняется на "козырная карта
             self.is_trump = not is_not_trump
 
-    def __str__(self) -> str:
+    def __repr__(self) -> str:
         """
         Строковое представление Карт
         :return:
@@ -117,22 +180,67 @@ class Card:
         return list(deck)
 
 
+def check_if_player_is_out(func: Callable):
+    def wrapper(self: Union[Defender, Player], game_ses: 'GameSession', *args, **kwargs):
+        result = func(self, *args, **kwargs)
+        if len(self.cards) == 0 and (isinstance(self, Defender) or len(game_ses.cards) == 0):
+            if len(game_ses.cards) == 0:
+                game_ses.players.remove(game_ses.get_player_by_user(self))
+            if isinstance(self, Defender):
+                game_ses.pair.finish_pair()
+        return result
+    return wrapper
+
+
 class Player:
     """
     Класс, описывающий атрибуты Игрока
     """
 
-    def __init__(self, user_data: Dict, cards: List[Card]) -> None:
+    def __init__(self, user_data: Dict, cards: Deck[Card], has_updated_game: bool = True) -> None:
         """
         Функция конструктор
         :param user_data: данные пользователя / объект модели User
         :param cards: Карты Игрока
         """
         self.user_data: Dict = user_data
-        self.cards: List = cards
+        self.cards: Deck = cards
+        self.__has_updated_game = has_updated_game
+
+    @property
+    def has_updated_game(self):
+        value = self.__has_updated_game
+        self.__has_updated_game = False
+        return value
+
+    @has_updated_game.setter
+    def has_updated_game(self, value):
+        self.__has_updated_game = value
+
+    @check_if_player_is_out
+    def go_on(self, game_ses: 'GameSession', card_val: str, table: 'Table', table_id: int) -> bool:
+        """
+        Функция подкидывания Карты
+        :param game_ses: Игровая Сессия
+        :param card_val: строковое представление Карты
+        :param table: Стол
+        :param table_id: ячейка Стола
+        :return:
+        Логическое подкинул: да/нет
+        """
+        # если переданная Карта есть в списке Карт Игрока, то удаляем ее из списка
+        card: Card = self.cards.get_card_by_string(card_val)
+        if card:
+            # если Карту можно поставить на Стол, то удаляем ее из списка
+            if table.put_card(table_id, card):
+                self.cards.remove(card)
+                return True
+        return False
 
     def __eq__(self, other: Union['Player', 'Attacker', 'Defender', User]) -> bool:
-        return self.user_data == other.user_data
+        if other is not None:
+            return self.user_data == other.user_data
+        return False
 
     def __getargs__(self) -> Tuple:
         """
@@ -143,18 +251,21 @@ class Player:
         parameters: Tuple = tuple([value for value in self.__dict__.values()])
         return parameters
 
+    def __repr__(self):
+        return self.user_data.__repr__()
+
 
 class Attacker(Player):
     """
     Класс, описывающий поведения Игрока-Подкидывающего
     """
 
-    def __init__(self, player: Player) -> None:
+    def __init__(self, pl: Player) -> None:
         """
         Функция конструктор
-        :param player:
+        :param pl:
         """
-        args: Tuple = player.__getargs__()
+        args: Tuple = pl.__getargs__()
         super().__init__(*args)
         # атрибут, показывающий логическое "бито"
         self.__is_awaken: bool = True
@@ -163,18 +274,9 @@ class Attacker(Player):
     def is_awaken(self) -> bool:
         return self.__is_awaken
 
-    def go_on(self, attacker_card: Card) -> bool:
-        """
-        Функция подкидывания Карты
-        :param attacker_card: Карта
-        :return:
-        Логическое подкинул: да/нет
-        """
-        # если переданная Карта есть в списке Карт Игрока-Подкидающего, то удаляем ее из списка
-        if attacker_card in self.cards:
-            self.cards.remove(attacker_card)
-            return True
-        return False
+    @is_awaken.setter
+    def is_awaken(self, value: bool):
+        self.__is_awaken = value
 
 
 class Defender(Player):
@@ -182,12 +284,12 @@ class Defender(Player):
     Класс, описывающий поведение Игрока-Покрывающего
     """
 
-    def __init__(self, player: Player) -> None:
+    def __init__(self, pl: Player) -> None:
         """
         Функция конструктор
-        :param player:
+        :param pl:
         """
-        args: Tuple = player.__getargs__()
+        args: Tuple = pl.__getargs__()
         super().__init__(*args)
         # атрибут, показывающий логическое "пас"
         self.__is_awaken = True
@@ -200,22 +302,8 @@ class Defender(Player):
     def is_awaken(self, value: bool):
         self.__is_awaken = value
 
-    def go_on(self, attacker_card: Card, defender_card: Card) -> bool:
-        """
-        Функция покрывания Карты
-        :param attacker_card: Карта подкидывающего
-        :param defender_card: Карта покрывающего
-        :return:
-        Логическое покрыл: да/нет
-        """
-        # если покрывающая Карта больше подкидывающей, то удаляем ее из списка
-        if defender_card > attacker_card:
-            self.cards.remove(defender_card)
-            return True
-        return False
 
-
-class GameSession:
+class GameSession(GameSessionAddon):
     """
     Класс описывающий методы и атрибуты Игровой Сессии
     """
@@ -226,10 +314,21 @@ class GameSession:
         Функция конструктор
         """
         self.__cards, self.trump = self.make_deck()
-        self.__players: List = self.shuffle_players(user_data)
-        self.__game_index: int = game_index
+        self.__players: TrackableList = self.shuffle_players(user_data)
         self.__pair = Pair(self)
-        self.__games[game_index] = self
+        GameSession.__games[game_index] = self
+        self.__modified = True
+        GameSessionAddon.__init__(self, self)
+
+    @property
+    def modified(self):
+        return self.__modified
+
+    @modified.setter
+    def modified(self, value):
+        if hasattr(self, "__players"):
+            for i_player in self.players:
+                i_player.has_updated_game = False
 
     @property
     def pair(self):
@@ -244,19 +343,11 @@ class GameSession:
         return cls.__games.get(index)
 
     @property
-    def game_index(self):
-        return self.__game_index
-
-    @game_index.setter
-    def game_index(self, val):
-        return
-
-    @property
     def players(self) -> List[Player]:
         return self.__players
 
     @property
-    def cards(self) -> List[Card]:
+    def cards(self) -> Deck[Card]:
         return self.__cards
 
     @players.setter
@@ -269,8 +360,12 @@ class GameSession:
         set_of_cards.difference_update(used_cards)
         self.__cards = list(set_of_cards)
 
-    @classmethod
-    def make_deck(cls) -> Tuple[Deck[Card], Card]:
+    def get_player_by_user(self, user: [User, Defender, Attacker]) -> Player:
+        for i_player in self.players:
+            if i_player == user:
+                return i_player
+
+    def make_deck(self) -> Tuple[Deck[Card], Card]:
         """
         Функция создания колоды Карт
         :return:
@@ -283,16 +378,15 @@ class GameSession:
 
         # конвертируем данные карт в объекты Карт
         trump, _ = Card(*random_card_value, is_not_trump=False), deck.remove(random_card_value)
-        deck: Deck = Deck([Card(*card_value, is_not_trump=trump) for card_value in deck])
+        deck: Deck = Deck(self, [Card(*card_value, is_not_trump=trump) for card_value in deck])
         # мешаем колоду
         deck.shuffle()
 
-        deck.append(trump)
-        assert len(deck) == CARDS_IN_DECK
+        assert len(deck)+1 == CARDS_IN_DECK
         return deck, trump
 
     @staticmethod
-    def replace_player_with_trump(shuffled_players: List[Player]) -> List[Player]:
+    def replace_player_with_trump(shuffled_players: TrackableList[Player]) -> TrackableList[Player]:
         """
         Функция, ставящая Игрока с минимальной козырной Картой в начало списка
         :param shuffled_players: Игроки
@@ -316,25 +410,25 @@ class GameSession:
     def set_pair(self):
         self.__pair = Pair(self)
 
-    def shuffle_players(self, users: Union[List[Dict]]) -> List[Player]:
+    def shuffle_players(self, users: Union[List[Dict]]) -> TrackableList[Player]:
         """
         Функция создания Игроков и раздачи Карт
         :param users: данные Игроков
         :return:
         Список Игроков
         """
-        cards_for_player: List = []
+        cards_for_player: Deck = Deck(self)
         # Сортировка Карт
         for i in range(0, CARDS_FOR_PLAYER*len(users), CARDS_FOR_PLAYER):
             cards_for_player.append(self.cards[i: i+CARDS_FOR_PLAYER])
 
         # Конвертируем данные Игрока в объекты Игроков
-        players: List = [
+        players: TrackableList = TrackableList(self, [
             Player(user, players_cards)
             for user, players_cards in zip(users, cards_for_player)
-        ]
+        ])
         # Ставим Игрока с минимальным козырем в начало списка
-        players: List = self.replace_player_with_trump(players)
+        players: TrackableList = self.replace_player_with_trump(players)
 
         assert PLAYER_LOW_AMOUNT <= len(players) <= PLAYER_HIGH_AMOUNT
         return players
@@ -386,45 +480,7 @@ class LobbySession:
             self.users.append(user)
 
 
-def compair_pair_and_session(func):
-    def wrapper(*args, **kwargs):
-        self: Pair = args[0]
-        try:
-            game_session: GameSession = args[1]
-        except IndexError:
-            game_session: GameSession = kwargs.get("game_ses", None)
-        if isinstance(game_session, GameSession):
-            if self == game_session.pair:
-                return func(*args, **kwargs)
-            else:
-                raise PermissionError("Game.pair and Pair are not the same")
-        return func(*args, **kwargs)
-    return wrapper
-
-
-class Table:
-    def __init__(self):
-        self.data = {key: {OFF: None, DEF: None} for key in range(1, 7)}
-
-    def get_last_def_card(self) -> Union[Card, None]:
-        values = [(data_cell[OFF], data_cell[DEF]) for data_cell in self.data.values()]
-        for off_card, def_card in reversed(values):
-            if def_card is not None:
-                return def_card
-        else:
-            return None
-
-    def get_items(self) -> List[Tuple[int, Tuple]]:
-        items = [(index, (data_cell[OFF], data_cell[DEF])) for index, data_cell in self.data.items()]
-        return items
-
-    @property
-    def free_cells(self) -> int:
-        values = list(self.data.values())
-        return values.count(None)
-
-
-class Pair:
+class Pair(GameSessionAddon):
     """
     Класс описывающий Пару Игроков (Подкидывающий/Покрывающий)
     """
@@ -434,63 +490,59 @@ class Pair:
         Функция конструктор
         :param game_ses: объект Игровой Сессии
         """
-        self.table: Table = Table()
+        self.table: Table = Table(game_ses)
 
         # Два первых Игрока в списке - Подкидывающий/Покрывающий
-        self.__pair_players: List[Player] = game_ses.players[:2]
+        self.__pair_players: TrackableList[Player] = TrackableList(game_ses, game_ses.players[:2])
         player_classifier = zip((Attacker, Defender), self.__pair_players)
 
         self.attacker, self.defender = [obj_class(pair_player) for obj_class, pair_player in player_classifier]
-        # Первым ходит Подкидывающий - он активный
-        self.__active_player: Union[Defender, Attacker] = self.attacker
-
-    @property
-    def active_player(self) -> Union[Defender, Attacker]:
-        return self.__active_player
-
-    @active_player.setter
-    def active_player(self, player: Union[Attacker, Defender]) -> None:
-        self.__active_player = player
+        self.__game_ses = game_ses
+        GameSessionAddon.__init__(self, game_ses)
 
     @property
     def pair_players(self) -> List[Player]:
         return self.__pair_players
 
-    def do_someone_go_on(self, defender_card: Union[Card, None]) -> Union[Union[Attacker, Defender], bool]:
+    @pair_players.setter
+    def pair_players(self, value: List[Player]):
+        same = all([i_player in self.__pair_players for i_player in value])
+        if same:
+            self.__pair_players = value
+
+    def do_someone_go_on(self, attacker_move: bool) -> Union[Union[Attacker, Defender], bool]:
         """
         Функция, определяющая, кто ходит (или никто не ходит вообще)
-        :param defender_card: Карта Покрывающего
+        :param attacker_move: логическое "следующим ходит Подкидывающий"
         :return:
         Игрок, который ходит, или логическое "никто не ходит"
         """
         free_cells = self.table.free_cells
-        if defender_card is not None and self.attacker.is_awaken and free_cells > 1:
+        if (attacker_move or not self.defender.is_awaken) and self.attacker.is_awaken and free_cells > 1:
             # Если до этого сходил Покрывающий, а Подкидывающий активен (не бито), то он ходит | макс 6 Карт
-            self.active_player: Attacker = self.attacker
-        elif defender_card is None and self.defender.is_awaken and free_cells >= 1:
+            active_player: Attacker = self.attacker
+        elif not attacker_move and self.defender.is_awaken and free_cells >= 1:
             # Если до этого сходил Подкидывающий, а Покрывающий активен (не пас), то он ходит | макс 6 Карт
-            self.active_player: Defender = self.defender
+            active_player: Defender = self.defender
         else:
             # Иначе никто не ходит
             return False
-        return self.active_player
+        return active_player
 
-    @compair_pair_and_session
-    def get_current_player(self, game_ses: GameSession) -> Union[Attacker, Defender]:
+    def get_current_player(self) -> Union[Attacker, Defender]:
         """
         Функция, возвращающая активного игрока завершающая Игровую Пару
-        :param game_ses: Игровая Сессия
         :return:
         Игрок или Игровая Сессия с измененными параметрами (атрибутами)
         """
-        last_defender_card = self.table.get_last_def_card()
+        attacker_next_move = self.table.is_last_defender_card()
         # Получаем текущего пользователя
-        current_player: Union[Union[Attacker, Defender], bool] = self.do_someone_go_on(last_defender_card)
+        current_player: Union[Union[Attacker, Defender], bool] = self.do_someone_go_on(attacker_next_move)
         if current_player:
             return current_player
         else:
             # Заканчиваем Игровую Пару
-            self.finish_pair(game_ses)
+            self.finish_pair()
 
     def change_attacker(self, thrower: Player) -> None:
         """
@@ -511,40 +563,72 @@ class Pair:
         if self.defender.is_awaken:
             self.pair_players.pop()
 
-    @compair_pair_and_session
-    def give_cards_to_players(self, game_ses: GameSession) -> None:
+    def give_cards_to_players(self) -> None:
         """
         Функция, раздающая недостающие Карты Игрокам
         :game_ses: Игровая Сессия
         :return:
         """
-        for i_player in game_ses.players:
+        for i_player in self.game_ses.players.copy():
             cards_to_add: int = CARDS_FOR_PLAYER - len(i_player.cards)
             if cards_to_add > 0:
-                cards_to_add: List[Card] = game_ses.cards[:cards_to_add]
+                cards_to_add: Deck[Card] = self.game_ses.cards[:cards_to_add]
                 i_player.cards.extend(cards_to_add)
+                self.game_ses.players.append(i_player)
 
-    @compair_pair_and_session
-    def replace_players(self, game_ses: GameSession) -> None:
+    def replace_players(self) -> None:
         """
         Функция, меняющая порядок Игроков
         :game_ses: Игровая Сессия
         :return:
         """
         # Первые два (или один - в зависимости от исхода Пары) игрока отправляются в конец списка
-        new_players_list: List = game_ses.players[len(self.pair_players):]
+        new_players_list: List = self.game_ses.players[len(self.pair_players):]
         new_players_list.extend(self.pair_players)
-        game_ses.players = new_players_list
+        self.game_ses.players = new_players_list
+        print(self.game_ses.players == new_players_list)
 
-    @compair_pair_and_session
-    def finish_pair(self, game_ses: GameSession) -> None:
+    def finish_pair(self) -> None:
         """
         Функция, закрывающая Пару и обновляющая данные Игровой Сессии
-        :param game_ses: Игровая Сессия
         :return:
         Игровая Сессия
         """
         # Перед сменой мест Игроков в списке, важно определить нового Подкидывающего
         self.leave_loser()
-        self.give_cards_to_players(game_ses)
-        self.replace_players(game_ses)
+        self.give_cards_to_players()
+        self.replace_players()
+        self.game_ses.set_pair()
+
+
+class Table(TrackableDict):
+    def __init__(self, game_ses: GameSession):
+        table_data = {key: {OFF: None, DEF: None} for key in range(1, 7)}
+        TrackableDict.__init__(self, game_ses=game_ses, obj=table_data)
+
+    def is_last_defender_card(self) -> bool:
+        values = [(data_cell[OFF], data_cell[DEF]) for data_cell in self.values()]
+        for off_card, def_card in values:
+            if off_card and not def_card:
+                return False
+        return True
+
+    def put_card(self, table_id: int, card: Card):
+        if table_id in self.keys():
+            off_card, def_card = self[table_id].values()
+            if off_card is None:
+                self[table_id][OFF] = card
+                return True
+            elif def_card is None:
+                if card > off_card:
+                    self[table_id][DEF] = card
+                    return True
+
+    def get_items(self) -> List[Tuple[int, Tuple]]:
+        items = [(index, (data_cell[OFF], data_cell[DEF])) for index, data_cell in self.items()]
+        return items
+
+    @property
+    def free_cells(self) -> int:
+        values = [card for data_cell in self.values() for card in data_cell.values()]
+        return values.count(None)

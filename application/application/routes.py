@@ -1,4 +1,5 @@
 import os
+from typing import Dict, Union
 
 from flask import Flask, request, redirect, render_template, session
 from flask_wtf import CSRFProtect
@@ -8,8 +9,7 @@ from flask_login import LoginManager, login_required, logout_user, login_user
 from login_view import LoginUser
 from application.application.models import User, Base
 from application.application.database import db_session
-from application.application.game import GameSession, LobbySession
-
+from application.application.game import GameSession, LobbySession, Attacker, Defender, Player
 
 app = Flask(__name__, template_folder="../templates", static_folder="../static")
 SECRET_KEY = os.urandom(32)
@@ -95,21 +95,66 @@ def lobby(lobby_id: int):
         return redirect(f"/game/{lobby_id}/")
 
 
-@app.route(f'/game/<int:game_id>/', methods=["GET", "POST"])
+@app.route('/game/<int:game_id>/', methods=["GET", "POST"])
 @login_required
 def game(game_id: int):
     game_ses: GameSession = GameSession.get_game(game_id)
     lobby_ses: LobbySession = LobbySession(game_id)
+
     user: User = User.get(int(session.get("_user_id")))
+    requested_player: Player = game_ses.get_player_by_user(user)
+
+    context: Dict = {"user": user, "lobby": lobby_ses, "game": game_ses, "pair": game_ses.pair}
     if game_ses:
-        if user in game_ses.players:
-            return render_template("lobby.html", user=user, lobby=lobby_ses, game=game_ses, pair=game_ses.pair)
+        if requested_player in game_ses.players:
+            if request.method == "GET":
+                return render_template("lobby.html", **context)
+            elif request.method == "POST":
+                context.pop("lobby")
+                return render_template("game.html", **context)
         return "You are not a part of this game"
     return "Game not found!"
+
+
+@app.route('/game/<int:game_id>/make_move', methods=["POST"])
+@login_required
+def make_move(game_id: int):
+    game_ses: GameSession = GameSession.get_game(game_id)
+    user: User = User.get(int(session.get("_user_id")))
+    current_player: Union[Attacker, Defender] = game_ses.pair.get_current_player(game_ses)
+    data = request.form.to_dict()
+
+    if user == current_player:
+        card_value: str = data.get("card_value")
+        table_id: str = data.get("table_id")
+
+        success = current_player.go_on(card_value, game_ses.pair.table, int(table_id))
+        if success:
+            message = "Ok!"
+        else:
+            message = "Your card is lower than attacker's card or you tried to cheat"
+    else:
+        message = "That is not your turn"
+    context: Dict = {"user": user, "game": game_ses, "pair": game_ses.pair, "message": message}
+    return render_template("game.html", **context)
+
+
+@app.route('/game/<int:game_id>/change_status', methods=["POST"])
+@login_required
+def change_status(game_id: int):
+    game_ses: GameSession = GameSession.get_game(game_id)
+    user: User = User.get(int(session.get("_user_id")))
+
+    attacker: Attacker = game_ses.pair.attacker
+    defender: Defender = game_ses.pair.defender
+    if user == attacker:
+        attacker.is_awaken = not attacker.is_awaken
+    elif user == defender:
+        defender.is_awaken = not defender.is_awaken
 
 
 if __name__ == '__main__':
     Base.metadata.create_all()
     csrf = CSRFProtect(app)
     csrf.init_app(app)
-    app.run(host="0.0.0.0", port=8000)
+    app.run(host="0.0.0.0", port=8000, debug=True)

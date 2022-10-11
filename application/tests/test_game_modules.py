@@ -1,5 +1,5 @@
 import unittest
-from application.application.game import GameSession, Card, Pair, get_users
+from application.application.game import GameSession, Card, get_users, OFF
 from application.application.game import HEARTS, SPADES, DIAMONDS, CLUBS
 
 
@@ -22,7 +22,7 @@ class PlayerCardsTestCase(unittest.TestCase):
             Card(num, suit, self.trump)
             for num, suit in [(10, HEARTS), (12, DIAMONDS), (8, CLUBS)]
         ]
-        replaced_players = self.game_session.replace_player_with_trump([self.first_player, self.second_player])
+        replaced_players = self.game_session.replace_player_with_trump(self.game_session.players)
         self.assertEqual(replaced_players[0], self.second_player)
 
     def tearDown(self) -> None:
@@ -34,7 +34,7 @@ class PairPlayerActivityTestCase(unittest.TestCase):
         user_data = get_users()[:3]
         assert len(user_data) == 3
         self.game_session = GameSession(user_data=user_data, game_index=1)
-        self.pair = Pair(self.game_session)
+        self.pair = self.game_session.pair
         self.first_player = self.game_session.players[0]
         self.second_player = self.game_session.players[1]
         self.third_player = self.game_session.players[2]
@@ -47,29 +47,40 @@ class PairPlayerActivityTestCase(unittest.TestCase):
         del self.game_session
 
 
-class PairGameSessionSharingDataTestCase(unittest.TestCase):
+class GameplayScenarioTestCase(unittest.TestCase):
     def setUp(self) -> None:
-        user_data = get_users()
-        self.first_game_session = GameSession(user_data=user_data, game_index=1)
-        self.second_game_session = GameSession(user_data=user_data, game_index=2)
-        self.pair = Pair(self.second_game_session)
+        user_data = get_users()[:3]
+        assert len(user_data) == 3
+        self.game_session = GameSession(user_data=user_data, game_index=1)
+        self.pair = self.game_session.pair
 
-    def test_pair_no_rights_to_change_game_data(self):
-        players_data_before_end = self.first_game_session.players
-        self.pair.table = {key: value for key, value in [(1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6)]}
-        try:
-            self.pair.get_current_player(self.first_game_session)
-            error = None
-        except PermissionError as err:
-            error = err
-        self.assertEqual(type(error), PermissionError)
-        self.assertEqual(self.first_game_session.players, players_data_before_end)
+    def test_finishing_pair(self):
+        self.pair.attacker.is_awaken = False
+        self.pair.get_current_player()
+        self.assertNotEqual(self.pair, self.game_session.pair)
 
-    def test_pair_rights_to_change_game_data(self):
-        players_data_before_end = self.second_game_session.players
-        self.pair.table = {key: value for key, value in [(1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6)]}
-        self.pair.get_current_player(self.second_game_session)
-        self.assertNotEqual(self.second_game_session.players, players_data_before_end)
+    def test_defender_pass_attacker_move(self):
+        self.pair.table[1][OFF] = self.pair.attacker.cards[0]
+        self.pair.defender.is_awaken = False
+        current_player = self.pair.get_current_player()
+        self.assertEqual(current_player, self.pair.attacker)
+
+    def test_change_attacker_if_attacker_has_passed(self):
+        new_attacker = None
+        for i_player in self.game_session.players:
+            if i_player not in self.pair.pair_players:
+                new_attacker = i_player
+        self.pair.attacker.is_awaken = False
+        self.pair.change_attacker(new_attacker)
+        self.assertEqual(new_attacker, self.pair.attacker)
+
+    def test_change_attacker_is_not_allowed(self):
+        new_attacker = None
+        for i_player in self.game_session.players:
+            if i_player not in self.pair.pair_players:
+                new_attacker = i_player
+        self.pair.change_attacker(new_attacker)
+        self.assertNotEqual(new_attacker, self.pair.attacker)
 
     def tearDown(self) -> None:
-        del self.first_game_session, self.second_game_session
+        del self.game_session

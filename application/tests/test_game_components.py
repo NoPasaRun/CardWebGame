@@ -1,6 +1,6 @@
 import unittest
-from application.application.game import GameSession, Pair, Player, Card, get_users
-from application.application.game import CARDS_IN_DECK, SIGNS, HEARTS, SPADES, DIAMONDS, CLUBS
+from application.application.game import GameSession, Player, Card, get_users
+from application.application.game import CARDS_IN_DECK, SIGNS, HEARTS, SPADES, DIAMONDS, CLUBS, DEF, OFF
 
 
 class SessionGameTestCase(unittest.TestCase):
@@ -11,10 +11,10 @@ class SessionGameTestCase(unittest.TestCase):
         players_cards = []
         for player in self.players:
             players_cards.extend(player.cards)
-        self.all_cards = self.game_session.cards + players_cards
+        self.all_cards = set(self.game_session.cards + players_cards + [self.game_session.trump])
 
     def test_deck(self):
-        self.assertEqual(len(set(self.all_cards)), CARDS_IN_DECK)
+        self.assertEqual(len(self.all_cards), CARDS_IN_DECK)
         self.assertTrue(all([card.val in range(6, 15) for card in self.all_cards]))
         for sign in SIGNS:
             self.assertEqual(CARDS_IN_DECK//4, len([card for card in self.all_cards if card.suit == sign]))
@@ -59,39 +59,48 @@ class CardsTestCase(unittest.TestCase):
 
 
 class PairPlayerMoveTestCase(unittest.TestCase):
+
+    def full_the_table(self):
+        for table_place, card_data in self.table.items():
+            off_card, def_card = card_data.keys()
+            self.table[table_place][off_card] = table_place
+            self.table[table_place][def_card] = table_place
+
     def setUp(self) -> None:
         user_data = get_users()
         self.game_session = GameSession(user_data=user_data, game_index=1)
         self.game_session.trump = Card(9, HEARTS, False)
         self.trump = self.game_session.trump
-        self.pair = Pair(self.game_session)
+        self.pair = self.game_session.pair
+        self.table = self.pair.table
 
     def test_attacker_is_first_player(self):
         first_player = self.game_session.players[0]
         self.assertEqual(first_player, self.pair.attacker)
 
     def test_move_first_attacker(self):
-        test_player = self.pair.get_current_player(self.game_session)
+        test_player = self.pair.get_current_player()
         self.assertEqual(test_player, self.pair.attacker)
 
     def test_move_then_defender(self):
-        self.pair.table[Card(10, DIAMONDS, self.trump)] = ""
-        test_player = self.pair.get_current_player(self.game_session)
+        self.pair.table[2][OFF] = Card(10, DIAMONDS, self.trump)
+        test_player = self.pair.get_current_player()
         self.assertEqual(test_player, self.pair.defender)
 
     def test_move_then_again_attacker(self):
-        self.pair.table[Card(10, DIAMONDS, self.trump)] = Card(11, DIAMONDS, self.trump)
-        test_player = self.pair.get_current_player(self.game_session)
+        self.pair.table[2] = {OFF: Card(10, DIAMONDS, self.trump), DEF: Card(7, SPADES, self.trump)}
+        test_player = self.pair.get_current_player()
         self.assertEqual(test_player, self.pair.attacker)
 
     def test_last_move_for_defender(self):
-        self.pair.table = {key: value for key, value in [(1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, "")]}
-        test_player = self.pair.get_current_player(self.game_session)
+        self.full_the_table()
+        self.table[6][DEF] = None
+        test_player = self.pair.get_current_player()
         self.assertEqual(test_player, self.pair.defender)
 
     def test_end_pair_return_none(self):
-        self.pair.table = {key: value for key, value in [(1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6)]}
-        game_session = self.pair.get_current_player(self.game_session)
+        self.full_the_table()
+        game_session = self.pair.get_current_player()
         self.assertEqual(game_session, None)
 
     def tearDown(self) -> None:
@@ -104,25 +113,25 @@ class PairPlayerLeaveTestCase(unittest.TestCase):
         self.game_session = GameSession(user_data=user_data, game_index=1)
         self.game_session.trump = Card(9, HEARTS, False)
         self.trump = self.game_session.trump
-        self.pair = Pair(self.game_session)
+        self.pair = self.game_session.pair
 
     def test_give_cards_to_players(self):
         test_player = self.game_session.players[0]
         test_player.cards = [1, 2, 3, 4]
-        self.pair.give_cards_to_players(self.game_session)
+        self.pair.give_cards_to_players()
         self.assertEqual(len(test_player.cards), 6)
 
     def test_replace_players_with_loser(self):
         test_player = self.game_session.players[0]
-        expected_index = 0 - len(self.pair.pair_players)
-        self.pair.replace_players(self.game_session)
+        expected_index = -len(self.pair.pair_players)
+        self.pair.replace_players()
         self.assertEqual(self.game_session.players[expected_index], test_player)
 
     def test_replace_with_no_losers(self):
         test_player = self.game_session.players[0]
         self.pair.leave_loser()
-        expected_index = 0 - len(self.pair.pair_players)
-        self.pair.replace_players(self.game_session)
+        expected_index = -len(self.pair.pair_players)
+        self.pair.replace_players()
         self.assertEqual(self.game_session.players[expected_index], test_player)
 
     def tearDown(self) -> None:
@@ -133,6 +142,6 @@ class PlayerAttackerDefenderTestCase(unittest.TestCase):
     def setUp(self):
         user_data = get_users()
         self.game_session = GameSession(user_data=user_data, game_index=1)
-        self.pair = Pair(self.game_session)
+        self.pair = self.game_session.pair
         self.first_player = self.game_session.players[0]
         self.pair.attacker = self.first_player

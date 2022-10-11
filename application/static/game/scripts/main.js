@@ -1,24 +1,13 @@
 window.addEventListener("load", function(){
 
-    function set_change_state_function() {
-        const change_state_button = document.querySelector("#change-state-button")
-        if (change_state_button) {
-            change_state_button.addEventListener("click", function(){
-                let csrf_token = document.querySelector("#csrf_token").value;
-                let state = document.querySelector("#change-state").value;
-                ajax_request({"csrf_token": csrf_token, "change-state": state,
-                    "continue-move": true, "update-page": true})
-            })
-        }
-    }
-
     //  Function adds special classes for card's cells 
     // in order they are free or locked
 
     function placeholder_constructor() {
         let placeholders = document.querySelectorAll(".placeholder-card-field")
         placeholders.forEach(function(el){
-            if ($(el).children(".card").length === 0) {
+            let cards = $(el).children(".card")
+            if (cards.length === 0) {
                 el.classList.add("placeholder-card-field-free")
             } else {
                 el.classList.add("placeholder-card-field-locked")
@@ -26,45 +15,18 @@ window.addEventListener("load", function(){
         })
     }
 
-    // Function changes the color of cards to red if they
-    // have these images "♦", "♥"
-
-    function change_color() {
-        $(".card").each(function(){
-            let mast = $(this).children(".card-layout").attr("alt")
-            if(mast) {
-                if (mast.includes("♦") || mast.includes("♥")) {
-                    this.style.color = "red"
-                }
-            }
-        })
-    }
-
     // Function transforms cards in the right position
     // and adds an Z-angle for them
 
-    function card_constructor(all_cards, angle_dif=10) {
-        let amount = all_cards.length
-        let angle = -angle_dif*amount
-        let index, left, top = [1, 0, 0]
+    function card_constructor(all_cards) {
+        let index = 0
+        let left = 0
         $(all_cards).each(function() {
-            let card = this
-            if ([-25, 25].includes(angle)) {
-                top = 15
-            } else if ([-15, 15].includes(angle)) {
-                top = 5
-            } else {
-                top = 0
-            }
-            $(card).css("transform", "rotateZ(" + angle + "deg)")
-            $(card).css("z-index", index)
-            $(card).css("left", left + "px")
-            $(card).css("top", top + "px")
-            angle += 10
+            this.style.zIndex = index + ""
+            this.style.left = left + "px"
             index++
-            left += $(".player-cards").width()/amount
+            left += 20
         })
-
     }
 
     // Function transforms positions of players in a way
@@ -100,21 +62,17 @@ window.addEventListener("load", function(){
     // The function send ajax request to update page
     // without reloading
 
-    function ajax_request(request_data) {
+    function ajax_request(url, request_data) {
         $.ajax({
-            url: '/game/1/',
+            url: url,
             type: 'post',
             dataType: 'html',
             cache: false,
             async: false,
             data: request_data,
             success: function(data) {
-                $(".body").html(data)
-                set_change_state_function()
-                change_color()
-                placeholder_constructor()
-                dragAndDrop()
-                player_constructor()
+                $(".game").html(data)
+                init_game()
             }
         });
     }
@@ -124,13 +82,11 @@ window.addEventListener("load", function(){
 
     function get_zones() {
         let card = document.querySelector(".my-card")
-        let state = $(card).attr("state")
-        if (state == "attack") {
+        let status = card.classList.contains("attacker_card")
+        if (status) {
             return document.querySelectorAll(".placeholder-card-field-free")
-        } else if (state == "defend") {
-            return document.querySelectorAll(".placeholder-card-field-locked")
         } else {
-            return document.querySelectorAll(".placeholder-card-field")
+            return document.querySelectorAll(".placeholder-card-field-locked")
         }
     }
 
@@ -187,9 +143,8 @@ window.addEventListener("load", function(){
         const dragDrop = function () {
             let card = document.querySelector(".using-card")
             if ($(card).hasClass("my-card")) {
-                let my_card = $(this).children(".card")
-                let csrf_token = document.querySelector("#csrf_token").value;
-                if (my_card.length < 2) {
+                let placeholder = $(this).children(".card")
+                if (placeholder.length < 2) {
                     this.append(card)
 
                     card.style.top = "0"
@@ -197,12 +152,23 @@ window.addEventListener("load", function(){
                     card.style.transform = "rotateZ(0deg)"
     
                     this.classList.remove("hover-placeholder")
-    
-                    let card_value = $(card).children(".card-layout").attr("alt")
-                    let data = {"csrf_token": csrf_token, "update-table": true, "continue-move": true,
-                            "update-page": true, "card": card_value, "place_id": $(this).attr("id")}
-    
-                    ajax_request(data)
+
+                    zones.forEach((el) => {
+                        el.removeEventListener("dragover", dragOver)
+                        el.removeEventListener("dragenter", dragEnter)
+                        el.removeEventListener("dragleave", dragLeave)
+                        el.removeEventListener("drop", dragDrop)
+                    })
+                    let csrf_token = document.querySelector("#csrf_token").value;
+                    let card_value = $(card).attr("data-value")
+
+                    let data = {"csrf_token": csrf_token, "card_value": card_value, "table_id": $(this).attr("id")}
+                    let url = window.location.href + 'make_move'
+                    let func = function(data) {
+                        $(".game").html(data)
+                        init_game()
+                    }
+                    ajax_request(url, data, func)
                 }
             }
         }
@@ -222,6 +188,13 @@ window.addEventListener("load", function(){
         })
     }
 
+    function init_game() {
+        placeholder_constructor()
+        dragAndDrop()
+        player_constructor()
+        create_change_status_button()
+    }
+
     // Infinite functions which call an ajax_request function
     // to update page
 
@@ -229,13 +202,24 @@ window.addEventListener("load", function(){
         let csrf_token = document.querySelector("#csrf_token").value;
         let loop_is_allowed = true
         $(".my-card").each(function() {
-            if ($(this).attr("is_dragging") == 'true') {
+            if ($(this).attr("is_dragging") === 'true') {
                 loop_is_allowed = false
             }
         })
-        if (loop_is_allowed == true) {
-            ajax_request({"csrf_token": csrf_token, "update-page": true})
+        if (loop_is_allowed === true) {
+            let data = {"csrf_token": csrf_token}
+            ajax_request(window.location.href, data)
         }
+    }
+
+    function create_change_status_button() {
+        const c_s_button = document.querySelector("#change_status_button")
+        c_s_button.addEventListener("click", function() {
+            let url = window.location.href + 'change_status'
+            let csrf_token = document.querySelector("#csrf_token").value;
+            let data = {"csrf_token": csrf_token}
+            ajax_request(url, data)
+        })
     }
 
     // Calling methods if page was updated by
@@ -244,10 +228,7 @@ window.addEventListener("load", function(){
     window.onresize = function() {
         player_constructor()
     };
-    change_color() 
-    placeholder_constructor()
-    dragAndDrop()
-    player_constructor()
-    setInterval(ajax_loop, 5000)
+    init_game()
+    setInterval(ajax_loop, 3000)
 })
 
