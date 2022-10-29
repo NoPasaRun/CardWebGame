@@ -1,4 +1,4 @@
-from models import User
+from application.app.models import User
 from flask_login import LoginManager
 
 

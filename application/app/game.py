@@ -1,7 +1,7 @@
 import random
 from typing import Dict, List, Tuple, Union, Callable
 
-from application.application.models import User
+from application.app.models import User
 
 
 def get_users() -> List[User]:
@@ -26,26 +26,6 @@ PLAYER_LOW_AMOUNT, PLAYER_HIGH_AMOUNT = 2, 6
 CARDS_FOR_PLAYER: int = 6
 
 
-def update_method(func: Callable):
-    def wrapper(self, *args, **kwargs):
-        self.game_ses.modified = True
-        result = func(self, *args, **kwargs)
-        return result
-    return wrapper
-
-
-def init_trackable_functions(func: Callable):
-    def wrapper(cls):
-        trackable_methods = ["pop", "append", "extend", "insert", "remove",
-                             "clear", "reverse", "sort", "popitem", "update"]
-        for i_method in trackable_methods:
-            if hasattr(cls, i_method):
-                updated_method = func(getattr(cls, i_method))
-                setattr(cls, i_method, updated_method)
-        return cls
-    return wrapper
-
-
 class GameSessionAddon:
     def __init__(self, game_ses: 'GameSession'):
         self.__game_ses = game_ses
@@ -60,37 +40,18 @@ class GameSessionAddon:
 
     def __setattr__(self, key, value):
         super(GameSessionAddon, self).__setattr__(key, value)
-        if hasattr(self, "__game_ses"):
-            self.game_ses.modified = True
-
-    def __setitem__(self, key, value):
-        self[key] = value
-        if hasattr(self, "__game_ses"):
-            self.game_ses.modified = True
+        if hasattr(self, "game_ses"):
+            self.game_ses.modified()
 
 
-@init_trackable_functions(update_method)
-class TrackableDict(dict, GameSessionAddon):
-    def __init__(self, game_ses: 'GameSession', obj: dict = None):
-        dict.__init__(self, obj if type(obj) == dict else {})
-        GameSessionAddon.__init__(self, game_ses)
-
-
-@init_trackable_functions(update_method)
-class TrackableList(list, GameSessionAddon):
-    def __init__(self, game_ses: 'GameSession', obj: list = None):
-        list.__init__(self, obj if type(obj) == list else [])
-        GameSessionAddon.__init__(self, game_ses)
-
-
-class Deck(TrackableList):
+class Deck(list):
 
     def __getitem__(self, index) -> Union['Deck', 'Card']:
         output = super().__getitem__(index)
         values = [output] if not isinstance(output, list) else output
         for val in values:
             self.remove(val)
-        return output if not isinstance(output, list) else Deck(self.game_ses, output)
+        return output if not isinstance(output, list) else Deck(output)
 
     def shuffle(self):
         shuffled_deck = self.copy()
@@ -181,11 +142,11 @@ class Card:
 
 
 def check_if_player_is_out(func: Callable):
-    def wrapper(self: Union[Defender, Player], game_ses: 'GameSession', *args, **kwargs):
-        result = func(self, *args, **kwargs)
+    def wrapper(self: Union['Defender', 'Player', 'Attacker'], game_ses: 'GameSession', *args, **kwargs):
+        result = func(self, game_ses, *args, **kwargs)
         if len(self.cards) == 0 and (isinstance(self, Defender) or len(game_ses.cards) == 0):
             if len(game_ses.cards) == 0:
-                game_ses.players.remove(game_ses.get_player_by_user(self))
+                game_ses.remove_player(self)
             if isinstance(self, Defender):
                 game_ses.pair.finish_pair()
         return result
@@ -210,7 +171,7 @@ class Player:
     @property
     def has_updated_game(self):
         value = self.__has_updated_game
-        self.__has_updated_game = False
+        self.__has_updated_game = True
         return value
 
     @has_updated_game.setter
@@ -303,7 +264,7 @@ class Defender(Player):
         self.__is_awaken = value
 
 
-class GameSession(GameSessionAddon):
+class GameSession:
     """
     Класс описывающий методы и атрибуты Игровой Сессии
     """
@@ -314,19 +275,22 @@ class GameSession(GameSessionAddon):
         Функция конструктор
         """
         self.__cards, self.trump = self.make_deck()
-        self.__players: TrackableList = self.shuffle_players(user_data)
+        self.__players: list = self.shuffle_players(user_data)
         self.__pair = Pair(self)
         GameSession.__games[game_index] = self
-        self.__modified = True
-        GameSessionAddon.__init__(self, self)
 
-    @property
+    def delete(self):
+        all_games = filter(lambda item: item[1] == self, GameSession.__games.items())
+        for game_index, game_instance in all_games:
+            index = game_index
+            break
+        else:
+            index = None
+
+        GameSession.__games.pop(index)
+
     def modified(self):
-        return self.__modified
-
-    @modified.setter
-    def modified(self, value):
-        if hasattr(self, "__players"):
+        if hasattr(self, "players"):
             for i_player in self.players:
                 i_player.has_updated_game = False
 
@@ -360,12 +324,19 @@ class GameSession(GameSessionAddon):
         set_of_cards.difference_update(used_cards)
         self.__cards = list(set_of_cards)
 
+    def remove_player(self, user: [User, Defender, Attacker]):
+        player: Player = self.get_player_by_user(user)
+        self.players.remove(player)
+        if len(self.players) <= 1:
+            self.delete()
+
     def get_player_by_user(self, user: [User, Defender, Attacker]) -> Player:
         for i_player in self.players:
             if i_player == user:
                 return i_player
 
-    def make_deck(self) -> Tuple[Deck[Card], Card]:
+    @staticmethod
+    def make_deck() -> Tuple[Deck[Card], Card]:
         """
         Функция создания колоды Карт
         :return:
@@ -378,15 +349,15 @@ class GameSession(GameSessionAddon):
 
         # конвертируем данные карт в объекты Карт
         trump, _ = Card(*random_card_value, is_not_trump=False), deck.remove(random_card_value)
-        deck: Deck = Deck(self, [Card(*card_value, is_not_trump=trump) for card_value in deck])
+        deck: Deck = Deck([Card(*card_value, is_not_trump=trump) for card_value in deck]+[trump])
         # мешаем колоду
         deck.shuffle()
 
-        assert len(deck)+1 == CARDS_IN_DECK
+        assert len(deck) == CARDS_IN_DECK
         return deck, trump
 
     @staticmethod
-    def replace_player_with_trump(shuffled_players: TrackableList[Player]) -> TrackableList[Player]:
+    def replace_player_with_trump(shuffled_players: List[Player]) -> List[Player]:
         """
         Функция, ставящая Игрока с минимальной козырной Картой в начало списка
         :param shuffled_players: Игроки
@@ -410,25 +381,25 @@ class GameSession(GameSessionAddon):
     def set_pair(self):
         self.__pair = Pair(self)
 
-    def shuffle_players(self, users: Union[List[Dict]]) -> TrackableList[Player]:
+    def shuffle_players(self, users: Union[List[Dict]]) -> List[Player]:
         """
         Функция создания Игроков и раздачи Карт
         :param users: данные Игроков
         :return:
         Список Игроков
         """
-        cards_for_player: Deck = Deck(self)
+        cards_for_player: Deck = Deck()
         # Сортировка Карт
         for i in range(0, CARDS_FOR_PLAYER*len(users), CARDS_FOR_PLAYER):
             cards_for_player.append(self.cards[i: i+CARDS_FOR_PLAYER])
 
         # Конвертируем данные Игрока в объекты Игроков
-        players: TrackableList = TrackableList(self, [
+        players: List = [
             Player(user, players_cards)
             for user, players_cards in zip(users, cards_for_player)
-        ])
+        ]
         # Ставим Игрока с минимальным козырем в начало списка
-        players: TrackableList = self.replace_player_with_trump(players)
+        players: List = self.replace_player_with_trump(players)
 
         assert PLAYER_LOW_AMOUNT <= len(players) <= PLAYER_HIGH_AMOUNT
         return players
@@ -480,7 +451,7 @@ class LobbySession:
             self.users.append(user)
 
 
-class Pair(GameSessionAddon):
+class Pair:
     """
     Класс описывающий Пару Игроков (Подкидывающий/Покрывающий)
     """
@@ -490,15 +461,22 @@ class Pair(GameSessionAddon):
         Функция конструктор
         :param game_ses: объект Игровой Сессии
         """
-        self.table: Table = Table(game_ses)
+        self.table: Table = Table()
 
         # Два первых Игрока в списке - Подкидывающий/Покрывающий
-        self.__pair_players: TrackableList[Player] = TrackableList(game_ses, game_ses.players[:2])
+        self.__pair_players: List[Player] = game_ses.players[:2]
         player_classifier = zip((Attacker, Defender), self.__pair_players)
 
         self.attacker, self.defender = [obj_class(pair_player) for obj_class, pair_player in player_classifier]
         self.__game_ses = game_ses
-        GameSessionAddon.__init__(self, game_ses)
+
+    @property
+    def game_ses(self):
+        return self.__game_ses
+
+    @game_ses.setter
+    def game_ses(self, value):
+        return
 
     @property
     def pair_players(self) -> List[Player]:
@@ -517,11 +495,11 @@ class Pair(GameSessionAddon):
         :return:
         Игрок, который ходит, или логическое "никто не ходит"
         """
-        free_cells = self.table.free_cells
-        if (attacker_move or not self.defender.is_awaken) and self.attacker.is_awaken and free_cells > 1:
+        off_cells, def_cells = [self.table.free_cells(key) for key in [OFF, DEF]]
+        if (attacker_move or not self.defender.is_awaken) and self.attacker.is_awaken and off_cells > 0:
             # Если до этого сходил Покрывающий, а Подкидывающий активен (не бито), то он ходит | макс 6 Карт
             active_player: Attacker = self.attacker
-        elif not attacker_move and self.defender.is_awaken and free_cells >= 1:
+        elif not attacker_move and self.defender.is_awaken and def_cells > 0:
             # Если до этого сходил Подкидывающий, а Покрывающий активен (не пас), то он ходит | макс 6 Карт
             active_player: Defender = self.defender
         else:
@@ -540,9 +518,8 @@ class Pair(GameSessionAddon):
         current_player: Union[Union[Attacker, Defender], bool] = self.do_someone_go_on(attacker_next_move)
         if current_player:
             return current_player
-        else:
-            # Заканчиваем Игровую Пару
-            self.finish_pair()
+        # Заканчиваем Игровую Пару
+        return self.finish_pair()
 
     def change_attacker(self, thrower: Player) -> None:
         """
@@ -562,6 +539,9 @@ class Pair(GameSessionAddon):
         # Если у Покрывающего Игрока не пас, то при новой Паре, он будет Подкидывающим
         if self.defender.is_awaken:
             self.pair_players.pop()
+        else:
+            table_cards = self.table.cards
+            self.defender.cards.extend(table_cards)
 
     def give_cards_to_players(self) -> None:
         """
@@ -569,12 +549,11 @@ class Pair(GameSessionAddon):
         :game_ses: Игровая Сессия
         :return:
         """
-        for i_player in self.game_ses.players.copy():
+        for i_player in self.game_ses.players:
             cards_to_add: int = CARDS_FOR_PLAYER - len(i_player.cards)
             if cards_to_add > 0:
                 cards_to_add: Deck[Card] = self.game_ses.cards[:cards_to_add]
                 i_player.cards.extend(cards_to_add)
-                self.game_ses.players.append(i_player)
 
     def replace_players(self) -> None:
         """
@@ -586,9 +565,8 @@ class Pair(GameSessionAddon):
         new_players_list: List = self.game_ses.players[len(self.pair_players):]
         new_players_list.extend(self.pair_players)
         self.game_ses.players = new_players_list
-        print(self.game_ses.players == new_players_list)
 
-    def finish_pair(self) -> None:
+    def finish_pair(self) -> Attacker:
         """
         Функция, закрывающая Пару и обновляющая данные Игровой Сессии
         :return:
@@ -599,12 +577,13 @@ class Pair(GameSessionAddon):
         self.give_cards_to_players()
         self.replace_players()
         self.game_ses.set_pair()
+        return self.game_ses.pair.attacker
 
 
-class Table(TrackableDict):
-    def __init__(self, game_ses: GameSession):
+class Table(dict):
+    def __init__(self):
         table_data = {key: {OFF: None, DEF: None} for key in range(1, 7)}
-        TrackableDict.__init__(self, game_ses=game_ses, obj=table_data)
+        super().__init__(table_data)
 
     def is_last_defender_card(self) -> bool:
         values = [(data_cell[OFF], data_cell[DEF]) for data_cell in self.values()]
@@ -629,6 +608,18 @@ class Table(TrackableDict):
         return items
 
     @property
-    def free_cells(self) -> int:
-        values = [card for data_cell in self.values() for card in data_cell.values()]
-        return values.count(None)
+    def cards(self) -> List[Card]:
+        cards = [card for data_cell in self.values() for card in data_cell.values() if card is not None]
+        return cards
+
+    def free_cells(self, key: str) -> int:
+        free_cells = [
+            card for data_cell in self.values()
+            for cell_key, card in data_cell.items()
+            if card is None and cell_key == key
+        ]
+        return len(free_cells)
+
+
+if __name__ == '__main__':
+    pass

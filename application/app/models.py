@@ -2,7 +2,7 @@ from typing import List
 
 from sqlalchemy import Column, String, Integer, Float, select
 from werkzeug.security import generate_password_hash, check_password_hash
-from application.application.database import Base, db_session
+from application.app.database import Base, db_session
 
 
 class User(Base):

@@ -1,22 +1,27 @@
-import os
+import json
+import logging
 from typing import Dict, Union
 
-from flask import Flask, request, redirect, render_template, session
+from flask import request, redirect, render_template, session
 from flask_wtf import CSRFProtect
-from forms import SignUpForm
+
+from application.app.app_config import create_app
+from application.app.forms import SignUpForm
 from flask_login import LoginManager, login_required, logout_user, login_user
 
-from login_view import LoginUser
-from application.application.models import User, Base
-from application.application.database import db_session
-from application.application.game import GameSession, LobbySession, Attacker, Defender, Player
+from application.app.login_view import LoginUser
+from application.app.models import User, Base
+from application.app.database import db_session
+from application.app.game import GameSession, LobbySession, Attacker, Defender, Player
 
-app = Flask(__name__, template_folder="../templates", static_folder="../static")
-SECRET_KEY = os.urandom(32)
 
-app.config['SECRET_KEY'] = SECRET_KEY
-app.config["CSRF_PROTECT"] = False
-app.jinja_env.filters['zip'] = zip
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.ERROR)
+
+
+app = create_app()
+csrf = CSRFProtect(app)
+csrf.init_app(app)
 
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
@@ -83,15 +88,16 @@ def logout():
 @login_required
 def lobby(lobby_id: int):
     lobby_session = LobbySession(lobby_index=lobby_id)
-    if lobby_session.game_status:
-        return redirect(f"/game/{lobby_id}/")
+    user: User = User.get(session["_user_id"])
+
     if request.method == "GET":
-        user: User = User.get(session["_user_id"])
         lobby_session.add_user(user)
-        return render_template("lobby.html", lobby=lobby_session, user=user)
+        return render_template("lobby.html", lobby=lobby_session, game=None, user=user)
     elif request.method == "POST":
-        lobby_session.game_status = True
-        GameSession(user_data=lobby_session.users, game_index=lobby_id)
+        if not lobby_session.game_status:
+            lobby_session.game_status = True
+            game_ses = GameSession(user_data=lobby_session.users, game_index=lobby_id)
+            game_ses.modified()
         return redirect(f"/game/{lobby_id}/")
 
 
@@ -101,19 +107,33 @@ def game(game_id: int):
     game_ses: GameSession = GameSession.get_game(game_id)
     lobby_ses: LobbySession = LobbySession(game_id)
 
+    is_ajax = request.headers.get('X-Requested-With')
     user: User = User.get(int(session.get("_user_id")))
-    requested_player: Player = game_ses.get_player_by_user(user)
-
-    context: Dict = {"user": user, "lobby": lobby_ses, "game": game_ses, "pair": game_ses.pair}
     if game_ses:
-        if requested_player in game_ses.players:
+        if user in game_ses.players:
+
+            requested_player: Player = game_ses.get_player_by_user(user)
+            current_player: Union[Attacker, Defender] = game_ses.pair.get_current_player()
+
+            context: Dict = {"user": user, "lobby": lobby_ses, "game": game_ses,
+                             "pair": game_ses.pair, "current_player": current_player}
+
             if request.method == "GET":
                 return render_template("lobby.html", **context)
             elif request.method == "POST":
                 context.pop("lobby")
-                return render_template("game.html", **context)
-        return "You are not a part of this game"
-    return "Game not found!"
+                if not requested_player.has_updated_game:
+                    return render_template("game.html", **context)
+                return json.dumps({"message": "You have updated game"}), 302
+            else:
+                message, status_code = "Method is not allowed", 400
+        else:
+            message, status_code = "You're not a part of this game!", 403
+    else:
+        message, status_code = "Game not found!", 404
+    if is_ajax:
+        return json.dumps({"message": message, "url": f"/game_lobby/{game_id}/"}), status_code
+    return redirect(f"/game_lobby/{game_id}/")
 
 
 @app.route('/game/<int:game_id>/make_move', methods=["POST"])
@@ -121,21 +141,23 @@ def game(game_id: int):
 def make_move(game_id: int):
     game_ses: GameSession = GameSession.get_game(game_id)
     user: User = User.get(int(session.get("_user_id")))
-    current_player: Union[Attacker, Defender] = game_ses.pair.get_current_player(game_ses)
+    current_player: Union[Attacker, Defender] = game_ses.pair.get_current_player()
     data = request.form.to_dict()
 
     if user == current_player:
         card_value: str = data.get("card_value")
         table_id: str = data.get("table_id")
 
-        success = current_player.go_on(card_value, game_ses.pair.table, int(table_id))
+        success = current_player.go_on(game_ses, card_value, game_ses.pair.table, int(table_id))
         if success:
             message = "Ok!"
+            game_ses.modified()
         else:
             message = "Your card is lower than attacker's card or you tried to cheat"
     else:
         message = "That is not your turn"
-    context: Dict = {"user": user, "game": game_ses, "pair": game_ses.pair, "message": message}
+    context: Dict = {"user": user, "game": game_ses, "pair": game_ses.pair,
+                     "current_player": current_player, "message": message}
     return render_template("game.html", **context)
 
 
@@ -144,17 +166,33 @@ def make_move(game_id: int):
 def change_status(game_id: int):
     game_ses: GameSession = GameSession.get_game(game_id)
     user: User = User.get(int(session.get("_user_id")))
+    current_player: Union[Attacker, Defender] = game_ses.pair.get_current_player()
 
-    attacker: Attacker = game_ses.pair.attacker
-    defender: Defender = game_ses.pair.defender
-    if user == attacker:
-        attacker.is_awaken = not attacker.is_awaken
-    elif user == defender:
-        defender.is_awaken = not defender.is_awaken
+    if user == current_player:
+        current_player.is_awaken = False
+        message = "Updated status"
+        game_ses.modified()
+    else:
+        message = "Has not updated it"
+    context: Dict = {"user": user, "game": game_ses, "pair": game_ses.pair,
+                     "current_player": current_player, "message": message}
+    return render_template("game.html", **context)
+
+
+@app.route("/remove_myself/<int:game_id>", methods=["GET"])
+@login_required
+def remove_player(game_id: int):
+    game_ses: GameSession = GameSession.get_game(game_id)
+    user: User = User.get(int(session.get("_user_id")))
+
+    requested_player: Player = game_ses.get_player_by_user(user)
+    if requested_player:
+        game_ses.players.remove(requested_player)
+        game_ses.modified()
+        return "Success!"
+    return "Error!"
 
 
 if __name__ == '__main__':
     Base.metadata.create_all()
-    csrf = CSRFProtect(app)
-    csrf.init_app(app)
     app.run(host="0.0.0.0", port=8000, debug=True)

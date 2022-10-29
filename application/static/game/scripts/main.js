@@ -71,8 +71,18 @@ window.addEventListener("load", function(){
             async: false,
             data: request_data,
             success: function(data) {
-                $(".game").html(data)
-                init_game()
+                try {
+                    JSON.parse(data)
+                } catch {
+                    $(".game").html(data)
+                    init_game()
+                }
+            },
+            error: function(data) {
+                let d = JSON.parse(data.response)
+                if (d["url"] !== undefined) {
+                    window.location = d["url"]
+                }
             }
         });
     }
@@ -164,11 +174,7 @@ window.addEventListener("load", function(){
 
                     let data = {"csrf_token": csrf_token, "card_value": card_value, "table_id": $(this).attr("id")}
                     let url = window.location.href + 'make_move'
-                    let func = function(data) {
-                        $(".game").html(data)
-                        init_game()
-                    }
-                    ajax_request(url, data, func)
+                    ajax_request(url, data)
                 }
             }
         }
@@ -208,7 +214,7 @@ window.addEventListener("load", function(){
         })
         if (loop_is_allowed === true) {
             let data = {"csrf_token": csrf_token}
-            ajax_request(window.location.href, data)
+            ajax_request(window.location, data)
         }
     }
 
@@ -229,6 +235,6 @@ window.addEventListener("load", function(){
         player_constructor()
     };
     init_game()
-    setInterval(ajax_loop, 3000)
+    setInterval(ajax_loop, 500)
 })
 

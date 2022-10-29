@@ -59,10 +59,10 @@
                         <span class="player-name">You</span>
                         <!-- Current player cards -->
                         <div class="player-cards">
-                            {% for card_index, card in [1, 2, 3, 4, 5, 6]|zip(player.cards) %}
+                            {% for card in player.cards %}
                                 <!-- Current player card -->
                                 <div draggable="true"
-                                {% if player == pair.get_current_player(game) %}
+                                {% if player == current_player %}
                                      class="
                                      card my-card active-player-card
                                      {% if player == pair.attacker %}
@@ -94,7 +94,7 @@
                             {% for card in player.cards %}
                                 <!-- Another player card -->
                                 <div draggable=false
-                                {% if player == pair.get_current_player(game) %}
+                                {% if player == current_player %}
                                     class="card active-player-card"
                                 {% else %}
                                     class="card"

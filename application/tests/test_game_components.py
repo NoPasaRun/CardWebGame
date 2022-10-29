@@ -1,6 +1,6 @@
 import unittest
-from application.application.game import GameSession, Player, Card, get_users
-from application.application.game import CARDS_IN_DECK, SIGNS, HEARTS, SPADES, DIAMONDS, CLUBS, DEF, OFF
+from application.app.game import GameSession, Player, Card, get_users
+from application.app.game import CARDS_IN_DECK, SIGNS, HEARTS, SPADES, DIAMONDS, CLUBS, DEF, OFF
 
 
 class SessionGameTestCase(unittest.TestCase):
@@ -97,11 +97,6 @@ class PairPlayerMoveTestCase(unittest.TestCase):
         self.table[6][DEF] = None
         test_player = self.pair.get_current_player()
         self.assertEqual(test_player, self.pair.defender)
-
-    def test_end_pair_return_none(self):
-        self.full_the_table()
-        game_session = self.pair.get_current_player()
-        self.assertEqual(game_session, None)
 
     def tearDown(self) -> None:
         del self.game_session

@@ -9,15 +9,18 @@
         <link rel="stylesheet" href="/static/game/styles/main.css">
         <title>Game</title>
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-        <script src="/static/game/scripts/main.js"></script>
+        {% if request.path == "/game_lobby/" + lobby.lobby_index.__str__() + "/" %}
+            <script src="/static/game/scripts/ajax.js"></script>
+        {% else %}
+            <script src="/static/game/scripts/main.js"></script>
+        {% endif %}
         <script src="/static/index/scripts/music.js"></script>
     </head>
     <body>
         <div class="body">
-        {{ user.username }}
-        {% if not lobby.game_status %}
+        {% if not game%}
             <form method="post">
-                <input name="csrf_token" type="hidden" value="{{ csrf_token() }}" />
+                <input name="csrf_token" type="hidden" id="csrf_token" value="{{ csrf_token() }}" />
                 <input type="submit" value="Start game" />
             </form>
         {% else %}

@@ -1,6 +1,6 @@
 import unittest
-from application.application.game import GameSession, Card, get_users, OFF
-from application.application.game import HEARTS, SPADES, DIAMONDS, CLUBS
+from application.app.game import GameSession, Card, get_users, OFF
+from application.app.game import HEARTS, SPADES, DIAMONDS, CLUBS
 
 
 class PlayerCardsTestCase(unittest.TestCase):
@@ -65,20 +65,19 @@ class GameplayScenarioTestCase(unittest.TestCase):
         current_player = self.pair.get_current_player()
         self.assertEqual(current_player, self.pair.attacker)
 
-    def test_change_attacker_if_attacker_has_passed(self):
-        new_attacker = None
+    def get_new_attacker(self):
         for i_player in self.game_session.players:
             if i_player not in self.pair.pair_players:
-                new_attacker = i_player
+                return i_player
+
+    def test_change_attacker_if_attacker_has_passed(self):
+        new_attacker = self.get_new_attacker()
         self.pair.attacker.is_awaken = False
         self.pair.change_attacker(new_attacker)
         self.assertEqual(new_attacker, self.pair.attacker)
 
     def test_change_attacker_is_not_allowed(self):
-        new_attacker = None
-        for i_player in self.game_session.players:
-            if i_player not in self.pair.pair_players:
-                new_attacker = i_player
+        new_attacker = self.get_new_attacker()
         self.pair.change_attacker(new_attacker)
         self.assertNotEqual(new_attacker, self.pair.attacker)
 
