@@ -1,23 +1,14 @@
 <!-- Main -->
 <main class="poker-table">
+    {% set buffer = game.get_buffer(request.player) %}
     <!-- Deck of cards -->
     <div class="deck">
-        {% if game.cards|length > 1 %}
-            <!-- An image which lies over the coloda -->
-            <img class="deck-card card_rotation-transform" src="/static/game/images/card-back-layout.png" alt>
-        {% endif %}
-        {% if game.cards %}
-            <!-- Trump card -->
-            <div class="card card_transform" style="color: {{ game.trump.color }}">
-                <div class="card-info card-info_top-pos">
-                    {{ game.trump }}
-                </div>
-                <div class="card-layout"></div>
-                <div class="card-info card-info_low-pos">
-                    {{ game.trump }}
-                </div>
-            </div>
-        {% endif %}
+        {% for player in game.players %}
+            {% with player=player %}
+                {% include 'card_templates/deck.html' %}
+            {% endwith %}
+        {% endfor %}
+        {% include 'card_templates/deck_last_cards.html' %}
     </div>
     <!-- List of players -->
     <ul class="player-nav-list">
@@ -26,7 +17,7 @@
             {% for place_id in [1, 2, 3, 4, 5, 6] %}
                 <!-- Card cell -->
                 <li id="{{ place_id }}" class="placeholder-card-field">
-                    {% for card_place, cards in pair.table.get_items() %}
+                    {% for card_place, cards in table.get_items() %}
                         {% if card_place == place_id %}
                             {% for num_value, card in [1, 2]|zip(cards) %}
                                 {% if card %}
@@ -51,60 +42,34 @@
             <!-- Player -->
             <li class="player-item">
                 <!-- Player icon -->
-                <span class="player-icon"><img src="/static/game/images/avatar.png"></span>
+                <span class="player-icon"><img src='/static/game/images/avatar.png' alt="avatar"></span>
                 <!-- Player info -->
-                <strong class="player-description">
-                    {% if player == user %}
-                        <!-- Current player name -->
-                        <span class="player-name">You</span>
-                        <!-- Current player cards -->
-                        <div class="player-cards">
+                <div class="player-description">
+                    <!-- Current player name -->
+                    <strong class="player-name">
+                        {% if player != request.player %}
+                            {{ player }}
+                        {% else %}
+                            You
+                        {% endif %}
+                    </strong>
+                    <!-- Current player cards -->
+                    <div class="player-cards {% if request.player == player %} my-cards {% endif %}" id="{{ player }}">
+                        {% if not buffer[request.player.__str__()] %}
                             {% for card in player.cards %}
                                 <!-- Current player card -->
-                                <div draggable="true"
-                                {% if player == current_player %}
-                                     class="
-                                     card my-card active-player-card
-                                     {% if player == pair.attacker %}
-                                        attacker_card
-                                     {% else %}
-                                        defender_card
-                                     {% endif %}"
-                                {% else %}
-                                     class="card my-card"
-                                {% endif %}
-                                data-value="{{ card }}"
-                                style="color: {{ card.color }}">
-                                    <div class="card-info card-info_top-pos">
-                                        {{ card }}
-                                    </div>
-                                    <div class="card-layout"></div>
-                                    <div class="card-info card-info_low-pos">
-                                        {{ card }}
-                                    </div>
-                                </div>
+                                {% with player=player, card=card %}
+                                    {% include 'card_templates/cards_in_use.html' %}
+                                {% endwith %}
                             {% endfor %}
-                        </div>
-                        <button id="change_status_button">Change Status</button>
-                    {% else %}
-                        <!-- Another player -->
-                        <span class="player-name">{{ player.user_data.username }}</span>
-                        <!-- Another player cards -->
-                        <div class="player-cards">
-                            {% for card in player.cards %}
-                                <!-- Another player card -->
-                                <div draggable=false
-                                {% if player == current_player %}
-                                    class="card active-player-card"
-                                {% else %}
-                                    class="card"
-                                {% endif %}>
-                                    <img class="card-layout" src="/static/game/images/card-back-layout.png" alt="'card layout'">
-                                </div>
-                            {% endfor %}
-                        </div>
+                        {% endif %}
+                    </div>
+                    {% if request.player == player %}
+                        <button id="change_status_button" {% if not request.player.vars['role'] %} hidden {% endif %}>
+                            Change Status
+                        </button>
                     {% endif %}
-                </strong>
+                </div>
             </li>
         {% endfor %}
     </ul>

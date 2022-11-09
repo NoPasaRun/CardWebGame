@@ -22,10 +22,6 @@ class User(Base):
     def check_password(self, password: str) -> bool:
         return check_password_hash(self.password, password)
 
-    @property
-    def user_data(self):
-        return self
-
     @classmethod
     def get(cls, user_id: int):
         output = db_session.execute(select(cls).where(cls.id == user_id))

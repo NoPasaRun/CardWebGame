@@ -1,6 +1,5 @@
 import json
-import logging
-from typing import Dict, Union
+from typing import Dict, Union, Tuple
 
 from flask import request, redirect, render_template, session
 from flask_wtf import CSRFProtect
@@ -12,11 +11,7 @@ from flask_login import LoginManager, login_required, logout_user, login_user
 from application.app.login_view import LoginUser
 from application.app.models import User, Base
 from application.app.database import db_session
-from application.app.game import GameSession, LobbySession, Attacker, Defender, Player
-
-
-log = logging.getLogger('werkzeug')
-log.setLevel(logging.ERROR)
+from application.app.game import GameSession, LobbySession, Attacker, Defender, Player, Pair
 
 
 app = create_app()
@@ -92,7 +87,7 @@ def lobby(lobby_id: int):
 
     if request.method == "GET":
         lobby_session.add_user(user)
-        return render_template("lobby.html", lobby=lobby_session, game=None, user=user)
+        return render_template("lobby.html", lobby_id=str(lobby_session.lobby_index), game=None)
     elif request.method == "POST":
         if not lobby_session.game_status:
             lobby_session.game_status = True
@@ -101,27 +96,48 @@ def lobby(lobby_id: int):
         return redirect(f"/game/{lobby_id}/")
 
 
+def get_card_template_vars(my_player: Player, cur_player, pair: Pair) -> Dict:
+    is_active = "active-player-card" if my_player == cur_player else None
+    if pair.attacker == my_player:
+        role = "attacker-card"
+    elif pair.defender == my_player:
+        role = "defender-card"
+    else:
+        role = None
+    return {"active": is_active, "role": role}
+
+
+def configure_players(g: GameSession, user) -> Tuple[Player, Dict]:
+    requested_player: Player = g.get_player_by_user(user)
+    current_player: Union[Attacker, Defender] = g.pair.get_current_player()
+    for player in g.players:
+        card_template_vars = get_card_template_vars(player, current_player, g.pair)
+        player.vars = card_template_vars
+    context: Dict = {
+        "game": g,
+        "table": g.pair.table
+    }
+    request.player = requested_player
+    return requested_player, context
+
+
 @app.route('/game/<int:game_id>/', methods=["GET", "POST"])
 @login_required
 def game(game_id: int):
     game_ses: GameSession = GameSession.get_game(game_id)
-    lobby_ses: LobbySession = LobbySession(game_id)
-
     is_ajax = request.headers.get('X-Requested-With')
     user: User = User.get(int(session.get("_user_id")))
     if game_ses:
-        if user in game_ses.players:
+        requested_player, context = configure_players(game_ses, user)
+        if requested_player in game_ses.players:
 
-            requested_player: Player = game_ses.get_player_by_user(user)
-            current_player: Union[Attacker, Defender] = game_ses.pair.get_current_player()
-
-            context: Dict = {"user": user, "lobby": lobby_ses, "game": game_ses,
-                             "pair": game_ses.pair, "current_player": current_player}
+            ajax_response = json.dumps({"message": "Welcome!"}), 200
 
             if request.method == "GET":
-                return render_template("lobby.html", **context)
+
+                context.update({"lobby_id": str(game_id)})
+                return render_template("lobby.html", **context) if not is_ajax else ajax_response
             elif request.method == "POST":
-                context.pop("lobby")
                 if not requested_player.has_updated_game:
                     return render_template("game.html", **context)
                 return json.dumps({"message": "You have updated game"}), 302
@@ -141,10 +157,12 @@ def game(game_id: int):
 def make_move(game_id: int):
     game_ses: GameSession = GameSession.get_game(game_id)
     user: User = User.get(int(session.get("_user_id")))
+
+    requested_player: Player = game_ses.get_player_by_user(user)
     current_player: Union[Attacker, Defender] = game_ses.pair.get_current_player()
     data = request.form.to_dict()
 
-    if user == current_player:
+    if requested_player == current_player:
         card_value: str = data.get("card_value")
         table_id: str = data.get("table_id")
 
@@ -156,8 +174,9 @@ def make_move(game_id: int):
             message = "Your card is lower than attacker's card or you tried to cheat"
     else:
         message = "That is not your turn"
-    context: Dict = {"user": user, "game": game_ses, "pair": game_ses.pair,
-                     "current_player": current_player, "message": message}
+
+    requested_player, context = configure_players(game_ses, user)
+    context.update({"message": message})
     return render_template("game.html", **context)
 
 
@@ -166,16 +185,19 @@ def make_move(game_id: int):
 def change_status(game_id: int):
     game_ses: GameSession = GameSession.get_game(game_id)
     user: User = User.get(int(session.get("_user_id")))
-    current_player: Union[Attacker, Defender] = game_ses.pair.get_current_player()
 
-    if user == current_player:
+    current_player: Union[Attacker, Defender] = game_ses.pair.get_current_player()
+    requested_player: Player = game_ses.get_player_by_user(user)
+
+    if requested_player == current_player:
         current_player.is_awaken = False
         message = "Updated status"
         game_ses.modified()
     else:
         message = "Has not updated it"
-    context: Dict = {"user": user, "game": game_ses, "pair": game_ses.pair,
-                     "current_player": current_player, "message": message}
+
+    requested_player, context = configure_players(game_ses, user)
+    context.update({"message": message})
     return render_template("game.html", **context)
 
 

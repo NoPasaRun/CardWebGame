@@ -67,7 +67,7 @@ class GameplayScenarioTestCase(unittest.TestCase):
 
     def get_new_attacker(self):
         for i_player in self.game_session.players:
-            if i_player not in self.pair.pair_players:
+            if i_player not in self.pair.pair_players and i_player != self.pair.defender:
                 return i_player
 
     def test_change_attacker_if_attacker_has_passed(self):

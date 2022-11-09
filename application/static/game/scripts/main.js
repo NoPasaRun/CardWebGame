@@ -15,6 +15,34 @@ window.addEventListener("load", function(){
         })
     }
 
+    function distribution() {
+        let deck_cards = document.querySelector(".deck")
+        let cards = deck_cards.querySelectorAll(".card")
+        cards.forEach(function(el) {
+            deck_cards_constructor(el)
+        })
+    }
+
+    function deck_cards_constructor(card) {
+        let player_id = $(card).attr("data-player")
+        let player_deck = document.querySelector("#"+player_id)
+        if (player_deck !== null) {
+            let length = player_deck.children.length
+            let rect = player_deck.getBoundingClientRect();
+            card.style.zIndex = length + ""
+            $(card).animate({
+                left: rect.left + "px",
+                top: rect.top + "px"
+            }, 500, function() {
+                player_deck.appendChild(card)
+                card.style.transition = "none"
+                card.style.left = "0px"
+                card.style.top = "0px"
+            });
+
+        }
+    }
+
     // Function transforms cards in the right position
     // and adds an Z-angle for them
 
@@ -91,8 +119,9 @@ window.addEventListener("load", function(){
     // which can be used by user
 
     function get_zones() {
-        let card = document.querySelector(".my-card")
-        let status = card.classList.contains("attacker_card")
+        let player_cards = document.querySelector(".my-cards")
+        let card = player_cards.querySelector(".card")
+        let status = card.classList.contains("attacker-card")
         if (status) {
             return document.querySelectorAll(".placeholder-card-field-free")
         } else {
@@ -105,7 +134,8 @@ window.addEventListener("load", function(){
 
     const dragAndDrop = () => {
         const zones = get_zones()
-        const cards = document.querySelectorAll(".my-card")
+        const player_cards = document.querySelector(".my-cards")
+        const cards = player_cards.querySelectorAll(".card")
 
         // Function which adds a class to hide card
         // while it is moving
@@ -152,30 +182,22 @@ window.addEventListener("load", function(){
 
         const dragDrop = function () {
             let card = document.querySelector(".using-card")
-            if ($(card).hasClass("my-card")) {
-                let placeholder = $(this).children(".card")
-                if (placeholder.length < 2) {
-                    this.append(card)
+            let card_value = $(card).attr("data-value")
 
-                    card.style.top = "0"
-                    card.style.left = "0"
-                    card.style.transform = "rotateZ(0deg)"
-    
-                    this.classList.remove("hover-placeholder")
+            if (this.children.length < 2 && card_value) {
+                this.append(card)
 
-                    zones.forEach((el) => {
-                        el.removeEventListener("dragover", dragOver)
-                        el.removeEventListener("dragenter", dragEnter)
-                        el.removeEventListener("dragleave", dragLeave)
-                        el.removeEventListener("drop", dragDrop)
-                    })
-                    let csrf_token = document.querySelector("#csrf_token").value;
-                    let card_value = $(card).attr("data-value")
+                card.style.top = "0"
+                card.style.left = "0"
+                card.style.transform = "rotateZ(0deg)"
 
-                    let data = {"csrf_token": csrf_token, "card_value": card_value, "table_id": $(this).attr("id")}
-                    let url = window.location.href + 'make_move'
-                    ajax_request(url, data)
-                }
+                this.classList.remove("hover-placeholder")
+
+                let csrf_token = document.querySelector("#csrf_token").value;
+
+                let data = {"csrf_token": csrf_token, "card_value": card_value, "table_id": $(this).attr("id")}
+                let url = window.location.href + 'make_move'
+                ajax_request(url, data)
             }
         }
 
@@ -191,10 +213,13 @@ window.addEventListener("load", function(){
         cards.forEach(function(card){
             card.addEventListener("dragstart", dragStart)
             card.addEventListener("dragend", () => dragEnd(card))
+            card.addEventListener("touchmove", dragStart)
+            card.addEventListener("touchend", () => dragEnd(card))
         })
     }
 
     function init_game() {
+        // distribution()
         placeholder_constructor()
         dragAndDrop()
         player_constructor()
@@ -207,7 +232,7 @@ window.addEventListener("load", function(){
     function ajax_loop() {
         let csrf_token = document.querySelector("#csrf_token").value;
         let loop_is_allowed = true
-        $(".my-card").each(function() {
+        $(".card").each(function() {
             if ($(this).attr("is_dragging") === 'true') {
                 loop_is_allowed = false
             }
@@ -233,6 +258,7 @@ window.addEventListener("load", function(){
 
     window.onresize = function() {
         player_constructor()
+        // distribution()
     };
     init_game()
     setInterval(ajax_loop, 500)

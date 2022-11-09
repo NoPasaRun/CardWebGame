@@ -1,0 +1,10 @@
+{% if game.cards %}
+    {% if game.cards|length > 1 %}
+        {% with card=None, active=None, role=None, player=None %}
+            {% include 'card_templates/player_card.html' %}
+        {% endwith %}
+    {% endif %}
+    {% with card=game.trump, active=None, role=None, player=None %}
+        {% include 'card_templates/user_card.html' %}
+    {% endwith %}
+{% endif %}

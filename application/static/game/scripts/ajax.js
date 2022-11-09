@@ -1,12 +1,12 @@
 window.addEventListener("load", function() {
-    function ajax_request(url, request_data) {
+
+    function ajax_request(url) {
         $.ajax({
             url: url,
-            type: 'post',
+            type: 'get',
             dataType: 'html',
             cache: false,
             async: false,
-            data: request_data,
             success: function() {
                 window.location = url
             },
@@ -18,9 +18,7 @@ window.addEventListener("load", function() {
 
 
     function ajax_loop() {
-        let csrf_token = document.querySelector("#csrf_token").value;
-        let data = {"csrf_token": csrf_token}
-        ajax_request("/game/1/", data)
+        ajax_request("/game/"+lobby_id+"/")
     }
 
     setInterval(ajax_loop, 500)

@@ -1,0 +1,403 @@
+[2022-11-04 12:08:19,166] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [9♣, K♠, D♦, 10❤, T♦, V❤], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:08:19,314] WARNING IN ^^routes^^ :: <<{'Stan': [7❤, K♦, 10♣, 10♠, 6❤, V♦], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:08:19,355] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:16:08,017] WARNING IN ^^routes^^ :: <<{'Nick': [10♦, 7♠, V♣, D♣, V❤, D❤], 'Stan': [None, None, None, None, None, None], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:16:08,063] WARNING IN ^^routes^^ :: <<{'Stan': [10♠, K♠, 6♦, 8♣, T❤, T♠], 'NoPasaRan': [None, None, None, None, None, None], 'Nick': [None, None, None, None, None, None]}>>
+[2022-11-04 12:16:08,080] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [9❤, T♣, 9♦, 10♣, 8♦, 8♠], 'Stan': [None, None, None, None, None, None], 'Nick': [None, None, None, None, None, None]}>>
+[2022-11-04 12:16:08,099] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None], 'Nick': [None, None, None, None, None, None]}>>
+[2022-11-04 12:16:08,142] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None], 'Nick': [None, None, None, None, None, None]}>>
+[2022-11-04 12:16:08,403] WARNING IN ^^routes^^ :: <<{'Nick': [], 'Stan': [None, None, None, None, None, None], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:16:09,154] WARNING IN ^^routes^^ :: <<{'Nick': [], 'Stan': [None, None, None, None, None, None], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:18:31,679] WARNING IN ^^routes^^ :: <<{'Nick': [], 'Stan': [None, None, None, None, None, None], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:18:48,720] WARNING IN ^^routes^^ :: <<{'Nick': [], 'Stan': [None, None, None, None, None, None], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:18:50,504] WARNING IN ^^routes^^ :: <<{'Nick': [], 'Stan': [None, None, None, None, None, None], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:18:52,116] WARNING IN ^^routes^^ :: <<{'Nick': [], 'Stan': [None, None, None, None, None, None], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:18:55,944] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None], 'Nick': [None, None, None, None, None, None]}>>
+[2022-11-04 12:19:01,001] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None], 'Nick': [None, None, None, None, None, None]}>>
+[2022-11-04 12:22:47,988] WARNING IN ^^routes^^ :: <<{'Nick': [], 'Stan': [None, None, None, None, None, None], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:27:33,039] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [V❤, 9❤, 8♠, 9♠, D♦, 8♣], 'Stan': [None, None, None, None, None, None], 'Nick': [None, None, None, None, None, None]}>>
+[2022-11-04 12:27:33,111] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None], 'Nick': [None, None, None, None, None, None]}>>
+[2022-11-04 12:27:33,282] WARNING IN ^^routes^^ :: <<{'Stan': [6♣, 9♣, 6♠, 6♦, K♦, T♣], 'NoPasaRan': [None, None, None, None, None, None], 'Nick': [None, None, None, None, None, None]}>>
+[2022-11-04 12:27:33,321] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None], 'Nick': [None, None, None, None, None, None]}>>
+[2022-11-04 12:27:33,657] WARNING IN ^^routes^^ :: <<{'Nick': [10♦, 8♦, 10♣, 10♠, 8❤, 7❤], 'Stan': [None, None, None, None, None, None], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:27:33,665] WARNING IN ^^routes^^ :: <<{'Nick': [], 'Stan': [None, None, None, None, None, None], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:27:33,984] WARNING IN ^^routes^^ :: <<{'Nick': [], 'Stan': [None, None, None, None, None, None], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:27:34,027] WARNING IN ^^routes^^ :: <<{'Nick': [], 'Stan': [None, None, None, None, None, None], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:27:35,923] WARNING IN ^^routes^^ :: <<{'Nick': [], 'Stan': [None, None, None, None, None, None], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:27:36,322] WARNING IN ^^routes^^ :: <<{'Nick': [], 'Stan': [None, None, None, None, None, None], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:29:28,923] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [9♣, V♠, 6♣, 9♦, 7❤, 9❤], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:29:29,030] WARNING IN ^^routes^^ :: <<{'Stan': [8♦, 7♠, 6♦, 7♦, 8♠, K♦], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:29:29,133] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:30:28,368] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [D♦, D♣, K♣, 9❤, K♠, 9♦], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:30:28,415] WARNING IN ^^routes^^ :: <<{'Stan': [V♣, D♠, K♦, V♦, 6♠, D❤], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:30:28,476] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:36:51,355] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [T❤, T♣, 7♦, K♦, 6♦, T♦], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:36:51,826] WARNING IN ^^routes^^ :: <<{'Stan': [V♣, D♦, 9♠, 7♣, 10♠, 10❤], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:36:51,905] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:37:47,530] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [7♣, 10❤, 6♣, 10♦, K♣, V❤], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:37:51,582] WARNING IN ^^routes^^ :: <<{'Stan': [T❤, K❤, V♠, 9♣, 6❤, 9♠], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:37:51,620] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:54:51,949] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [7♦, D❤, K❤, 7♣, D♠, T♦], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:54:53,505] WARNING IN ^^routes^^ :: <<{'Stan': [10❤, 8♣, V♣, 8♦, 9♦, 8❤], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:54:57,371] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:54:58,702] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:55:02,714] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:55:03,812] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:55:08,159] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:55:09,069] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:55:13,701] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:55:14,274] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:55:19,116] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:55:19,498] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:55:24,536] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:55:24,802] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:55:30,066] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:55:30,242] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:56:56,836] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [7♣, 7❤, D❤, 8♣, 10♣, K❤], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:56:57,427] WARNING IN ^^routes^^ :: <<{'Stan': [7♦, 10♠, T♠, T♣, 6♦, 9♠], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:56:58,119] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:56:58,830] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:56:59,550] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:57:00,288] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:57:00,996] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:57:01,702] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:57:02,421] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:57:03,131] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:57:03,911] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:57:04,632] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:57:05,376] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:57:06,096] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:57:06,777] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:57:07,493] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:57:08,219] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:57:08,886] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:57:09,557] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:57:10,207] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 12:57:10,920] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:00:55,539] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [8♠, 9♣, T♠, V❤, T♦, 9♦], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:00:55,594] WARNING IN ^^routes^^ :: <<{'Stan': [D♦, 6♠, 7❤, 9❤, 8❤, 7♣], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:00:56,469] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:00:57,213] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:00:57,934] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:00:58,700] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:00:59,424] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:01:00,198] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:01:00,910] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:01:01,639] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:01:02,368] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:01:03,051] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:01:03,741] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:01:04,451] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:01:05,107] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:01:05,778] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:01:06,425] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:01:07,068] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:01:07,709] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:01:08,439] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:01:09,148] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:01:09,855] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:01:10,564] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:01:11,307] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:01:12,005] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:01:12,667] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:01:13,382] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:01:14,106] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:01:14,921] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:01:15,621] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:01:15,635] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:01:16,483] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:01:17,175] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:01:17,896] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:01:18,622] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:01:19,354] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:01:20,013] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:01:20,762] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:01:21,583] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:01:22,919] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:01:23,778] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:01:24,105] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:04:29,727] WARNING IN ^^routes^^ :: <<{'Stan': [T♠, T♣, 6♠, 8❤, D♣, 10❤], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:04:29,770] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [9❤, 8♠, 7♣, 8♣, V♣, V♠], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:04:30,941] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:04:31,864] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:04:32,759] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:04:33,639] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:04:34,531] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:04:35,459] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:04:36,334] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:04:37,295] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:04:38,228] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:04:39,187] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:04:40,382] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:04:41,268] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:04:42,088] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:04:42,926] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:04:43,789] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:04:44,704] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:04:45,583] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:04:46,529] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:04:47,453] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:04:48,301] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:04:49,340] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:04:50,535] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:04:51,695] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:04:52,665] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:04:53,625] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:04:54,667] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:04:56,080] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:04:57,027] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:04:58,166] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:04:59,237] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:05:00,260] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:05:01,196] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:05:02,145] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:05:03,083] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:05:04,021] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:05:05,070] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:05:06,017] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:05:07,045] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:05:08,064] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:05:09,073] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:05:10,017] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:05:10,960] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:05:11,885] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:05:13,142] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:05:14,875] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:05:16,025] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:05:17,075] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:05:18,042] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:05:18,947] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:05:19,877] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:05:21,045] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:05:22,142] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:05:23,139] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:05:24,234] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:05:25,383] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:09:32,304] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [V❤, 9♠, 10♦, 6❤, V♦, 10♠], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:09:32,610] WARNING IN ^^routes^^ :: <<{'Stan': [10♣, 7♠, 9❤, T♦, 10❤, 8❤], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:09:33,481] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:09:34,173] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:09:34,852] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:09:35,618] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:14:10,917] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [10❤, 8❤, T♦, T❤, V♠, 7♣], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:14:15,104] WARNING IN ^^routes^^ :: <<{'Stan': [7♦, 8♠, 10♣, 7❤, 9♦, D♠], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:14:20,263] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:17:19,112] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [D♠, 8♣, D♦, 7❤, V♣, 9♦], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:17:23,390] WARNING IN ^^routes^^ :: <<{'Stan': [6♠, 10♣, 9♠, D♣, 7♠, 10♠], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:28:35,274] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [T♣, 7♣, T♦, 9♠, 10❤, 8♣], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:28:36,015] WARNING IN ^^routes^^ :: <<{'Stan': [6❤, D♠, V♠, K♦, D❤, 10♠], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:34:57,529] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [K♣, D♦, 8♣, V♠, D♣, 6♦], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:41:22,097] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [T♦, 7❤, 8❤, V♣, D♦, K♣], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:41:26,106] WARNING IN ^^routes^^ :: <<{'Stan': [8♣, 10♠, V♦, 9♦, 7♣, 10♦], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:41:31,149] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:41:36,103] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:41:41,094] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:41:46,103] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:41:51,105] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:41:56,109] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:42:01,106] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:42:06,108] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:42:11,097] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:42:16,132] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:42:21,100] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:42:26,100] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:42:31,117] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:42:36,113] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:42:41,120] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:00,267] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [V❤, 6♦, T♠, T♣, 7♠, 6♠], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:00,343] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:00,693] WARNING IN ^^routes^^ :: <<{'Stan': [T♦, V♠, D♦, D♣, K♠, V♦], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:01,180] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:01,659] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:02,164] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:02,659] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:03,167] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:03,662] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:04,164] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:04,664] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:05,164] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:05,666] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:06,164] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:06,665] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:07,164] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:07,663] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:08,167] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:08,671] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:09,166] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:09,680] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:10,183] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:10,669] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:11,168] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:11,669] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:12,171] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:12,672] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:13,168] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:13,671] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:14,170] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:14,663] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:15,171] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:15,674] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:16,172] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:16,674] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:17,166] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:17,674] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:18,174] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:18,797] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:19,167] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:19,676] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:20,167] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:20,702] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:21,177] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:21,685] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:22,167] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:22,677] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:23,184] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:23,680] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:24,195] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:24,682] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:25,178] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:26,441] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:27,469] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:28,503] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:29,542] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:30,572] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:31,594] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:32,628] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:33,653] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:34,687] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:35,724] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:36,746] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:37,773] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:38,806] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:39,837] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:40,875] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:41,907] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:42,947] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:43,970] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:44,995] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:46,016] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:47,038] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:48,062] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:49,084] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:50,104] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:51,138] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:52,181] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:53,210] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:54,257] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:55,306] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:56,341] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:57,363] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:58,398] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:43:59,439] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:44:00,484] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:44:01,528] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:44:02,564] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:44:03,591] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:44:04,614] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:44:05,645] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:44:06,692] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:44:07,738] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:44:08,766] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:44:09,802] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:44:10,851] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:44:11,896] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:44:12,929] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:44:13,957] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:44:14,989] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:44:16,028] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:44:17,054] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:44:18,076] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:44:19,109] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:44:20,146] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:44:21,170] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:44:22,203] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:44:23,243] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:44:24,286] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:44:25,330] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:44:26,379] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:44:27,410] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:44:28,434] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:44:29,468] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:44:30,506] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:44:31,543] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:44:32,592] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:44:33,643] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:44:34,684] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:44:35,718] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:44:36,749] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:44:37,797] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:44:38,850] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:47:42,432] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [7♠, 6♠, 8♦, T♦, D♦, K♦], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:47:42,480] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:47:42,667] WARNING IN ^^routes^^ :: <<{'Stan': [7♣, 7♦, V♠, 9♠, V❤, V♣], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:47:43,073] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:47:43,565] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:47:44,068] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:47:44,569] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:47:45,073] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:47:45,569] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:47:46,060] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:47:46,561] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:47:47,073] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:47:47,564] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:47:48,072] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:47:48,565] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:47:49,069] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:47:49,572] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:47:50,061] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:47:50,576] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:47:51,063] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:47:51,572] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:47:52,119] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:47:52,667] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:47:53,071] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:47:53,566] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:47:54,071] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:47:54,566] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:47:55,074] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:47:55,574] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:47:56,068] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:47:56,563] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:47:57,065] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:47:57,576] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:47:58,640] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:48:32,344] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [D♠, 6❤, 10❤, 6♠, K♣, 8❤], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:48:32,674] WARNING IN ^^routes^^ :: <<{'Stan': [6♦, T♠, 7♦, 9♣, K❤, D❤], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:48:33,181] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:48:33,642] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:48:34,143] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:48:34,643] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:48:37,706] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:48:38,202] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:48:38,727] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:48:39,215] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:48:39,714] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:48:40,215] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:48:40,716] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:48:41,217] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:48:41,709] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:48:42,217] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:48:42,713] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:48:43,214] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:48:43,713] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:48:44,218] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:48:44,720] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:48:45,214] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:48:45,721] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:48:46,236] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:48:46,716] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:48:47,219] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:48:47,716] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:48:48,220] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:48:48,710] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:48:49,220] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:48:49,715] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:48:50,218] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:48:50,718] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:48:51,218] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:48:51,718] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:48:52,221] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 13:48:52,720] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 14:32:02,336] WARNING IN ^^routes^^ :: <<{'NoPasaRan': [K♠, D❤, 8❤, K♦, D♦, V♣], 'Stan': [None, None, None, None, None, None]}>>
+[2022-11-04 14:32:02,763] WARNING IN ^^routes^^ :: <<{'Stan': [10♠, 10♣, 6♣, T♣, 9♠, 6❤], 'NoPasaRan': [None, None, None, None, None, None]}>>
+[2022-11-04 14:32:02,875] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>

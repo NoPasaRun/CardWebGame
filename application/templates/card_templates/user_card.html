@@ -1,0 +1,18 @@
+<div draggable="true" class="card {{ active }} {{ role }}"
+     data-value="{{ card }}" data-player="{{ player }}" style="color: {{ card.color }}">
+    <div class="card-content">
+        <div class="card-front">
+            <div class="card-info card-info_top-pos">
+                {{ card }}
+            </div>
+            <div class="card-layout"></div>
+            <div class="card-info card-info_low-pos">
+                {{ card }}
+            </div>
+        </div>
+        <div class="card-back">
+            <img class="card-layout card-back-layout"
+                 src="/static/game/images/card-back-layout.png" alt="card-layout">
+        </div>
+    </div>
+</div>

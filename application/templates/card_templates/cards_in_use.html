@@ -1,0 +1,9 @@
+{% if player == request.player %}
+    {% with card=card, active=player.vars['active'], role=player.vars['role'] %}
+        {% include 'card_templates/user_card.html' %}
+    {% endwith %}
+{% else %}
+    {% with card=None, active=player.vars['active'], role=player.vars['role'] %}
+        {% include 'card_templates/player_card.html' %}
+    {% endwith %}
+{% endif %}

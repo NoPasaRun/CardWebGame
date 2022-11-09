@@ -1,5 +1,5 @@
 import random
-from typing import Dict, List, Tuple, Union, Callable
+from typing import Dict, List, Tuple, Union, Callable, Iterable
 
 from application.app.models import User
 
@@ -26,24 +26,6 @@ PLAYER_LOW_AMOUNT, PLAYER_HIGH_AMOUNT = 2, 6
 CARDS_FOR_PLAYER: int = 6
 
 
-class GameSessionAddon:
-    def __init__(self, game_ses: 'GameSession'):
-        self.__game_ses = game_ses
-
-    @property
-    def game_ses(self):
-        return self.__game_ses
-
-    @game_ses.setter
-    def game_ses(self, value):
-        return
-
-    def __setattr__(self, key, value):
-        super(GameSessionAddon, self).__setattr__(key, value)
-        if hasattr(self, "game_ses"):
-            self.game_ses.modified()
-
-
 class Deck(list):
 
     def __getitem__(self, index) -> Union['Deck', 'Card']:
@@ -66,6 +48,42 @@ class Deck(list):
         if value in list_of_string_cards:
             index = list_of_string_cards.index(value)
             return super().__getitem__(index)
+
+
+class PlayerDeck(Deck):
+
+    def __init__(self, *args, **kwargs):
+        list.__init__(self, *args, **kwargs)
+        self.__buffer = []
+        self.__buffer_copy = self.__buffer.copy()
+
+    @property
+    def buffer_copy(self):
+        return self.__buffer_copy
+
+    @buffer_copy.setter
+    def buffer_copy(self, value):
+        return
+
+    @property
+    def buffer(self):
+        buf = self.__buffer.copy()
+        self.__buffer.clear()
+        return buf
+
+    @buffer.setter
+    def buffer(self, value):
+        return
+
+    def extend(self, iterable):
+        super().extend(iterable)
+        self.__buffer.extend(iterable)
+        self.__buffer_copy = self.__buffer.copy()
+
+    def append(self, obj):
+        super().append(obj)
+        self.__buffer.append(obj)
+        self.__buffer_copy = self.__buffer.copy()
 
 
 class Card:
@@ -100,20 +118,20 @@ class Card:
         number: str = str(EXTRA_NUMBERS.get(self.val, self.val))
         return number + self.suit
 
-    def __gt__(self, card: 'Card') -> bool:
+    def __gt__(self, c: 'Card') -> bool:
         """
         Сравнение Карт
-        :param card: Карта
+        :param c: Карта
         :return:
         Карта больше или меньше переданной
         """
         # Козырь всегда больше не козырной карты
-        if self.is_trump and not card.is_trump:
+        if self.is_trump and not c.is_trump:
             return True
         else:
             # Если козыри совпадают, то сравниваются номиналы
-            if self.suit == card.suit:
-                return self.val > card.val
+            if self.suit == c.suit:
+                return self.val > c.val
             return False
 
     @classmethod
@@ -142,7 +160,7 @@ class Card:
 
 
 def check_if_player_is_out(func: Callable):
-    def wrapper(self: Union['Defender', 'Player', 'Attacker'], game_ses: 'GameSession', *args, **kwargs):
+    def wrapper(self: Union['Defender', 'Attacker'], game_ses: 'GameSession', *args, **kwargs):
         result = func(self, game_ses, *args, **kwargs)
         if len(self.cards) == 0 and (isinstance(self, Defender) or len(game_ses.cards) == 0):
             if len(game_ses.cards) == 0:
@@ -158,15 +176,27 @@ class Player:
     Класс, описывающий атрибуты Игрока
     """
 
-    def __init__(self, user_data: Dict, cards: Deck[Card], has_updated_game: bool = True) -> None:
+    def __init__(self, user_data: User, cards: PlayerDeck[Card], has_updated_game: bool = True) -> None:
         """
         Функция конструктор
         :param user_data: данные пользователя / объект модели User
         :param cards: Карты Игрока
         """
-        self.user_data: Dict = user_data
-        self.cards: Deck = cards
+        self.user_data: User = user_data
+        self.cards: PlayerDeck = cards
         self.__has_updated_game = has_updated_game
+        parameters = list(self.__dict__.keys())
+        self.parameters = parameters
+
+    def __setattr__(self, key, value):
+        if key == "cards":
+            super().__setattr__(key, PlayerDeck())
+            if isinstance(value, Iterable):
+                self.cards.extend(value)
+            else:
+                self.cards.append(value)
+        else:
+            super().__setattr__(key, value)
 
     @property
     def has_updated_game(self):
@@ -190,15 +220,15 @@ class Player:
         Логическое подкинул: да/нет
         """
         # если переданная Карта есть в списке Карт Игрока, то удаляем ее из списка
-        card: Card = self.cards.get_card_by_string(card_val)
-        if card:
+        table_card: Card = self.cards.get_card_by_string(card_val)
+        if table_card:
             # если Карту можно поставить на Стол, то удаляем ее из списка
-            if table.put_card(table_id, card):
-                self.cards.remove(card)
+            if table.put_card(table_id, table_card):
+                self.cards.remove(table_card)
                 return True
         return False
 
-    def __eq__(self, other: Union['Player', 'Attacker', 'Defender', User]) -> bool:
+    def __eq__(self, other: Union['Player', 'Attacker', 'Defender']) -> bool:
         if other is not None:
             return self.user_data == other.user_data
         return False
@@ -209,8 +239,11 @@ class Player:
         :return:
         Кортеж атрибутов
         """
-        parameters: Tuple = tuple([value for value in self.__dict__.values()])
+        parameters: Tuple = tuple([getattr(self, attr) for attr in self.parameters])
         return parameters
+
+    def to_player(self):
+        return Player(*self.__getargs__())
 
     def __repr__(self):
         return self.user_data.__repr__()
@@ -275,9 +308,13 @@ class GameSession:
         Функция конструктор
         """
         self.__cards, self.trump = self.make_deck()
-        self.__players: list = self.shuffle_players(user_data)
+        self.__players: List = self.shuffle_players(user_data)
         self.__pair = Pair(self)
         GameSession.__games[game_index] = self
+
+    @classmethod
+    def game_exists(cls, game_ses) -> bool:
+        return game_ses in cls.__games.values()
 
     def delete(self):
         all_games = filter(lambda item: item[1] == self, GameSession.__games.items())
@@ -293,6 +330,19 @@ class GameSession:
         if hasattr(self, "players"):
             for i_player in self.players:
                 i_player.has_updated_game = False
+
+    def get_buffer(self, requested_player: Player) -> Dict:
+        if requested_player is not None:
+            buffer = {
+                str(requested_player): [card for card in requested_player.cards.buffer]
+            }
+
+            is_buffer = buffer.get(str(requested_player))
+            for i_player in self.players:
+                if i_player != requested_player:
+                    buffer.update({str(i_player): [None for _ in i_player.cards.buffer_copy if is_buffer]})
+            return buffer
+        return {}
 
     @property
     def pair(self):
@@ -324,15 +374,14 @@ class GameSession:
         set_of_cards.difference_update(used_cards)
         self.__cards = list(set_of_cards)
 
-    def remove_player(self, user: [User, Defender, Attacker]):
-        player: Player = self.get_player_by_user(user)
-        self.players.remove(player)
+    def remove_player(self, pl: Union['Defender', 'Attacker']):
+        self.players.remove(pl)
         if len(self.players) <= 1:
             self.delete()
 
-    def get_player_by_user(self, user: [User, Defender, Attacker]) -> Player:
+    def get_player_by_user(self, user: User) -> Player:
         for i_player in self.players:
-            if i_player == user:
+            if i_player.user_data == user:
                 return i_player
 
     @staticmethod
@@ -355,6 +404,9 @@ class GameSession:
 
         assert len(deck) == CARDS_IN_DECK
         return deck, trump
+
+    def clear_deck(self):
+        self.__cards = Deck()
 
     @staticmethod
     def replace_player_with_trump(shuffled_players: List[Player]) -> List[Player]:
@@ -381,14 +433,14 @@ class GameSession:
     def set_pair(self):
         self.__pair = Pair(self)
 
-    def shuffle_players(self, users: Union[List[Dict]]) -> List[Player]:
+    def shuffle_players(self, users: Union[List[User]]) -> List[Player]:
         """
         Функция создания Игроков и раздачи Карт
         :param users: данные Игроков
         :return:
         Список Игроков
         """
-        cards_for_player: Deck = Deck()
+        cards_for_player: List = []
         # Сортировка Карт
         for i in range(0, CARDS_FOR_PLAYER*len(users), CARDS_FOR_PLAYER):
             cards_for_player.append(self.cards[i: i+CARDS_FOR_PLAYER])
@@ -451,6 +503,25 @@ class LobbySession:
             self.users.append(user)
 
 
+def check_if_game_is_valid(func: Callable):
+    def wrapper(self, *args, **kwargs):
+        if GameSession.game_exists(self.game_ses):
+            return func(self, *args, **kwargs)
+    return wrapper
+
+
+def pair_tracker(decorator: Callable):
+    def wrapper(cls):
+        for str_method in dir(cls):
+            method = getattr(cls, str_method)
+            if not (str_method.startswith("__") or isinstance(method, property)):
+                new_method = decorator(method)
+                setattr(cls, str_method, new_method)
+        return cls
+    return wrapper
+
+
+@pair_tracker(check_if_game_is_valid)
 class Pair:
     """
     Класс описывающий Пару Игроков (Подкидывающий/Покрывающий)
@@ -464,10 +535,12 @@ class Pair:
         self.table: Table = Table()
 
         # Два первых Игрока в списке - Подкидывающий/Покрывающий
-        self.__pair_players: List[Player] = game_ses.players[:2]
-        player_classifier = zip((Attacker, Defender), self.__pair_players)
+        pair_players: List[Player] = game_ses.players[:2]
+        player_classifier = zip((Attacker, Defender), pair_players)
 
         self.attacker, self.defender = [obj_class(pair_player) for obj_class, pair_player in player_classifier]
+        for index, i_player in enumerate([self.attacker, self.defender]):
+            game_ses.players[index] = i_player
         self.__game_ses = game_ses
 
     @property
@@ -480,13 +553,14 @@ class Pair:
 
     @property
     def pair_players(self) -> List[Player]:
-        return self.__pair_players
+        pair_players = [self.attacker]
+        if not self.defender.is_awaken:
+            pair_players.append(self.defender)
+        return pair_players
 
     @pair_players.setter
     def pair_players(self, value: List[Player]):
-        same = all([i_player in self.__pair_players for i_player in value])
-        if same:
-            self.__pair_players = value
+        return
 
     def do_someone_go_on(self, attacker_move: bool) -> Union[Union[Attacker, Defender], bool]:
         """
@@ -528,8 +602,9 @@ class Pair:
         :return:
         """
         # Если у текущего Подкидывающего бито, то новый Подкидывающий - переданный Игрок
+        thrower_index = self.game_ses.players.index(thrower)
         if not self.attacker.is_awaken and thrower != self.defender:
-            self.attacker: Attacker = Attacker(thrower)
+            self.attacker = self.game_ses.players[thrower_index] = Attacker(thrower)
 
     def leave_loser(self) -> None:
         """
@@ -537,9 +612,7 @@ class Pair:
         :return:
         """
         # Если у Покрывающего Игрока не пас, то при новой Паре, он будет Подкидывающим
-        if self.defender.is_awaken:
-            self.pair_players.pop()
-        else:
+        if not self.defender.is_awaken:
             table_cards = self.table.cards
             self.defender.cards.extend(table_cards)
 
@@ -562,9 +635,9 @@ class Pair:
         :return:
         """
         # Первые два (или один - в зависимости от исхода Пары) игрока отправляются в конец списка
-        new_players_list: List = self.game_ses.players[len(self.pair_players):]
-        new_players_list.extend(self.pair_players)
-        self.game_ses.players = new_players_list
+        for i_player in self.pair_players:
+            self.game_ses.players.remove(i_player)
+            self.game_ses.players.append(i_player.to_player())
 
     def finish_pair(self) -> Attacker:
         """
@@ -614,12 +687,12 @@ class Table(dict):
 
     def free_cells(self, key: str) -> int:
         free_cells = [
-            card for data_cell in self.values()
-            for cell_key, card in data_cell.items()
-            if card is None and cell_key == key
+            c for data_cell in self.values()
+            for cell_key, c in data_cell.items()
+            if c is None and cell_key == key
         ]
         return len(free_cells)
 
 
 if __name__ == '__main__':
-    pass
+    game = GameSession(get_users(), 1)
