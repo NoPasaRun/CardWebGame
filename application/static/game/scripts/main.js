@@ -3,7 +3,7 @@ window.addEventListener("load", function(){
     //  Function adds special classes for card's cells 
     // in order they are free or locked
 
-    function placeholder_constructor() {
+    function placeholder_constructor(callback=null) {
         let placeholders = document.querySelectorAll(".placeholder-card-field")
         placeholders.forEach(function(el){
             let cards = $(el).children(".card")
@@ -13,33 +13,47 @@ window.addEventListener("load", function(){
                 el.classList.add("placeholder-card-field-locked")
             }
         })
+        if (callback !== null) {
+            callback()
+        }
     }
 
-    function distribution() {
+    function distribution(callback=null) {
         let deck_cards = document.querySelector(".deck")
         let cards = deck_cards.querySelectorAll(".card")
-        cards.forEach(function(el) {
-            deck_cards_constructor(el)
+        console.log(cards)
+        cards.forEach(function(el, index) {
+            if (index + 1 === cards.length) {
+                setTimeout(deck_cards_constructor, 500*index, el, callback)
+            } else {
+                setTimeout(deck_cards_constructor, 500*index, el)
+            }
         })
     }
 
-    function deck_cards_constructor(card) {
+    function deck_cards_constructor(card, callback=null) {
         let player_id = $(card).attr("data-player")
         let player_deck = document.querySelector("#"+player_id)
         if (player_deck !== null) {
             let length = player_deck.children.length
-            let rect = player_deck.getBoundingClientRect();
+            let blank_card = card.cloneNode()
+            blank_card.style.opacity = "0"
+            player_deck.appendChild(blank_card)
+            let rect = blank_card.getBoundingClientRect()
             card.style.zIndex = length + ""
             $(card).animate({
-                left: rect.left + "px",
-                top: rect.top + "px"
+                left: rect.left+length*20+"px",
+                top: rect.top+"px"
             }, 500, function() {
-                player_deck.appendChild(card)
-                card.style.transition = "none"
-                card.style.left = "0px"
-                card.style.top = "0px"
-            });
-
+                    player_deck.removeChild(blank_card)
+                    player_deck.appendChild(card)
+                    card.style.left = length*20+"px"
+                    card.style.top = "0px"
+                }
+            );
+        }
+        if (callback !== null) {
+            callback()
         }
     }
 
@@ -60,7 +74,7 @@ window.addEventListener("load", function(){
     // Function transforms positions of players in a way
     // the distances would be the same between them
 
-    function player_constructor() {
+    function player_constructor(callback=null) {
         let width = document.querySelector('.player-nav-list').clientWidth/2
         let height = document.querySelector('.player-nav-list').clientHeight/2
         let angle = 360/document.querySelectorAll(".player-item").length
@@ -85,6 +99,9 @@ window.addEventListener("load", function(){
             $(this).css("top", X-x_add_offset + "px")
             $(this).css("left", Y-y_add_offset + "px")
         })
+        if (callback !== null) {
+            callback()
+        }
     }
 
     // The function send ajax request to update page
@@ -219,11 +236,14 @@ window.addEventListener("load", function(){
     }
 
     function init_game() {
-        // distribution()
-        placeholder_constructor()
-        dragAndDrop()
-        player_constructor()
-        create_change_status_button()
+        player_constructor(function callback() {
+            distribution(function callback() {
+                placeholder_constructor(function callback() {
+                    dragAndDrop()
+                    create_change_status_button()
+                })
+            })
+        })
     }
 
     // Infinite functions which call an ajax_request function

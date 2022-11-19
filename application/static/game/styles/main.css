@@ -39,11 +39,15 @@ body {
 }
 
 .deck {
-    position: absolute;
+    position: fixed;
     height: 80px;
     width: 140px;
     left: 5%;
     top: 48%;
+}
+
+.deck .card {
+    position: fixed;
 }
 
 /* Позиционирование и трансформация содержимого колоды */
@@ -148,7 +152,6 @@ body {
     width: 80px;
     height: 110px;
     border-radius: 5px;
-    transition: all 0.5s;
 }
 
 .card-content {

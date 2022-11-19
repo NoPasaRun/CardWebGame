@@ -5,7 +5,7 @@ from flask import request, redirect, render_template, session
 from flask_wtf import CSRFProtect
 
 from application.app.app_config import create_app
-from application.app.forms import SignUpForm
+from application.app.forms import SignUpForm, LobbySessionForm
 from flask_login import LoginManager, login_required, logout_user, login_user
 
 from application.app.login_view import LoginUser
@@ -79,6 +79,25 @@ def logout():
     return redirect("/login/")
 
 
+@app.get("/game_menus/")
+def game_menu_get():
+    game_lobbies = LobbySession.all_lobbies()
+    return render_template("menu.html", **{"lobbies": list(game_lobbies)})
+
+
+@app.post("/game_menus/")
+@login_required
+def game_menu_post():
+    user: User = User.get(session["_user_id"])
+    form = LobbySessionForm()
+    if form.validate_on_submit():
+        data, lobby_index = form.data, LobbySession.get_unique_index()
+        data.update({"lobby_index": lobby_index, "owner": user})
+        LobbySession(**data)
+        return redirect(f"/game_lobby/{lobby_index}/")
+    return json.dumps({"errors": form.errors})
+
+
 @app.route('/game_lobby/<int:lobby_id>/', methods=["GET", "POST"])
 @login_required
 def lobby(lobby_id: int):
@@ -91,8 +110,7 @@ def lobby(lobby_id: int):
     elif request.method == "POST":
         if not lobby_session.game_status:
             lobby_session.game_status = True
-            game_ses = GameSession(user_data=lobby_session.users, game_index=lobby_id)
-            game_ses.modified()
+            GameSession(user_data=lobby_session.users, game_index=lobby_id)
         return redirect(f"/game/{lobby_id}/")
 
 
@@ -132,7 +150,6 @@ def game(game_id: int):
         if requested_player in game_ses.players:
 
             ajax_response = json.dumps({"message": "Welcome!"}), 200
-
             if request.method == "GET":
 
                 context.update({"lobby_id": str(game_id)})
@@ -169,7 +186,7 @@ def make_move(game_id: int):
         success = current_player.go_on(game_ses, card_value, game_ses.pair.table, int(table_id))
         if success:
             message = "Ok!"
-            game_ses.modified()
+            game_ses.modified(requested_player)
         else:
             message = "Your card is lower than attacker's card or you tried to cheat"
     else:
@@ -192,7 +209,7 @@ def change_status(game_id: int):
     if requested_player == current_player:
         current_player.is_awaken = False
         message = "Updated status"
-        game_ses.modified()
+        game_ses.modified(requested_player)
     else:
         message = "Has not updated it"
 
@@ -210,7 +227,7 @@ def remove_player(game_id: int):
     requested_player: Player = game_ses.get_player_by_user(user)
     if requested_player:
         game_ses.players.remove(requested_player)
-        game_ses.modified()
+        game_ses.modified(requested_player)
         return "Success!"
     return "Error!"
 

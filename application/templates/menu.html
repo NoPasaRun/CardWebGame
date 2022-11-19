@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Menu</title>
+    <link rel="stylesheet" href="/static/gen-styles/normalise.css">
+    <link rel="stylesheet" href="/static/menu/styles/main.css">
+</head>
+<body>
+    <main>
+        <div class="select-lobby__section">
+            <div class="wrapper">
+                <ul class="select-lobby__list">
+                    {% for lobby in lobbies %}
+                        <li class="select-lobby__list-item">
+                            <div class="lobby-info">
+                                <span class="lobby-index">{{ lobby.index }}</span>
+                                <span class="lobby-name">{{ lobby.name }}</span>
+                                <span class="lobby-owner">{{ lobby.owner }}</span>
+                                <span class="lobby-player-count">{{ lobby.people_count }}</span>
+                            </div>
+                        </li>
+                    {% endfor %}
+                    <form id="create_lobby_form" method="post" class="hidden">
+                        <input type="hidden" value="{{ csrf_token() }}" name="csrf_token"/>
+                        <div class="lobby-info">
+                            <input name="name" type="text" class="lobby-name" />
+                            <input name="player_count" type="number" class="lobby-player-count" min="2" max="6"/>
+                        </div>
+                        <input type="submit" value="Create lobby">
+                    </form>
+                </ul>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="panel">
+            <div class="wrapper">
+                <button onclick="document.getElementById('create_lobby_form').classList.remove('hidden')">
+                    +
+                </button>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

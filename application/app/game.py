@@ -77,13 +77,11 @@ class PlayerDeck(Deck):
 
     def extend(self, iterable):
         super().extend(iterable)
-        self.__buffer.extend(iterable)
-        self.__buffer_copy = self.__buffer.copy()
+        self.__buffer_copy = self.__buffer = self.copy()
 
     def append(self, obj):
         super().append(obj)
-        self.__buffer.append(obj)
-        self.__buffer_copy = self.__buffer.copy()
+        self.__buffer_copy = self.__buffer = self.copy()
 
 
 class Card:
@@ -326,10 +324,11 @@ class GameSession:
 
         GameSession.__games.pop(index)
 
-    def modified(self):
+    def modified(self, cur_player: Player):
         if hasattr(self, "players"):
             for i_player in self.players:
-                i_player.has_updated_game = False
+                if i_player != cur_player:
+                    i_player.has_updated_game = False
 
     def get_buffer(self, requested_player: Player) -> Dict:
         if requested_player is not None:
@@ -341,6 +340,7 @@ class GameSession:
             for i_player in self.players:
                 if i_player != requested_player:
                     buffer.update({str(i_player): [None for _ in i_player.cards.buffer_copy if is_buffer]})
+            print(buffer)
             return buffer
         return {}
 
@@ -460,18 +460,34 @@ class GameSession:
 class LobbySession:
 
     __lobbies: Dict = {}
+    lobby_count_range = [0, 8_000_000_000]
 
-    def __init__(self, lobby_index: int):
+    def __init__(self, lobby_index: int, **kwargs):
         if LobbySession.get_lobby(lobby_index) is None:
             self.__users = []
             self.__ready_to_play = False
             self.__lobby_index = lobby_index
+            for attr_name, val in kwargs.items():
+                setattr(self, attr_name, val)
             LobbySession.__lobbies[lobby_index] = self
 
-    def __new__(cls, lobby_index, *args, **kwargs):
+    def __new__(cls, lobby_index, **kwargs):
         if LobbySession.get_lobby(lobby_index) is not None:
             return LobbySession.get_lobby(lobby_index)
-        return super(LobbySession, cls).__new__(cls, *args, **kwargs)
+        return super(LobbySession, cls).__new__(cls)
+
+    @classmethod
+    def get_unique_index(cls) -> int:
+        list_of_numbers = [lobby.lobby_index for lobby in cls.all_lobbies()] + cls.lobby_count_range
+        list_of_indexes = sorted(set(list_of_numbers))
+        pair_numbers = map(lambda pair: (list_of_indexes[pair[0] + 1], pair[1]), enumerate(list_of_indexes[:-1]))
+        for bigger_num, smaller_num in pair_numbers:
+            if bigger_num - smaller_num > 1:
+                return smaller_num + 1
+
+    @classmethod
+    def all_lobbies(cls) -> Iterable['LobbySession']:
+        return cls.__lobbies.values()
 
     @property
     def users(self):
