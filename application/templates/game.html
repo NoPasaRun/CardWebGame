@@ -3,8 +3,8 @@
     {% set buffer = game.get_buffer(request.player) %}
     <!-- Deck of cards -->
     <div class="deck">
-        {% for player in game.players %}
-            {% with player=player %}
+        {% for player, cards in buffer.items() %}
+            {% with player=player, cards=cards %}
                 {% include 'card_templates/deck.html' %}
             {% endwith %}
         {% endfor %}
@@ -38,7 +38,7 @@
                 </li>
             {% endfor %}
         </ul>
-        {% for player in game.players %}
+        {% for player in game.iter_players(request.player) %}
             <!-- Player -->
             <li class="player-item">
                 <!-- Player icon -->
@@ -55,7 +55,7 @@
                     </strong>
                     <!-- Current player cards -->
                     <div class="player-cards {% if request.player == player %} my-cards {% endif %}" id="{{ player }}">
-                        {% if not buffer[request.player.__str__()] %}
+                        {% if not buffer %}
                             {% for card in player.cards %}
                                 <!-- Current player card -->
                                 {% with player=player, card=card %}

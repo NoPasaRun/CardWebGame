@@ -142,6 +142,10 @@ body {
     height: 110px;
 }
 
+.player-cards .trump-card .card-content {
+    transform: rotateY(180deg);
+}
+
 /* Стилизация карт пользователя */
 
 /* Подсветка неактивных карт */

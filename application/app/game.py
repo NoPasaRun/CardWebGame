@@ -198,6 +198,11 @@ class Player:
         else:
             super().__setattr__(key, value)
 
+    def __hash__(self) -> int:
+        pl = Player(*self.__getargs__())
+        delattr(pl, "cards")
+        return super(Player, pl).__hash__()
+
     @property
     def has_updated_game(self):
         value = self.__has_updated_game
@@ -339,16 +344,22 @@ class GameSession:
 
     def get_buffer(self, requested_player: Player) -> Dict:
         if requested_player is not None:
-            buffer = {
-                str(requested_player): [card for card in requested_player.cards.buffer]
-            }
-
-            is_buffer = buffer.get(str(requested_player))
-            for i_player in self.players:
-                if i_player != requested_player:
-                    buffer.update({str(i_player): [None for _ in i_player.cards.buffer_copy if is_buffer]})
-            return buffer
+            is_buffer = requested_player.cards.buffer
+            if is_buffer:
+                buffer = {}
+                for i_player in sorted(self.players, key=lambda pl: self.trump in pl.cards):
+                    cards = list([
+                        (card if i_player == requested_player or card == self.trump else None)
+                        for card in sorted(i_player.cards.buffer_copy, key=lambda c: c == self.trump)]
+                    )
+                    buffer.update({i_player: cards})
+                return buffer
         return {}
+
+    def iter_players(self, requested_player: Player) -> List:
+        req_player_index = self.players.index(requested_player)
+        main_player_list = self.players[req_player_index+1:] + self.players[:req_player_index+1]
+        return main_player_list
 
     @property
     def pair(self):
@@ -448,8 +459,9 @@ class GameSession:
         """
         cards_for_player: List = []
         # Сортировка Карт
-        for i in range(0, CARDS_FOR_PLAYER*len(users), CARDS_FOR_PLAYER):
-            cards_for_player.append(self.cards[i: i+CARDS_FOR_PLAYER])
+        for i in range(len(users)):
+            player_cards = self.cards[:CARDS_FOR_PLAYER]
+            cards_for_player.append(player_cards)
 
         # Конвертируем данные Игрока в объекты Игроков
         players: List = [

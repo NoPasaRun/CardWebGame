@@ -14,7 +14,7 @@ class User(Base):
     balance: float = Column(Float(), default=0.)
 
     def __repr__(self):
-        return self.username
+        return str(self.username)
 
     def set_password(self, password: str):
         self.password = generate_password_hash(password)
