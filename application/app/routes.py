@@ -110,7 +110,7 @@ def lobby(lobby_id: int):
     elif request.method == "POST":
         if not lobby_session.game_status:
             lobby_session.game_status = True
-            GameSession(user_data=lobby_session.users, game_index=lobby_id)
+            GameSession(lobby=lobby_session)
         return redirect(f"/game/{lobby_id}/")
 
 

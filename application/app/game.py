@@ -77,11 +77,13 @@ class PlayerDeck(Deck):
 
     def extend(self, iterable):
         super().extend(iterable)
-        self.__buffer_copy = self.__buffer = self.copy()
+        self.__buffer = self.copy()
+        self.__buffer_copy = self.__buffer.copy()
 
     def append(self, obj):
         super().append(obj)
-        self.__buffer_copy = self.__buffer = self.copy()
+        self.__buffer = self.copy()
+        self.__buffer_copy = self.__buffer.copy()
 
 
 class Card:
@@ -301,14 +303,19 @@ class GameSession:
     """
     __games: Dict = {}
 
-    def __init__(self, user_data: List[User], game_index: int) -> None:
+    def __init__(self, lobby: 'LobbySession') -> None:
         """
         Функция конструктор
         """
-        self.__cards, self.trump = self.make_deck()
-        self.__players: List = self.shuffle_players(user_data)
-        self.__pair = Pair(self)
-        GameSession.__games[game_index] = self
+        try:
+            self.__cards, self.trump = self.make_deck()
+            self.__players: List = self.shuffle_players(lobby.users)
+            self.__pair = Pair(self)
+            GameSession.__games[lobby.lobby_index] = self
+        except AssertionError:
+            pass
+        else:
+            lobby.game_status = True
 
     @classmethod
     def game_exists(cls, game_ses) -> bool:
@@ -340,7 +347,6 @@ class GameSession:
             for i_player in self.players:
                 if i_player != requested_player:
                     buffer.update({str(i_player): [None for _ in i_player.cards.buffer_copy if is_buffer]})
-            print(buffer)
             return buffer
         return {}
 
@@ -711,4 +717,4 @@ class Table(dict):
 
 
 if __name__ == '__main__':
-    game = GameSession(get_users(), 1)
+    pass

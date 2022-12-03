@@ -17,6 +17,7 @@ body {
     background-image: url('../images/poker-table.jpg');
     background-repeat: no-repeat;
     background-size: cover;
+    overscroll-behavior: contain;
 }
 
 /* Позиционирование footer */

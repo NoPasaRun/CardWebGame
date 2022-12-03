@@ -1,3 +1,19 @@
+const size = [window.width,window.height];
+
+$(window).resize(function(){
+    window.resizeTo(size[0],size[1]);
+});
+
+var last_y = 0;
+window.addEventListener('touchmove', function(e){
+    let scroll = window.pageYOffset || window.scrollTop || 0;
+    let direction = e.changedTouches[0].pageY > last_y ? 1 : -1;
+    if(direction > 0 && scroll === 0){
+        e.preventDefault();
+    }
+    last_y = e.changedTouches[0].pageY;
+});
+
 window.addEventListener("load", function(){
 
     //  Function adds special classes for card's cells 
@@ -21,7 +37,6 @@ window.addEventListener("load", function(){
     function distribution(callback=null) {
         let deck_cards = document.querySelector(".deck")
         let cards = deck_cards.querySelectorAll(".card")
-        console.log(cards)
         cards.forEach(function(el, index) {
             if (index + 1 === cards.length) {
                 setTimeout(deck_cards_constructor, 500*index, el, callback)
@@ -157,10 +172,10 @@ window.addEventListener("load", function(){
         // Function which adds a class to hide card
         // while it is moving
 
-        const dragStart = function () {
+        const dragStart = function (card) {
             setTimeout(() => {
-                $(this).attr("is_dragging", true)
-                this.classList.add('using-card')
+                $(card).attr("is_dragging", true)
+                card.classList.add('using-card')
             }, 0)
         }
 
@@ -193,6 +208,26 @@ window.addEventListener("load", function(){
             this.classList.remove("hover-placeholder")
         }
 
+        function add_card_and_update(zone, card) {
+            zone.append(card)
+
+            card.style.top = "0"
+            card.style.left = "0"
+            card.style.transform = "rotateZ(0deg)"
+
+            zone.classList.remove("hover-placeholder")
+
+            let csrf_token = document.querySelector("#csrf_token").value;
+
+            let data = {
+                "csrf_token": csrf_token,
+                "card_value": $(card).attr("data-value"),
+                "table_id": $(zone).attr("id")
+            }
+            let url = window.location.href + 'make_move'
+            ajax_request(url, data)
+        }
+
         // If card is user's card and there are no more
         // then 1 card in a cell this Function sends
         // request to backend to save the card in the cell
@@ -200,21 +235,22 @@ window.addEventListener("load", function(){
         const dragDrop = function () {
             let card = document.querySelector(".using-card")
             let card_value = $(card).attr("data-value")
-
             if (this.children.length < 2 && card_value) {
-                this.append(card)
+                add_card_and_update(this, card)
+            }
+        }
 
-                card.style.top = "0"
-                card.style.left = "0"
-                card.style.transform = "rotateZ(0deg)"
-
-                this.classList.remove("hover-placeholder")
-
-                let csrf_token = document.querySelector("#csrf_token").value;
-
-                let data = {"csrf_token": csrf_token, "card_value": card_value, "table_id": $(this).attr("id")}
-                let url = window.location.href + 'make_move'
-                ajax_request(url, data)
+        function find_cross_coords (card_coord, card_size, placeholder_coord, placeholder_size) {
+            let cross_coord = 0
+            if (card_coord[1] > placeholder_coord[1]) {
+                cross_coord = placeholder_size + card_size - card_coord[1] + placeholder_coord[0]
+            } else {
+                cross_coord = placeholder_size + card_size - placeholder_coord[1] + card_coord[0]
+            }
+            if (cross_coord < 0) {
+                return 0
+            } else {
+                return cross_coord
             }
         }
 
@@ -228,11 +264,52 @@ window.addEventListener("load", function(){
         })
 
         cards.forEach(function(card){
-            card.addEventListener("dragstart", dragStart)
+            card.addEventListener("dragstart", () => dragStart(card))
             card.addEventListener("dragend", () => dragEnd(card))
-            card.addEventListener("touchmove", dragStart)
-            card.addEventListener("touchend", () => dragEnd(card))
+            card.addEventListener('touchmove', function(e) {
+                $(card).attr("is_dragging", true)
+                let touchLocation = e.targetTouches[0];
+                document.body.appendChild(card)
+                card.style.left = touchLocation.pageX + 'px';
+                card.style.top = touchLocation.pageY + 'px';
+            })
+            card.addEventListener("touchend", function(e) {
+                $(card).attr("is_dragging", false)
+                let card_rect = card.getBoundingClientRect()
+                let [x, y] = [
+                    [card_rect.left, card_rect.left + card_rect.width],
+                    [card_rect.top, card_rect.top + card_rect.height]
+                ]
+                console.log(x, y)
+                let zone_data = {"area": 0, "zone": null}
+                zones.forEach(function(el) {
+                    let rect = el.getBoundingClientRect()
+                    let [z_x, z_y] = [
+                        [rect.left, rect.left + rect.width],
+                        [rect.top, rect.top + rect.height]
+                    ]
+                    let x_cross = find_cross_coords(x, card_rect.width, z_x, rect.width)
+                    let y_cross = find_cross_coords(y, card_rect.height, z_y, rect.height)
+                    if (x_cross*y_cross > zone_data["area"]) {
+                        zone_data["zone"] = el
+                        zone_data["area"] = x_cross*y_cross
+                    }
+                })
+                let zone = zone_data["zone"]
+                let card_value = $(card).attr("data-value")
+                if (zone !== null && this.children.length < 2 && card_value) {
+                    add_card_and_update(zone, card)
+                } else {
+                    let player_id = $(card).attr("data-player")
+                    let player_deck = document.querySelector("#"+player_id)
+                    let length = player_deck.children.length
+                    player_deck.appendChild(card)
+                    card.style.top = "0px"
+                    card.style.left = 20*length + "px"
+                }
+            })
         })
+
     }
 
     function init_game() {
