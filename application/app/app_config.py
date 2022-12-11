@@ -1,4 +1,3 @@
-import os
 from logging.config import dictConfig
 from flask import Flask, request
 from application.app.app_links import *
@@ -13,7 +12,8 @@ def create_app():
             "version": 1,
             "formatters": {
                 "default": {
-                    "format": "[%(asctime)s] %(levelname)s IN ^^%(module)s^^ :: <<%(message)s>>",
+                    "format": "%(levelname)s IN ^^%(module)s^^ :: "
+                              "<< * call %(funcName)s in line №%(lineno)d || %(message)s ||>>",
                 }
             },
             "handlers": {

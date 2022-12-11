@@ -1,5 +1,5 @@
 window.addEventListener("load", function() {
-    const music = new Audio('/static/index/music/motivation.mp3');
+    const music = new Audio('');
     music.loop = true;
     music.play()
     const music_button = document.querySelector("#music-button")

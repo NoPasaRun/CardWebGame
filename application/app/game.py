@@ -1,6 +1,6 @@
 import random
 from typing import Dict, List, Tuple, Union, Callable, Iterable
-
+import logging
 from application.app.models import User
 
 
@@ -54,36 +54,59 @@ class PlayerDeck(Deck):
 
     def __init__(self, *args, **kwargs):
         list.__init__(self, *args, **kwargs)
+        self.__clear_buffer = True
         self.__buffer = []
-        self.__buffer_copy = self.__buffer.copy()
+        self.__table_buffer = {}
 
     @property
-    def buffer_copy(self):
-        return self.__buffer_copy
+    def clear_buffer(self):
+        value = self.__clear_buffer
+        self.__clear_buffer = False
+        return value
 
-    @buffer_copy.setter
-    def buffer_copy(self, value):
+    @clear_buffer.setter
+    def clear_buffer(self, value):
         return
+
+    def current_values(self):
+        deck, additional_cards = self.copy(), self.__buffer + self.table_values
+        cards = set(deck).difference(additional_cards)
+        return cards
+
+    @property
+    def table_buffer(self):
+        value = self.__table_buffer.copy()
+        return value
+
+    @property
+    def table_values(self) -> List:
+        for player, table_cards in self.table_buffer.items():
+            return table_cards
+        return []
+
+    @table_buffer.setter
+    def table_buffer(self, value: Dict):
+        self.__table_buffer = value
+        self.__clear_buffer = True
 
     @property
     def buffer(self):
         buf = self.__buffer.copy()
-        self.__buffer.clear()
         return buf
 
     @buffer.setter
     def buffer(self, value):
         return
 
-    def extend(self, iterable):
+    def extend(self, iterable, update_buffer: bool = True):
         super().extend(iterable)
-        self.__buffer = self.copy()
-        self.__buffer_copy = self.__buffer.copy()
+        self.__clear_buffer = True
+        self.__buffer = iterable if update_buffer else []
 
-    def append(self, obj):
+    def append(self, obj, update_buffer: bool = True):
         super().append(obj)
-        self.__buffer = self.copy()
-        self.__buffer_copy = self.__buffer.copy()
+        self.__clear_buffer = True
+        self.__buffer = obj if update_buffer else []
 
 
 class Card:
@@ -190,11 +213,14 @@ class Player:
 
     def __setattr__(self, key, value):
         if key == "cards":
-            super().__setattr__(key, PlayerDeck())
-            if isinstance(value, Iterable):
-                self.cards.extend(value)
+            if isinstance(value, PlayerDeck):
+                super().__setattr__(key, value)
             else:
-                self.cards.append(value)
+                super().__setattr__(key, PlayerDeck())
+                if isinstance(value, Iterable):
+                    self.cards.extend(value)
+                else:
+                    self.cards.append(value)
         else:
             super().__setattr__(key, value)
 
@@ -318,9 +344,7 @@ class GameSession:
             self.__pair = Pair(self)
             GameSession.__games[lobby.lobby_index] = self
         except AssertionError:
-            pass
-        else:
-            lobby.game_status = True
+            raise ValueError("")
 
     @classmethod
     def game_exists(cls, game_ses) -> bool:
@@ -342,19 +366,20 @@ class GameSession:
                 if i_player != cur_player:
                     i_player.has_updated_game = False
 
-    def get_buffer(self, requested_player: Player) -> Dict:
+    def get_buffer(self, requested_player: Player) -> [Dict, Dict]:
         if requested_player is not None:
-            is_buffer = requested_player.cards.buffer
-            if is_buffer:
-                buffer = {}
+            if requested_player.cards.clear_buffer:
+                deck_buffer, table_buffer = {}, requested_player.cards.table_buffer
                 for i_player in sorted(self.players, key=lambda pl: self.trump in pl.cards):
+                    buffer_cards = i_player.cards.buffer
                     cards = list([
                         (card if i_player == requested_player or card == self.trump else None)
-                        for card in sorted(i_player.cards.buffer_copy, key=lambda c: c == self.trump)]
+                        for card in sorted(buffer_cards, key=lambda c: c == self.trump)]
                     )
-                    buffer.update({i_player: cards})
-                return buffer
-        return {}
+                    deck_buffer.update({i_player: cards})
+                logging.info(deck_buffer)
+                return deck_buffer, table_buffer
+        return {}, {}
 
     def iter_players(self, requested_player: Player) -> List:
         req_player_index = self.players.index(requested_player)
@@ -646,9 +671,12 @@ class Pair:
         :return:
         """
         # Если у Покрывающего Игрока не пас, то при новой Паре, он будет Подкидывающим
+        table_cards = self.table.cards
         if not self.defender.is_awaken:
-            table_cards = self.table.cards
-            self.defender.cards.extend(table_cards)
+            self.table.table_buffer[self.defender] = table_cards
+            self.defender.cards.extend(table_cards, False)
+        else:
+            self.table.table_buffer = {}
 
     def give_cards_to_players(self) -> None:
         """
@@ -661,6 +689,9 @@ class Pair:
             if cards_to_add > 0:
                 cards_to_add: Deck[Card] = self.game_ses.cards[:cards_to_add]
                 i_player.cards.extend(cards_to_add)
+            else:
+                i_player.cards.extend([], False)
+            i_player.cards.table_buffer = self.table.table_buffer.copy()
 
     def replace_players(self) -> None:
         """
@@ -689,6 +720,7 @@ class Pair:
 
 class Table(dict):
     def __init__(self):
+        self.table_buffer = {}
         table_data = {key: {OFF: None, DEF: None} for key in range(1, 7)}
         super().__init__(table_data)
 
@@ -703,8 +735,9 @@ class Table(dict):
         if table_id in self.keys():
             off_card, def_card = self[table_id].values()
             if off_card is None:
-                self[table_id][OFF] = card
-                return True
+                if card.val in [c.val for c in self.cards] or self.cards == []:
+                    self[table_id][OFF] = card
+                    return True
             elif def_card is None:
                 if card > off_card:
                     self[table_id][DEF] = card

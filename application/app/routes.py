@@ -1,4 +1,5 @@
 import json
+import logging
 from typing import Dict, Union, Tuple
 
 from flask import request, redirect, render_template, session
@@ -109,8 +110,12 @@ def lobby(lobby_id: int):
         return render_template("lobby.html", lobby_id=str(lobby_session.lobby_index), game=None)
     elif request.method == "POST":
         if not lobby_session.game_status:
-            lobby_session.game_status = True
-            GameSession(lobby=lobby_session)
+            try:
+                GameSession(lobby=lobby_session)
+            except ValueError:
+                pass
+            else:
+                lobby_session.game_status = True
         return redirect(f"/game/{lobby_id}/")
 
 
@@ -128,12 +133,24 @@ def get_card_template_vars(my_player: Player, cur_player, pair: Pair) -> Dict:
 def configure_players(g: GameSession, user) -> Tuple[Player, Dict]:
     requested_player: Player = g.get_player_by_user(user)
     current_player: Union[Attacker, Defender] = g.pair.get_current_player()
+
+    deck_buffer, table_buffer = g.get_buffer(requested_player)
+    for i_player in g.players:
+        if deck_buffer or table_buffer:
+            i_player.current_cards = i_player.cards.current_values()
+        else:
+            i_player.current_cards = i_player.cards
+
+    for i_player in table_buffer.keys():
+        i_player.vars = get_card_template_vars(i_player, current_player, g.pair)
     for player in g.players:
         card_template_vars = get_card_template_vars(player, current_player, g.pair)
         player.vars = card_template_vars
     context: Dict = {
         "game": g,
-        "table": g.pair.table
+        "table": g.pair.table,
+        "table_buffer": table_buffer,
+        "deck_buffer": deck_buffer
     }
     request.player = requested_player
     return requested_player, context
@@ -151,11 +168,13 @@ def game(game_id: int):
 
             ajax_response = json.dumps({"message": "Welcome!"}), 200
             if request.method == "GET":
-
+                if is_ajax:
+                    return ajax_response
                 context.update({"lobby_id": str(game_id)})
-                return render_template("lobby.html", **context) if not is_ajax else ajax_response
+                return render_template("lobby.html", **context)
             elif request.method == "POST":
-                if not requested_player.has_updated_game:
+                is_updated = requested_player.has_updated_game
+                if not is_updated:
                     return render_template("game.html", **context)
                 return json.dumps({"message": "You have updated game"}), 302
             else:

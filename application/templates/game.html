@@ -1,9 +1,8 @@
 <!-- Main -->
 <main class="poker-table">
-    {% set buffer = game.get_buffer(request.player) %}
     <!-- Deck of cards -->
     <div class="deck">
-        {% for player, cards in buffer.items() %}
+        {% for player, cards in deck_buffer.items() %}
             {% with player=player, cards=cards %}
                 {% include 'card_templates/deck.html' %}
             {% endwith %}
@@ -38,6 +37,16 @@
                 </li>
             {% endfor %}
         </ul>
+        <div class="buffer-table"
+             style="display: flex; position: absolute; align-items: center; justify-content: center">
+            {% for i_player, table_cards in table_buffer.items() %}
+                {% for table_c in table_cards %}
+                    {% with player=i_player, card=table_c %}
+                        {% include 'card_templates/cards_in_use.html' %}
+                    {% endwith %}
+                {% endfor %}
+            {% endfor %}
+        </div>
         {% for player in game.iter_players(request.player) %}
             <!-- Player -->
             <li class="player-item">
@@ -55,14 +64,12 @@
                     </strong>
                     <!-- Current player cards -->
                     <div class="player-cards {% if request.player == player %} my-cards {% endif %}" id="{{ player }}">
-                        {% if not buffer %}
-                            {% for card in player.cards %}
-                                <!-- Current player card -->
-                                {% with player=player, card=card %}
-                                    {% include 'card_templates/cards_in_use.html' %}
-                                {% endwith %}
-                            {% endfor %}
-                        {% endif %}
+                        {% for card in player.current_cards %}
+                            <!-- Current player card -->
+                            {% with player=player, card=card %}
+                                {% include 'card_templates/cards_in_use.html' %}
+                            {% endwith %}
+                        {% endfor %}
                     </div>
                     {% if request.player == player %}
                         <button id="change_status_button" {% if not request.player.vars['role'] %} hidden {% endif %}>

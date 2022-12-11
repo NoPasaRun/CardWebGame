@@ -25,7 +25,7 @@
             <form method="post">
                 <input name="start" type="hidden" value="start"/>
                 <input name="csrf_token" type="hidden" id="csrf_token" value="{{ csrf_token() }}" />
-                <input type="submit" value="Start game" />
+                <input type="submit" onclick="iter_is_allowed = false" id="start-button" value="Start game" />
             </form>
         {% else %}
             <div class="game">

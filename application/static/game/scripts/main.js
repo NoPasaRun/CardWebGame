@@ -35,8 +35,7 @@ window.addEventListener("load", function(){
     }
 
     function distribution(callback=null) {
-        let deck_cards = document.querySelector(".deck")
-        let cards = deck_cards.querySelectorAll(".card")
+        let cards = document.querySelectorAll(".buffer-table > .card, .deck > .card")
         cards.forEach(function(el, index) {
             if (index + 1 === cards.length) {
                 setTimeout(deck_cards_constructor, 500*index, el, callback)
@@ -141,6 +140,7 @@ window.addEventListener("load", function(){
             error: function(data) {
                 let d = JSON.parse(data.response)
                 if (d["url"] !== undefined) {
+                    alert("You're out of this game. That means you probably win if someone is still playing.")
                     window.location = d["url"]
                 }
             }
@@ -318,6 +318,7 @@ window.addEventListener("load", function(){
                 placeholder_constructor(function callback() {
                     dragAndDrop()
                     create_change_status_button()
+                    setInterval(ajax_loop, 500)
                 })
             })
         })
@@ -358,6 +359,5 @@ window.addEventListener("load", function(){
         // distribution()
     };
     init_game()
-    setInterval(ajax_loop, 500)
 })
 
