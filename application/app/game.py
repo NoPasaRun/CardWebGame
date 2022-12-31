@@ -377,7 +377,6 @@ class GameSession:
                         for card in sorted(buffer_cards, key=lambda c: c == self.trump)]
                     )
                     deck_buffer.update({i_player: cards})
-                logging.info(deck_buffer)
                 return deck_buffer, table_buffer
         return {}, {}
 

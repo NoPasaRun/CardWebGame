@@ -14,15 +14,23 @@ window.addEventListener("load", function() {
             },
             error: function(data) {
                 iter_is_allowed = true
-                console.log("Error occurred. Don't worry, it's accepted.")
+                try {
+                    let d = JSON.parse(data.response)
+                    console.log(d["message"])
+                    document.querySelector(".table-wrapper").innerHTML = d["user_data"]
+                } catch {
+                    console.log("Error occurred. Don't worry, it's accepted.")
+                }
             }
         });
     }
 
-
-    document.querySelector("#start-button").addEventListener("click", function() {
-        iter_is_allowed = false
-    })
+    let start_button = document.querySelector("#start-button")
+    if (start_button !== null) {
+        start_button.addEventListener("click", function() {
+            iter_is_allowed = false
+        })
+    }
 
 
     function ajax_loop() {

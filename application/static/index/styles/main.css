@@ -39,9 +39,6 @@ ul {
     text-decoration: none;
     color: #333;
     font-family: sans-serif;
-}
-
-.nav-list__item {
     border: 1px solid #333;
     border-radius: 8px;
     padding: 12px 25px;
@@ -146,18 +143,8 @@ ul {
     min-width: 540px;
 }
 
-.nav-list__item_modify-size {
-    padding: 21px 0;
-    min-width: 228px;
-    text-align: center;
-}
-
-.nav-list__item_color-yellow {
+.nav-list__link_color-yellow {
     background: #FCFB00
-}
-
-.nav-list__item_color-white {
-    border: 2px solid #FFFFFF;
 }
 
 .nav-list__link_color-yellow {

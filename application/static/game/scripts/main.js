@@ -1,10 +1,69 @@
-const size = [window.width,window.height];
+const size = [window.width, window.height];
 
 $(window).resize(function(){
     window.resizeTo(size[0],size[1]);
 });
 
 var last_y = 0;
+// DESKTOP
+
+// TRIGGER
+
+// PREVENT DEFAULT HANDLER
+function preventDefault(e) {
+  e = e || window.event;
+  if (e.preventDefault) {
+    e.preventDefault();
+  }
+  e.returnValue = false;
+}
+// PREVENT SCROLL KEYS
+// spacebar: 32, pageup: 33, pagedown: 34, end: 35, home: 36
+// left: 37, up: 38, right: 39, down: 40,
+// (Source: http://stackoverflow.com/a/4770179)
+function keydown(e) {
+  var keys = [32,33,34,35,36,37,38,39,40];
+  for (var i = keys.length; i--;) {
+    if (e.keyCode === keys[i]) {
+      preventDefault(e);
+      return;
+    }
+  }
+}
+// PREVENT MOUSE WHEEL
+function wheel(event) {
+  event.preventDefault();
+  event.stopPropagation();
+  return false;
+}
+// DISABLE SCROLL
+function disable_scroll() {
+  if (document.addEventListener) {
+    document.addEventListener('wheel', wheel, false);
+    document.addEventListener('mousewheel', wheel, false);
+    document.addEventListener('DOMMouseScroll', wheel, false);
+  }
+  else {
+    document.attachEvent('onmousewheel', wheel);
+  }
+  document.onmousewheel = document.onmousewheel = wheel;
+  document.onkeydown = keydown;
+
+  let x = window.pageXOffset || document.documentElement.scrollLeft
+  let y = window.pageYOffset || document.documentElement.scrollTop
+  window.onscroll = function() {
+    window.scrollTo(x, y);
+  };
+  // document.body.style.overflow = 'hidden'; // CSS
+  disable_scroll_mobile();
+}
+
+disable_scroll()
+
+// MOBILE
+function disable_scroll_mobile(){
+  document.addEventListener('touchmove', preventDefault, false);
+}
 window.addEventListener('touchmove', function(e){
     let scroll = window.pageYOffset || window.scrollTop || 0;
     let direction = e.changedTouches[0].pageY > last_y ? 1 : -1;
@@ -98,20 +157,33 @@ window.addEventListener("load", function(){
 
         let i = 0
         $(".player-item").each(function() {
-            let cards = $(this).children(".player-description").children(".player-cards").children(".card")
+            let player_cards = $(this).children(".player-description").children(".player-cards")
+            let cards = player_cards.children(".card")
             card_constructor(cards)
             i += angle
             let sin_alpha = Math.sin(i * (Math.PI / 180))
             let cos_alpha = Math.cos(i * (Math.PI / 180))
 
-            let X = Math.floor(height + height * cos_alpha * cos_beta - width * sin_alpha * sin_beta)
-            let Y = Math.floor(width + height * cos_alpha * sin_beta + width * sin_alpha * cos_beta)
-            
-            let y_add_offset = this.clientWidth/2
-            let x_add_offset = this.clientHeight/1.5
+            let Y = Math.floor(height + height * cos_alpha * cos_beta - width * sin_alpha * sin_beta)
+            let X = Math.floor(width + height * cos_alpha * sin_beta + width * sin_alpha * cos_beta)
+            X -= this.clientWidth/2
+            Y -= this.clientHeight/2
+            if (X < 0) {
+                X = 0
+            }
+            if (Y < 0) {
+                Y = 0
+            }
+            if (X+this.clientWidth > width*2) {
+                X -= X+this.clientWidth-width*2
+            }
 
-            $(this).css("top", X-x_add_offset + "px")
-            $(this).css("left", Y-y_add_offset + "px")
+            if (Y+this.clientHeight > height*2) {
+                Y -= Y+this.clientHeight-height*2
+            }
+
+            $(this).css("top", Y + "px")
+            $(this).css("left", X + "px")
         })
         if (callback !== null) {
             callback()
@@ -344,6 +416,7 @@ window.addEventListener("load", function(){
     function create_change_status_button() {
         const c_s_button = document.querySelector("#change_status_button")
         c_s_button.addEventListener("click", function() {
+            console.log("smth")
             let url = window.location.href + 'change_status'
             let csrf_token = document.querySelector("#csrf_token").value;
             let data = {"csrf_token": csrf_token}

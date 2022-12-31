@@ -1,0 +1,45 @@
+@media (max-width: 500px) {
+    .connected-users {
+        width: 45%;
+    }
+
+    .mobile-non-display {
+        display: none;
+    }
+
+    :root {
+        --card_resize: 1.25;
+    }
+
+    .placeholder-card-list {
+        width: calc(320px*var(--card_resize));
+        height: calc(260px*var(--card_resize));
+    }
+
+    .card,
+    .placeholder-card-field {
+        width: calc(80px*var(--card_resize));
+        height: calc(110px*var(--card_resize));
+    }
+
+    .card-info {
+        font-size: calc(20px*var(--card_resize));
+    }
+
+    .deck {
+        left: calc(50% - 80px*var(--card_resize)/2);
+        top: 5%;
+        transform: rotateZ(90deg);
+    }
+
+    .deck .card:last-child {
+        transform: rotateZ(90deg) translateY(calc(-15px*var(--card_resize)));
+    }
+
+    #music-button {
+        top: 5%;
+    }
+
+
+
+}

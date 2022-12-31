@@ -11,6 +11,10 @@
     src: url("../fonts/poker_font.ttf");
 }
 
+ul {
+    list-style: none;
+}
+
 body {
     position: relative;
     height: 100vh;
@@ -18,6 +22,94 @@ body {
     background-repeat: no-repeat;
     background-size: cover;
     overscroll-behavior: contain;
+}
+
+.table-wrapper {
+    width: 100%;
+    height: 100vh;
+}
+
+.start-game__form {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    left: 0;
+    right: 0;
+    top: 15%;
+    bottom: 0;
+}
+
+@keyframes rainbow {
+    0% {
+        background: linear-gradient(90deg, #1c5233, #0b6732, #04913d, #00ff6b);
+        background-clip: text;
+        text-shadow: 5px 5px 2px greenyellow, -3px -2px 2px purple, 5px -4px 2px blue;
+        filter: drop-shadow(5px 5px 3px white) drop-shadow(-5px -5px 3px white);
+    }
+    25% {
+        background: linear-gradient(90deg, #00ff6b, #1c5233, #0b6732, #04913d);
+        background-clip: text;
+        text-shadow: -2px -1px 2px purple;
+    }
+    50% {
+        background: linear-gradient(90deg, #04913d, #00ff6b, #1c5233, #0b6732);
+        background-clip: text;
+        text-shadow: 4px 4px 2px greenyellow, 4px -3px 2px blue;
+        filter: drop-shadow(1px 1px 3px white) drop-shadow(-1px -1px 3px white);
+    }
+    75% {
+        background: linear-gradient(90deg, #0b6732, #04913d, #00ff6b, #1c5233);
+        background-clip: text;
+    }
+    100% {
+        background: linear-gradient(90deg, #1c5233, #0b6732, #04913d, #00ff6b);
+        background-clip: text;
+        text-shadow: 5px 5px 2px greenyellow, -6px -4px 2px purple, 5px -4px 2px blue;
+        filter: drop-shadow(5px 5px 3px white) drop-shadow(-5px -5px 3px white);
+    }
+}
+
+#start-button {
+    cursor: pointer;
+    outline: none;
+    border: none;
+    color: #1c5233;
+    filter: brightness(500%);
+    font-size: 25px;
+    animation: 0.25s infinite rainbow ease-in;
+}
+
+#start-button:hover {
+    transform: translateY(3px);
+}
+
+.connected-users {
+    float: right;
+    background: rgba(47, 21, 21, 0.67);
+    height: 50%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 35%;
+    border-bottom-left-radius: 25px;
+    box-shadow: -5px 5px 40px 20px #0c5460;
+}
+
+.connected-user__item {
+    color: #7ad8e8;
+    filter: brightness(150%);
+    text-shadow: 1px 1px 10px #00bfa5;
+}
+
+.connected-user__item:not(:last-child) {
+    margin-bottom: 15px;
+}
+
+.connected-user__item::before {
+    content: "🎲";
+    text-shadow: none;
+    margin: 0 10px 0 10px;
+    filter: drop-shadow(1px 1px 2px #ffcf31) invert(100%);
 }
 
 /* Позиционирование footer */
@@ -43,8 +135,8 @@ body {
     position: fixed;
     height: 80px;
     width: 140px;
-    left: 5%;
-    top: 48%;
+    left: 2%;
+    bottom: 5%;
 }
 
 .deck .card,
@@ -74,8 +166,8 @@ body {
     justify-content: center;
     align-items: center;
     border-radius: 50%;
-    height: 70%;
-    width: 70%;
+    height: 100vh;
+    width: 100%;
 }
 
 /* Позиционирование и размеры ячеек для карт */
@@ -158,6 +250,7 @@ body {
     width: 80px;
     height: 110px;
     border-radius: 5px;
+    cursor: grab;
 }
 
 .card-content {
@@ -248,36 +341,48 @@ body {
     filter: brightness(200%);
 }
 
-/* Стилизация кнопки Начать Игру */
-
-.submit-button {
-    margin-top: 60px;
-    padding: 5px 7px;
-    cursor: pointer;
-    outline: none;
-    border: none;
-    border-radius: 10px;
-    color: darkgreen;
-    font-family: sans-serif, PokerFace;
-    font-size: 30px;
-    background: linear-gradient(45deg, rgb(4, 37, 4), rgb(0, 14, 0));
-    box-shadow: 3px 3px 5px 5px rgb(0, 14, 0);
-}
-
-.music-button {
+#music-button {
     position: fixed;
     width: 100px;
     height: 100px;
     bottom: 5%;
     right: 5%;
     background-size: contain;
-    background-image: url("../../index/images/play-button.png");
+    background-image: url("../../index/images/stop-button.png");
     transition-duration: 0.2s;
     cursor: pointer;
     border-radius: 50%;
     background-color: transparent;
 }
 
-.music-button:active {
+#change_status_button {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    right: -100px;
+    top: calc(50% - 40px);
+    cursor: pointer;
+    outline: none;
+    border: none;
+    background: transparent;
+    transition: all 0.25s ease-in-out;
+}
+
+#change_status_button::after {
+    --pixel: 0.5px;
+    position: absolute;
+    content: "❌";
+    transform: scale(300%);
+    text-shadow: var(--pixel) var(--pixel) 0 gray,
+                 calc(-1*var(--pixel)) calc(-1*var(--pixel)) 0 gray,
+                 var(--pixel) calc(-1*var(--pixel)) 0 gray,
+                 calc(-1*var(--pixel)) var(--pixel) 0 gray;
+}
+
+#change_status_button:hover {
+    transform: rotateZ(calc(360deg*3));
+}
+
+#music-button:focus {
     transform: translateY(2px);
 }

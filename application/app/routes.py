@@ -104,10 +104,10 @@ def game_menu_post():
 def lobby(lobby_id: int):
     lobby_session = LobbySession(lobby_index=lobby_id)
     user: User = User.get(session["_user_id"])
-
+    request.user = user
     if request.method == "GET":
         lobby_session.add_user(user)
-        return render_template("lobby.html", lobby_id=str(lobby_session.lobby_index), game=None)
+        return render_template("lobby.html", lobby=lobby_session, game=None)
     elif request.method == "POST":
         if not lobby_session.game_status:
             try:
@@ -162,18 +162,24 @@ def game(game_id: int):
     game_ses: GameSession = GameSession.get_game(game_id)
     is_ajax = request.headers.get('X-Requested-With')
     user: User = User.get(int(session.get("_user_id")))
+    lobby_session: LobbySession = LobbySession(lobby_index=game_id)
     if game_ses:
-        requested_player, context = configure_players(game_ses, user)
-        if requested_player in game_ses.players:
+
+        if game_ses.get_player_by_user(user) in game_ses.players:
 
             ajax_response = json.dumps({"message": "Welcome!"}), 200
             if request.method == "GET":
                 if is_ajax:
                     return ajax_response
-                context.update({"lobby_id": str(game_id)})
+
+                requested_player, context = configure_players(game_ses, user)
+                context.update({"lobby": lobby_session})
                 return render_template("lobby.html", **context)
             elif request.method == "POST":
+
+                requested_player, context = configure_players(game_ses, user)
                 is_updated = requested_player.has_updated_game
+
                 if not is_updated:
                     return render_template("game.html", **context)
                 return json.dumps({"message": "You have updated game"}), 302
@@ -184,7 +190,12 @@ def game(game_id: int):
     else:
         message, status_code = "Game not found!", 404
     if is_ajax:
-        return json.dumps({"message": message, "url": f"/game_lobby/{game_id}/"}), status_code
+        return json.dumps(
+            {
+                "message": message,
+                "user_data": render_template("lobby-users.html", users=lobby_session.users)
+            }
+        ), status_code
     return redirect(f"/game_lobby/{game_id}/")
 
 

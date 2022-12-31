@@ -49,9 +49,7 @@
         </div>
         {% for player in game.iter_players(request.player) %}
             <!-- Player -->
-            <li class="player-item">
-                <!-- Player icon -->
-                <span class="player-icon"><img src='/static/game/images/avatar.png' alt="avatar"></span>
+            <li class="player-item {% if player != request.player %}mobile-non-display{% endif %}">
                 <!-- Player info -->
                 <div class="player-description">
                     <!-- Current player name -->
@@ -73,7 +71,6 @@
                     </div>
                     {% if request.player == player %}
                         <button id="change_status_button" {% if not request.player.vars['role'] %} hidden {% endif %}>
-                            Change Status
                         </button>
                     {% endif %}
                 </div>
