@@ -198,7 +198,7 @@ class Player:
     Класс, описывающий атрибуты Игрока
     """
 
-    def __init__(self, user_data, cards, has_updated_game = True):
+    def __init__(self, user_data: User, cards: Deck, has_updated_game: bool = True):
         """
         Функция конструктор
         :param user_data: данные пользователя / объект модели User
@@ -400,7 +400,7 @@ class GameSession:
         return self.__players
 
     @property
-    def cards(self) -> Deck[Card]:
+    def cards(self) -> Deck:
         return self.__cards
 
     @players.setter
@@ -424,7 +424,7 @@ class GameSession:
                 return i_player
 
     @staticmethod
-    def make_deck() -> Tuple[Deck[Card], Card]:
+    def make_deck() -> Tuple[Deck, Card]:
         """
         Функция создания колоды Карт
         :return:
