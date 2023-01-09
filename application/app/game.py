@@ -198,7 +198,7 @@ class Player:
     Класс, описывающий атрибуты Игрока
     """
 
-    def __init__(self, user_data: User, cards: PlayerDeck[Card], has_updated_game: bool = True) -> None:
+    def __init__(self, user_data: User, cards: PlayerDeck[Card], has_updated_game: bool = True):
         """
         Функция конструктор
         :param user_data: данные пользователя / объект модели User
