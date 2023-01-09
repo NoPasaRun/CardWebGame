@@ -16,8 +16,17 @@
         height: calc(260px*var(--card_resize));
     }
 
+    .deck {
+        width: calc(80px*var(--card_resize));
+        height: calc(110px*var(--card_resize));
+        left: calc(50% - 80px*var(--card_resize)/2);
+        transform: rotateZ(90deg);
+        top: 0;
+    }
+
     .card,
-    .placeholder-card-field {
+    .placeholder-card-field,
+    .fake_card {
         width: calc(80px*var(--card_resize));
         height: calc(110px*var(--card_resize));
     }
@@ -26,20 +35,21 @@
         font-size: calc(20px*var(--card_resize));
     }
 
-    .deck {
-        left: calc(50% - 80px*var(--card_resize)/2);
-        top: 5%;
-        transform: rotateZ(90deg);
-    }
-
     .deck .card:last-child {
         transform: rotateZ(90deg) translateY(calc(-15px*var(--card_resize)));
+        z-index: 0;
     }
 
-    #music-button {
-        top: 5%;
+    .fake_card {
+        z-index: -1;
+        left: calc(50% - 80px*var(--card_resize)/2);
+        top: 0;
+        transform: rotateZ(180deg) translateY(calc(-15px*var(--card_resize)));
     }
 
-
+    #change_status_button {
+        bottom: 81%;
+        right: 70%;
+    }
 
 }

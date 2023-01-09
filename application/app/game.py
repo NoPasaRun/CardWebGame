@@ -182,14 +182,13 @@ class Card:
         return list(deck)
 
 
-def check_if_player_is_out(func: Callable):
-    def wrapper(self: Union['Defender', 'Attacker'], game_ses: 'GameSession', *args, **kwargs):
-        result = func(self, game_ses, *args, **kwargs)
-        if len(self.cards) == 0 and (isinstance(self, Defender) or len(game_ses.cards) == 0):
-            if len(game_ses.cards) == 0:
-                game_ses.remove_player(self)
-            if isinstance(self, Defender):
-                game_ses.pair.finish_pair()
+def check_if_players_are_out(func: Callable):
+    def wrapper(self: 'GameSession', *args, **kwargs):
+        result = func(self, *args, **kwargs)
+        if len(self.cards) == 0:
+            for i_player in self.players:
+                if len(i_player.cards) == 0:
+                    self.remove_player(i_player)
         return result
     return wrapper
 
@@ -239,11 +238,9 @@ class Player:
     def has_updated_game(self, value):
         self.__has_updated_game = value
 
-    @check_if_player_is_out
-    def go_on(self, game_ses: 'GameSession', card_val: str, table: 'Table', table_id: int) -> bool:
+    def go_on(self, card_val: str, table: 'Table', table_id: int) -> bool:
         """
         Функция подкидывания Карты
-        :param game_ses: Игровая Сессия
         :param card_val: строковое представление Карты
         :param table: Стол
         :param table_id: ячейка Стола
@@ -339,32 +336,33 @@ class GameSession:
         Функция конструктор
         """
         try:
+            self._id = lobby.lobby_index
             self.__cards, self.trump = self.make_deck()
-            self.__players: List = self.shuffle_players(lobby.users)
+            self.__players: List = self.shuffle_players(lobby.users[:lobby.player_count])
             self.__pair = Pair(self)
-            GameSession.__games[lobby.lobby_index] = self
-        except AssertionError:
-            raise ValueError("")
+            GameSession.__games[self._id] = self
+        except AssertionError as error:
+            raise ValueError(error)
 
     @classmethod
     def game_exists(cls, game_ses) -> bool:
         return game_ses in cls.__games.values()
 
+    @classmethod
+    def all_games(cls):
+        return cls.__games
+
     def delete(self):
-        all_games = filter(lambda item: item[1] == self, GameSession.__games.items())
-        for game_index, game_instance in all_games:
-            index = game_index
-            break
-        else:
-            index = None
+        if GameSession.game_exists(self):
+            lobby_session = LobbySession(lobby_index=self._id)
+            GameSession.__games.pop(self._id)
+            lobby_session.game_status = False
 
-        GameSession.__games.pop(index)
-
-    def modified(self, cur_player: Player):
+    @check_if_players_are_out
+    def modified(self):
         if hasattr(self, "players"):
             for i_player in self.players:
-                if i_player != cur_player:
-                    i_player.has_updated_game = False
+                i_player.has_updated_game = False
 
     def get_buffer(self, requested_player: Player) -> [Dict, Dict]:
         if requested_player is not None:
@@ -415,7 +413,7 @@ class GameSession:
         set_of_cards.difference_update(used_cards)
         self.__cards = list(set_of_cards)
 
-    def remove_player(self, pl: Union['Defender', 'Attacker']):
+    def remove_player(self, pl: 'Player'):
         self.players.remove(pl)
         if len(self.players) <= 1:
             self.delete()
@@ -509,8 +507,11 @@ class LobbySession:
             self.__users = []
             self.__ready_to_play = False
             self.__lobby_index = lobby_index
-            for attr_name, val in kwargs.items():
-                setattr(self, attr_name, val)
+            self.owner = kwargs.get("owner", User())
+            if self.owner.id is not None:
+                self.add_user(self.owner)
+            self.name = kwargs.get("name", "")
+            self.player_count = kwargs.get("player_count", 6)
             LobbySession.__lobbies[lobby_index] = self
 
     def __new__(cls, lobby_index, **kwargs):

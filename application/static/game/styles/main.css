@@ -131,31 +131,34 @@ body {
     align-items: center;
 }
 
-.deck {
-    position: fixed;
+.deck,
+.fake_card {
+    position: absolute;
     height: 80px;
-    width: 140px;
+    width: 110px;
+    top: 5%;
     left: 2%;
-    bottom: 5%;
 }
 
 .deck .card,
 .buffer-table .card{
-    position: fixed;
+    position: absolute;
+    z-index: 102;
 }
 
 /* Позиционирование и трансформация содержимого колоды */
 
-.card_transform {
-    transform: rotateZ(90deg);
-    top: 0;
-    left: 30px;
-    box-shadow: none!important;
+.deck .card:last-child,
+.fake_card {
+    z-index: 101;
+    transform: rotateZ(90deg) translateY(-15px);
 }
 
-.deck .card:last-child {
-    z-index: -1;
-    transform: rotateZ(90deg) translateY(-15px);
+.fake_card {
+    width: 80px;
+    height: 110px;
+    filter: drop-shadow(2px 2px 2px darkgray) drop-shadow(-2px -2px 2px darkgray) brightness(40%);
+    z-index: 100;
 }
 
 /* Позиционирование и размеры поля для игры */
@@ -198,6 +201,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: auto;
 }
 
 .player-description {
@@ -231,7 +235,6 @@ body {
     position: relative;
     justify-content: space-between;
     align-items: flex-end;
-    width: 200px;
     height: 110px;
 }
 
@@ -245,12 +248,14 @@ body {
 
 .card {
     position: absolute;
+    top: 0;
     box-shadow: -1px 1px 2px 2px rgba(255, 3, 3, 0.4);
     perspective: 500px;
     width: 80px;
     height: 110px;
     border-radius: 5px;
     cursor: grab;
+    transition: transform 0.5s ease-in-out;
 }
 
 .card-content {
@@ -345,7 +350,7 @@ body {
     position: fixed;
     width: 100px;
     height: 100px;
-    bottom: 5%;
+    top: 5%;
     right: 5%;
     background-size: contain;
     background-image: url("../../index/images/stop-button.png");
@@ -353,36 +358,61 @@ body {
     cursor: pointer;
     border-radius: 50%;
     background-color: transparent;
+    z-index: 200;
 }
 
 #change_status_button {
-    position: absolute;
-    width: 80px;
-    height: 80px;
-    right: -100px;
-    top: calc(50% - 40px);
+    position: fixed;
+    display: block;
+    right: 8%;
+    bottom: 5%;
     cursor: pointer;
     outline: none;
     border: none;
     background: transparent;
     transition: all 0.25s ease-in-out;
+    z-index: 200;
 }
 
-#change_status_button::after {
+.button-icon {
     --pixel: 0.5px;
-    position: absolute;
-    content: "❌";
-    transform: scale(300%);
+    font-size: 80px;
     text-shadow: var(--pixel) var(--pixel) 0 gray,
                  calc(-1*var(--pixel)) calc(-1*var(--pixel)) 0 gray,
                  var(--pixel) calc(-1*var(--pixel)) 0 gray,
                  calc(-1*var(--pixel)) var(--pixel) 0 gray;
 }
 
-#change_status_button:hover {
-    transform: rotateZ(calc(360deg*3));
+#change_status_button:hover .button-icon {
+    text-shadow: 2px 2px 2px red, -2px -2px 2px red;
+    filter: brightness(250%);
 }
 
 #music-button:focus {
     transform: translateY(2px);
+}
+
+.leave-button {
+    position: absolute;
+    left: 5%;
+    bottom: 5%;
+}
+
+.leave-button__icon {
+    transform: scaleX(-100%);
+    box-shadow: -2px 2px 2px 2px red;
+}
+
+.leave-button__icon:hover {
+    box-shadow: -4px 3px 2px 2px darkred;
+}
+
+.timer {
+    position: fixed;
+    z-index: 300;
+    top: 50%;
+    left: 50%;
+    font-size: 20px;
+    color: black;
+    font-family: PokerFace;
 }

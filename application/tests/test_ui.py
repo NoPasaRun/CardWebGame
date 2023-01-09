@@ -8,8 +8,8 @@ port = 8000
 
 
 def init_game():
-    users = get_users()[:5]
-    lobby = LobbySession(lobby_index=1, name="Ultra Game", owner=users[0], people_count=2)
+    users = get_users()[:2]
+    lobby = LobbySession(lobby_index=1, name="Ultra Game", owner=users[0], player_count=6)
     for user in users:
         lobby.add_user(user)
     g = GameSession(lobby=lobby)

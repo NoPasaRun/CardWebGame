@@ -13,6 +13,11 @@ class User(Base):
     password: str = Column(String(256), nullable=False)
     balance: float = Column(Float(), default=0.)
 
+    def __eq__(self, other):
+        if self.id is None:
+            return True
+        return super(User, self).__eq__(other)
+
     def __repr__(self):
         return str(self.username)
 

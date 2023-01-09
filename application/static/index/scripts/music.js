@@ -1,5 +1,5 @@
 window.addEventListener("load", function() {
-    const music = new Audio('/random_music/');
+    const music = new Audio('/static/index/music/Oxxxymiron_-_Londongrad_73314772.mp3');
     music.loop = true;
     const music_button = document.querySelector("#music-button")
     music_button.addEventListener("click", function(){

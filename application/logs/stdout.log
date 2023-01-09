@@ -402,3 +402,36 @@
 [2022-11-04 14:32:02,763] WARNING IN ^^routes^^ :: <<{'Stan': [10♠, 10♣, 6♣, T♣, 9♠, 6❤], 'NoPasaRan': [None, None, None, None, None, None]}>>
 [2022-11-04 14:32:02,875] WARNING IN ^^routes^^ :: <<{'Stan': [], 'NoPasaRan': [None, None, None, None, None, None]}>>
 [2022-12-10 12:53:21,149] WARNING IN ^^test_ui^^ :: <<Init Game instance>>
+ERROR IN ^^app^^ :: << * call log_exception in line №1457 || Exception on / [GET] ||>>
+Traceback (most recent call last):
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 2073, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 1519, in full_dispatch_request
+    return self.finalize_request(rv)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 1538, in finalize_request
+    response = self.make_response(rv)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 1730, in make_response
+    raise TypeError(
+TypeError: The view function did not return a valid response. The return type must be a string, dict, tuple, Response instance, or WSGI callable, but it was a coroutine.
+ERROR IN ^^app^^ :: << * call log_exception in line №1457 || Exception on / [GET] ||>>
+Traceback (most recent call last):
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 2073, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 1519, in full_dispatch_request
+    return self.finalize_request(rv)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 1538, in finalize_request
+    response = self.make_response(rv)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 1730, in make_response
+    raise TypeError(
+TypeError: The view function did not return a valid response. The return type must be a string, dict, tuple, Response instance, or WSGI callable, but it was a coroutine.
+ERROR IN ^^app^^ :: << * call log_exception in line №1457 || Exception on / [GET] ||>>
+Traceback (most recent call last):
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 2073, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 1519, in full_dispatch_request
+    return self.finalize_request(rv)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 1538, in finalize_request
+    response = self.make_response(rv)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 1730, in make_response
+    raise TypeError(
+TypeError: The view function did not return a valid response. The return type must be a string, dict, tuple, Response instance, or WSGI callable, but it was a coroutine.

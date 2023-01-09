@@ -1,10 +1,13 @@
-const size = [window.width, window.height];
+const size = [window.innerWidth, window.innerHeight];
+const card_offset = 40;
+const st_angle = 50;
+const card_min_offset = 10;
+var ajax_forbidden = false;
 
 $(window).resize(function(){
     window.resizeTo(size[0],size[1]);
 });
 
-var last_y = 0;
 // DESKTOP
 
 // TRIGGER
@@ -58,20 +61,12 @@ function disable_scroll() {
   disable_scroll_mobile();
 }
 
-disable_scroll()
+// disable_scroll()
 
 // MOBILE
 function disable_scroll_mobile(){
   document.addEventListener('touchmove', preventDefault, false);
 }
-window.addEventListener('touchmove', function(e){
-    let scroll = window.pageYOffset || window.scrollTop || 0;
-    let direction = e.changedTouches[0].pageY > last_y ? 1 : -1;
-    if(direction > 0 && scroll === 0){
-        e.preventDefault();
-    }
-    last_y = e.changedTouches[0].pageY;
-});
 
 window.addEventListener("load", function(){
 
@@ -94,58 +89,132 @@ window.addEventListener("load", function(){
     }
 
     function distribution(callback=null) {
-        let cards = document.querySelectorAll(".buffer-table > .card, .deck > .card")
-        cards.forEach(function(el, index) {
-            if (index + 1 === cards.length) {
-                setTimeout(deck_cards_constructor, 500*index, el, callback)
-            } else {
-                setTimeout(deck_cards_constructor, 500*index, el)
+        let cards = []
+        let all_cards = document.querySelectorAll(".buffer-table > .card:not([data-player='None']), .deck > .card:not([data-player='None'])")
+        if (size[0] > 500) {
+            cards = all_cards
+        } else {
+            let player_deck = document.querySelector(".my-cards")
+            cards = document.querySelectorAll(".buffer-table > .card[data-player='" + player_deck.id + "']" + ", " + ".deck > .card[data-player='" + player_deck.id + "']")
+            let exclude_from_deletion = [];
+            cards.forEach(function(player_card) {
+                exclude_from_deletion.push(player_card)
+            })
+            all_cards.forEach(function(hidden_card) {
+                console.log(hidden_card, !(exclude_from_deletion.includes(hidden_card)))
+                if (!(exclude_from_deletion.includes(hidden_card))) {
+                    hidden_card.style.display = "none"
+                }
+            })
+        }
+
+        if (cards.length > 0) {
+            cards.forEach(function(el, index) {
+                let string_player = $(el).attr("data-player")
+                let player_cards = document.querySelectorAll(".card[data-player='" + string_player + "']")
+                if (index + 1 === cards.length) {
+                    setTimeout(deck_cards_constructor, 500*index, el, player_cards, callback)
+                } else {
+                    setTimeout(deck_cards_constructor, 500*index, el, player_cards)
+                }
+            })
+        } else {
+            if (callback !== null) {
+                callback()
             }
-        })
+        }
     }
 
-    function deck_cards_constructor(card, callback=null) {
+    function deck_cards_constructor(card, all_cards, callback=null) {
         let player_id = $(card).attr("data-player")
-        let player_deck = document.querySelector("#"+player_id)
-        if (player_deck !== null) {
-            let length = player_deck.children.length
-            let blank_card = card.cloneNode()
-            blank_card.style.opacity = "0"
-            player_deck.appendChild(blank_card)
-            let rect = blank_card.getBoundingClientRect()
-            card.style.zIndex = length + ""
-            $(card).animate({
-                left: rect.left+length*20+"px",
-                top: rect.top+"px"
-            }, 500, function() {
-                    player_deck.removeChild(blank_card)
-                    player_deck.appendChild(card)
-                    card.style.left = length*20+"px"
-                    card.style.top = "0px"
-                }
+        let player_deck = document.querySelector("#" + player_id)
+
+        let offset = 0
+        if (player_deck.classList.contains("my-cards")) {
+            offset = card_offset
+        } else {
+            offset = card_min_offset
+        }
+
+        let length = player_deck.children.length
+        let blank_card = card.cloneNode()
+        player_deck.appendChild(blank_card)
+
+        let rect = blank_card.getBoundingClientRect()
+        blank_card.classList.add("blank_card")
+        blank_card.style.opacity = "0"
+        card.style.zIndex = length + ""
+
+        $(card).animate(
+            {
+                        left: rect.left+length*offset+"px",
+                        top: rect.top+"px"
+                    },
+            {
+                        duration: 500,
+                        complete: function() {
+                            player_deck.removeChild(blank_card)
+                            player_deck.appendChild(card)
+                            card_constructor(player_deck)
+
+                            if (callback !== null) {
+                                callback()
+                            }
+                        }
+                    }
             );
-        }
-        if (callback !== null) {
-            callback()
-        }
     }
 
     // Function transforms cards in the right position
     // and adds an Z-angle for them
 
-    function card_constructor(all_cards) {
+    function set_card_parameters(obj, data) {
+        obj.style.zIndex = data["index"]
+        obj.style.left = data["left"] + "px"
+        obj.style.top = "0"
+        if (data["angle"]) {
+            let angle = st_angle * (-1 + 2/(data["cards_count"]-1)*data["index"])
+            let top_offset = 0.015 * angle**2
+            obj.style.transform = "rotateZ(" + angle + "deg)" + " " + "translateY(" + top_offset + "px)"
+        }
+        obj.initial_transform = obj.style.transform
+    }
+
+    function card_constructor(deck) {
         let index = 0
         let left = 0
-        $(all_cards).each(function() {
-            this.style.zIndex = index + ""
-            this.style.left = left + "px"
+        let cards = deck.querySelectorAll(".card")
+        deck.style.width = get_abs_width_of_deck(deck)
+        $(cards).each(function() {
+            let params = {"index": index + "", "left": left, "cards_count": cards.length}
+            if (deck.classList.contains("my-cards")) {
+                params["angle"] = true
+                left += card_offset
+            } else {
+                params["angle"] = false
+                left += card_min_offset
+            }
+            set_card_parameters(this, params)
             index++
-            left += 20
         })
     }
 
     // Function transforms positions of players in a way
     // the distances would be the same between them
+
+    function get_abs_width_of_deck(deck) {
+        let cards = document.querySelectorAll(".card[data-player='" + deck.id + "']")
+        if (cards.length !== 0) {
+            let w = cards[0].clientWidth
+            if (deck.classList.contains("my-cards")) {
+                return w + card_offset * (cards.length - 1)
+            } else {
+                return w + card_min_offset * (cards.length - 1)
+            }
+        } else {
+            return 0
+        }
+    }
 
     function player_constructor(callback=null) {
         let width = document.querySelector('.player-nav-list').clientWidth/2
@@ -157,15 +226,15 @@ window.addEventListener("load", function(){
 
         let i = 0
         $(".player-item").each(function() {
-            let player_cards = $(this).children(".player-description").children(".player-cards")
-            let cards = player_cards.children(".card")
-            card_constructor(cards)
+            let player_cards = $(this).children(".player-description").children(".player-cards")[0]
+            card_constructor(player_cards)
             i += angle
             let sin_alpha = Math.sin(i * (Math.PI / 180))
             let cos_alpha = Math.cos(i * (Math.PI / 180))
 
             let Y = Math.floor(height + height * cos_alpha * cos_beta - width * sin_alpha * sin_beta)
             let X = Math.floor(width + height * cos_alpha * sin_beta + width * sin_alpha * cos_beta)
+
             X -= this.clientWidth/2
             Y -= this.clientHeight/2
             if (X < 0) {
@@ -197,23 +266,35 @@ window.addEventListener("load", function(){
         $.ajax({
             url: url,
             type: 'post',
-            dataType: 'html',
+            dataType: "text",
             cache: false,
             async: false,
             data: request_data,
-            success: function(data) {
+            success: function(data, text, headers) {
+                console.log(data, headers.status)
                 try {
-                    JSON.parse(data)
+                    let d = JSON.parse(data)
+                    if (d["time"] !== undefined) {
+                        let timer = document.querySelector(".timer")
+                        timer.innerText = d["time"]
+                    }
                 } catch {
                     $(".game").html(data)
                     init_game()
                 }
             },
             error: function(data) {
-                let d = JSON.parse(data.response)
-                if (d["url"] !== undefined) {
-                    alert("You're out of this game. That means you probably win if someone is still playing.")
-                    window.location = d["url"]
+                try {
+                    console.log(data)
+                    let d = JSON.parse(data.response)
+                    if (d["url"] !== undefined) {
+                        ajax_forbidden = true
+                        window.clearInterval(window.interval_id)
+                        alert("You're out of this game.")
+                        window.location = d["url"]
+                    }
+                } catch {
+                    alert("Sorry, server is off. You're allowed to leave your ass from this website.")
                 }
             }
         });
@@ -241,10 +322,17 @@ window.addEventListener("load", function(){
         const player_cards = document.querySelector(".my-cards")
         const cards = player_cards.querySelectorAll(".card")
 
+        function replace_cards(c) {
+            let player_id = $(c).attr("data-player")
+            let player_deck = document.querySelector("#"+player_id)
+            player_deck.insertBefore(c, player_deck.children[0])
+            card_constructor(player_deck)
+        }
         // Function which adds a class to hide card
         // while it is moving
 
         const dragStart = function (card) {
+            card.style.transform = ""
             setTimeout(() => {
                 $(card).attr("is_dragging", true)
                 card.classList.add('using-card')
@@ -255,6 +343,7 @@ window.addEventListener("load", function(){
         // when card returns to its origin place
 
         const dragEnd = function (card) {
+            replace_cards(card)
             $(card).attr("is_dragging", false)
             card.classList.remove('using-card')
         }
@@ -338,13 +427,30 @@ window.addEventListener("load", function(){
         cards.forEach(function(card){
             card.addEventListener("dragstart", () => dragStart(card))
             card.addEventListener("dragend", () => dragEnd(card))
+
+            card.addEventListener("mouseover", function(event) {
+                card.style.transform = "translateY(-" + 10 + "px)" + " " + "translateX(-" + 10 + "px)"
+            })
+
+            card.addEventListener("mouseleave", function(event) {
+                card.style.transform = card.initial_transform
+            })
+
+            card.addEventListener("touchstart", function(event) {
+                event.preventDefault()
+            })
+
             card.addEventListener('touchmove', function(e) {
+                e.preventDefault()
                 $(card).attr("is_dragging", true)
                 let touchLocation = e.targetTouches[0];
+                card.style.transform = ""
+                let card_rect = card.getBoundingClientRect()
                 document.body.appendChild(card)
-                card.style.left = touchLocation.pageX + 'px';
-                card.style.top = touchLocation.pageY + 'px';
+                card.style.left = touchLocation.pageX - card_rect.width/2 + 'px';
+                card.style.top = touchLocation.pageY - card_rect.height/2 + 'px';
             })
+
             card.addEventListener("touchend", function(e) {
                 $(card).attr("is_dragging", false)
                 let card_rect = card.getBoundingClientRect()
@@ -352,7 +458,6 @@ window.addEventListener("load", function(){
                     [card_rect.left, card_rect.left + card_rect.width],
                     [card_rect.top, card_rect.top + card_rect.height]
                 ]
-                console.log(x, y)
                 let zone_data = {"area": 0, "zone": null}
                 zones.forEach(function(el) {
                     let rect = el.getBoundingClientRect()
@@ -372,12 +477,8 @@ window.addEventListener("load", function(){
                 if (zone !== null && this.children.length < 2 && card_value) {
                     add_card_and_update(zone, card)
                 } else {
-                    let player_id = $(card).attr("data-player")
-                    let player_deck = document.querySelector("#"+player_id)
-                    let length = player_deck.children.length
-                    player_deck.appendChild(card)
-                    card.style.top = "0px"
-                    card.style.left = 20*length + "px"
+                    replace_cards(card)
+                    card_constructor(player_cards)
                 }
             })
         })
@@ -385,12 +486,12 @@ window.addEventListener("load", function(){
     }
 
     function init_game() {
-        player_constructor(function callback() {
-            distribution(function callback() {
-                placeholder_constructor(function callback() {
+        player_constructor(function call() {
+            distribution(function call() {
+                placeholder_constructor(function call() {
                     dragAndDrop()
                     create_change_status_button()
-                    setInterval(ajax_loop, 500)
+                    window.interval_id = window.setInterval(ajax_loop, 500)
                 })
             })
         })
@@ -407,16 +508,17 @@ window.addEventListener("load", function(){
                 loop_is_allowed = false
             }
         })
-        if (loop_is_allowed === true) {
-            let data = {"csrf_token": csrf_token}
-            ajax_request(window.location, data)
+        if (!ajax_forbidden) {
+            if (loop_is_allowed === true) {
+                let data = {"csrf_token": csrf_token}
+                ajax_request(window.location, data)
+            }
         }
     }
 
     function create_change_status_button() {
         const c_s_button = document.querySelector("#change_status_button")
         c_s_button.addEventListener("click", function() {
-            console.log("smth")
             let url = window.location.href + 'change_status'
             let csrf_token = document.querySelector("#csrf_token").value;
             let data = {"csrf_token": csrf_token}
@@ -429,7 +531,6 @@ window.addEventListener("load", function(){
 
     window.onresize = function() {
         player_constructor()
-        // distribution()
     };
     init_game()
 })

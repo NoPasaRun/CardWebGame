@@ -9,6 +9,15 @@
         {% endfor %}
         {% include 'card_templates/deck_last_cards.html' %}
     </div>
+    <div class="fake_card" style="color: {{ game.trump.color }}">
+        <div class="card-info card-info_top-pos">
+            {{ game.trump }}
+        </div>
+        <div class="card-layout"></div>
+        <div class="card-info card-info_low-pos">
+            {{ game.trump }}
+        </div>
+    </div>
     <!-- List of players -->
     <ul class="player-nav-list">
         <!-- List of card cells -->
@@ -69,14 +78,19 @@
                             {% endwith %}
                         {% endfor %}
                     </div>
-                    {% if request.player == player %}
-                        <button id="change_status_button" {% if not request.player.vars['role'] %} hidden {% endif %}>
-                        </button>
-                    {% endif %}
                 </div>
             </li>
         {% endfor %}
     </ul>
+    <button id="change_status_button" {% if not request.player.vars['role'] %} hidden {% endif %}>
+        <span class="button-icon">❌</span>
+    </button>
+    <div class="leave-button">
+        <a class="leave-button__link" href="/remove_myself/{{ game._id }}">
+            <img class="leave-button__icon" src="/static/game/images/leave-icon.png" alt="Go fucking yourself">
+        </a>
+    </div>
+    {% include "timer.html" %}
 </main>
 <!-- Footer -->
 <footer class="footer">
