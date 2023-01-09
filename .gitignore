@@ -1,4 +1,5 @@
 /venv/
+/venv_3.8/
 ./token.txt
 /application/app/base.db
 /application/app/__pycache__/

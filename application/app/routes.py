@@ -5,7 +5,7 @@ import json
 import logging
 from typing import Dict, Union, Tuple
 
-from flask import request, redirect, render_template, session, copy_current_request_context
+from flask import request, redirect, render_template, session
 from flask_wtf import CSRFProtect
 
 from application.app.app_config import create_app
