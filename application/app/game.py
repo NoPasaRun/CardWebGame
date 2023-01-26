@@ -69,8 +69,9 @@ class PlayerDeck(Deck):
         return
 
     def current_values(self):
-        deck, additional_cards = self.copy(), self.__buffer + self.table_values
+        deck, additional_cards = list(self.copy()), self.__buffer + self.table_values
         cards = set(deck).difference(additional_cards)
+
         return cards
 
     @property
@@ -198,7 +199,7 @@ class Player:
     Класс, описывающий атрибуты Игрока
     """
 
-    def __init__(self, user_data: User, cards: Deck, has_updated_game: bool = True):
+    def __init__(self, user_data: User, cards: [Deck, Card], has_updated_game: bool = True):
         """
         Функция конструктор
         :param user_data: данные пользователя / объект модели User
@@ -222,6 +223,11 @@ class Player:
                     self.cards.append(value)
         else:
             super().__setattr__(key, value)
+
+    def compare(self, other: Union['Player', 'Attacker', 'Defender']):
+        if other is not None:
+            return self.user_data == other.user_data
+        return False
 
     def __hash__(self) -> int:
         pl = Player(*self.__getargs__())
@@ -254,11 +260,6 @@ class Player:
             if table.put_card(table_id, table_card):
                 self.cards.remove(table_card)
                 return True
-        return False
-
-    def __eq__(self, other: Union['Player', 'Attacker', 'Defender']) -> bool:
-        if other is not None:
-            return self.user_data == other.user_data
         return False
 
     def __getargs__(self) -> Tuple:
@@ -379,8 +380,7 @@ class GameSession:
         return {}, {}
 
     def iter_players(self, requested_player: Player) -> List:
-        req_player_index = self.players.index(requested_player)
-        main_player_list = self.players[req_player_index+1:] + self.players[:req_player_index+1]
+        main_player_list = sorted(self.players, key=lambda pl: requested_player.compare(pl))
         return main_player_list
 
     @property
@@ -558,8 +558,8 @@ class LobbySession:
         self.__ready_to_play = status_bool
 
     def add_user(self, user: User):
-        if user not in self.users:
-            self.users.append(user)
+        if user not in self.__users:
+            self.__users.append(user)
 
 
 def check_if_game_is_valid(func: Callable):
@@ -640,7 +640,7 @@ class Pair:
             return False
         return active_player
 
-    def get_current_player(self) -> Union[Attacker, Defender]:
+    def get_current_player(self) -> Tuple[Union[Attacker, Defender], bool]:
         """
         Функция, возвращающая активного игрока завершающая Игровую Пару
         :return:
@@ -650,9 +650,9 @@ class Pair:
         # Получаем текущего пользователя
         current_player: Union[Union[Attacker, Defender], bool] = self.do_someone_go_on(attacker_next_move)
         if current_player:
-            return current_player
+            return current_player, False
         # Заканчиваем Игровую Пару
-        return self.finish_pair()
+        return self.finish_pair(), True
 
     def change_attacker(self, thrower: Player) -> None:
         """
@@ -690,7 +690,7 @@ class Pair:
                 cards_to_add: Deck[Card] = self.game_ses.cards[:cards_to_add]
                 i_player.cards.extend(cards_to_add)
             else:
-                i_player.cards.extend([], False)
+                i_player.cards.extend([])
             i_player.cards.table_buffer = self.table.table_buffer.copy()
 
     def replace_players(self) -> None:

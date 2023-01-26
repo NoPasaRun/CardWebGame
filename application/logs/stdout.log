@@ -435,3 +435,265 @@ Traceback (most recent call last):
   File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 1730, in make_response
     raise TypeError(
 TypeError: The view function did not return a valid response. The return type must be a string, dict, tuple, Response instance, or WSGI callable, but it was a coroutine.
+ERROR IN ^^app^^ :: << * call log_exception in line №1457 || Exception on /game/1/make_move [POST] ||>>
+Traceback (most recent call last):
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 2073, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 1518, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 1516, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 1502, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**req.view_args)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask_login/utils.py", line 272, in decorated_view
+    return func(*args, **kwargs)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/application/app/routes.py", line 317, in make_move
+    return render_template("game.html", **context), 202
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/templating.py", line 147, in render_template
+    return _render(
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/templating.py", line 128, in _render
+    rv = template.render(context)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/jinja2/environment.py", line 1291, in render
+    self.environment.handle_exception()
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/jinja2/environment.py", line 925, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/application/templates/game.html", line 5, in top-level template code
+    {% for player, cards in deck_buffer.items() %}
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/jinja2/environment.py", line 474, in getattr
+    return getattr(obj, attribute)
+jinja2.exceptions.UndefinedError: 'deck_buffer' is undefined
+ERROR IN ^^_internal^^ :: << * call _log in line №225 || Error on request:
+Traceback (most recent call last):
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/sqlalchemy/engine/base.py", line 1057, in _rollback_impl
+    self.engine.dialect.do_rollback(self.connection)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/sqlalchemy/engine/default.py", line 683, in do_rollback
+    dbapi_connection.rollback()
+psycopg2.OperationalError: server closed the connection unexpectedly
+	This probably means the server terminated abnormally
+	before or while processing the request.
+server closed the connection unexpectedly
+	This probably means the server terminated abnormally
+	before or while processing the request.
+server closed the connection unexpectedly
+	This probably means the server terminated abnormally
+	before or while processing the request.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/werkzeug/serving.py", line 319, in run_wsgi
+    execute(self.server.app)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/werkzeug/serving.py", line 308, in execute
+    application_iter = app(environ, start_response)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 2091, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 2084, in wsgi_app
+    ctx.auto_pop(error)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/ctx.py", line 460, in auto_pop
+    self.pop(exc)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/ctx.py", line 447, in pop
+    app_ctx.pop(exc)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/ctx.py", line 250, in pop
+    self.app.do_teardown_appcontext(exc)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 1946, in do_teardown_appcontext
+    self.ensure_sync(func)(exc)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/application/app/routes.py", line 117, in shutdown_session
+    db_session.remove()
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/sqlalchemy/orm/scoping.py", line 181, in remove
+    self.registry().close()
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/sqlalchemy/orm/session.py", line 1809, in close
+    self._close_impl(invalidate=False)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/sqlalchemy/orm/session.py", line 1851, in _close_impl
+    transaction.close(invalidate)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/sqlalchemy/orm/session.py", line 923, in close
+    transaction.close()
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/sqlalchemy/engine/base.py", line 2416, in close
+    self._do_close()
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/sqlalchemy/engine/base.py", line 2639, in _do_close
+    self._close_impl()
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/sqlalchemy/engine/base.py", line 2625, in _close_impl
+    self._connection_rollback_impl()
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/sqlalchemy/engine/base.py", line 2617, in _connection_rollback_impl
+    self.connection._rollback_impl()
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/sqlalchemy/engine/base.py", line 1059, in _rollback_impl
+    self._handle_dbapi_exception(e, None, None, None, None)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/sqlalchemy/engine/base.py", line 2124, in _handle_dbapi_exception
+    util.raise_(
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/sqlalchemy/util/compat.py", line 208, in raise_
+    raise exception
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/sqlalchemy/engine/base.py", line 1057, in _rollback_impl
+    self.engine.dialect.do_rollback(self.connection)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/sqlalchemy/engine/default.py", line 683, in do_rollback
+    dbapi_connection.rollback()
+sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) server closed the connection unexpectedly
+	This probably means the server terminated abnormally
+	before or while processing the request.
+server closed the connection unexpectedly
+	This probably means the server terminated abnormally
+	before or while processing the request.
+server closed the connection unexpectedly
+	This probably means the server terminated abnormally
+	before or while processing the request.
+
+(Background on this error at: https://sqlalche.me/e/14/e3q8) ||>>
+ERROR IN ^^app^^ :: << * call log_exception in line №1457 || Exception on /game/1/make_move [POST] ||>>
+Traceback (most recent call last):
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 2073, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 1518, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 1516, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 1502, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**req.view_args)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/application/app/routes.py", line 306, in wrapper
+    message, status_code = func(game_id)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask_login/utils.py", line 272, in decorated_view
+    return func(*args, **kwargs)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/application/app/routes.py", line 343, in make_move_action
+    logging.info([pl.has_updated_game for pl in game.players])
+AttributeError: 'function' object has no attribute 'players'
+ERROR IN ^^app^^ :: << * call log_exception in line №1457 || Exception on /game/1/ [GET] ||>>
+Traceback (most recent call last):
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 2073, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 1518, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 1516, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 1502, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**req.view_args)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask_login/utils.py", line 272, in decorated_view
+    return func(*args, **kwargs)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/application/app/routes.py", line 262, in game
+    if game_ses.get_player_by_user(user) in game_ses.players:
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/application/app/game.py", line 424, in get_player_by_user
+    if i_player == user:
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/application/app/game.py", line 262, in __eq__
+    return self.user_data == other.user_data
+AttributeError: 'User' object has no attribute 'user_data'
+ERROR IN ^^app^^ :: << * call log_exception in line №1457 || Exception on /game/1/ [GET] ||>>
+Traceback (most recent call last):
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 2073, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 1518, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 1516, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 1502, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**req.view_args)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask_login/utils.py", line 272, in decorated_view
+    return func(*args, **kwargs)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/application/app/routes.py", line 262, in game
+    if game_ses.get_player_by_user(user) in game_ses.players:
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/application/app/game.py", line 424, in get_player_by_user
+    if i_player == user:
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/application/app/game.py", line 262, in __eq__
+    return self.user_data == other.user_data
+AttributeError: 'User' object has no attribute 'user_data'
+ERROR IN ^^app^^ :: << * call log_exception in line №1457 || Exception on /game/1/ [GET] ||>>
+Traceback (most recent call last):
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 2073, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 1518, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 1516, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 1502, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**req.view_args)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask_login/utils.py", line 272, in decorated_view
+    return func(*args, **kwargs)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/application/app/routes.py", line 264, in game
+    requested_player, context = configure_players(game_ses, user)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/application/app/routes.py", line 213, in configure_players
+    logging.info(requested_player.current_cards)
+AttributeError: 'Attacker' object has no attribute 'current_cards'
+ERROR IN ^^app^^ :: << * call log_exception in line №1457 || Exception on /game/1/ [GET] ||>>
+Traceback (most recent call last):
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 2073, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 1518, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 1516, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 1502, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**req.view_args)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask_login/utils.py", line 272, in decorated_view
+    return func(*args, **kwargs)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/application/app/routes.py", line 264, in game
+    requested_player, context = configure_players(game_ses, user)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/application/app/routes.py", line 213, in configure_players
+    logging.info(requested_player.current_cards)
+AttributeError: 'Defender' object has no attribute 'current_cards'
+ERROR IN ^^app^^ :: << * call log_exception in line №1457 || Exception on /game/1/change_status [POST] ||>>
+Traceback (most recent call last):
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 2073, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 1518, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 1516, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 1502, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**req.view_args)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/application/app/routes.py", line 305, in wrapper
+    requested_player, context = configure_players(game_ses, user)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/application/app/routes.py", line 222, in configure_players
+    logging.info(object().__eq__(i_player, requested_player))
+TypeError: expected 1 argument, got 2
+ERROR IN ^^app^^ :: << * call log_exception in line №1457 || Exception on /game/1/change_status [POST] ||>>
+Traceback (most recent call last):
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 2073, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 1518, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 1516, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 1502, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**req.view_args)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/application/app/routes.py", line 307, in wrapper
+    requested_player, context = configure_players(game_ses, user)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/application/app/routes.py", line 217, in configure_players
+    logging.info(i_player.compare(requested_player))
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/application/app/game.py", line 228, in compare
+    return super().__eq__(self, obj)
+TypeError: expected 1 argument, got 2
+ERROR IN ^^app^^ :: << * call log_exception in line №1457 || Exception on /game/1/change_status [POST] ||>>
+Traceback (most recent call last):
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 2073, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 1518, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 1516, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 1502, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**req.view_args)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/application/app/routes.py", line 309, in wrapper
+    return render_template("game.html", **context), status_code
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/templating.py", line 147, in render_template
+    return _render(
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/templating.py", line 128, in _render
+    rv = template.render(context)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/jinja2/environment.py", line 1291, in render
+    self.environment.handle_exception()
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/jinja2/environment.py", line 925, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/application/templates/game.html", line 59, in top-level template code
+    {% for player in game.iter_players(request.player) %}
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/application/app/game.py", line 383, in iter_players
+    req_player_index = self.players.index(requested_player)
+ValueError: Stan is not in list
+ERROR IN ^^app^^ :: << * call log_exception in line №1457 || Exception on /game/1/change_status [POST] ||>>
+Traceback (most recent call last):
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 2073, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 1518, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 1516, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/venv/lib/python3.9/site-packages/flask/app.py", line 1502, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**req.view_args)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/application/app/routes.py", line 305, in wrapper
+    requested_player, context = configure_players(game_ses, user)
+  File "/home/bogdan/PycharmProjects/FriendFlaskApp/application/app/routes.py", line 214, in configure_players
+    logging.info(g.players.index(requested_player))
+ValueError: Stan is not in list

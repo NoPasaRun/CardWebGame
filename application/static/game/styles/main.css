@@ -239,7 +239,7 @@ body {
 }
 
 .player-cards .trump-card .card-content {
-    transform: rotateY(180deg);
+    transform: rotateY(0deg);
 }
 
 /* Стилизация карт пользователя */
