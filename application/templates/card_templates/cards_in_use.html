@@ -1,0 +1,10 @@
+{% if player.compare(request.player) %}
+    {% set trump = "trump-card" if card == game.trump and player != request.player %}
+    {% with card=card, active=player.vars['active'], role=player.vars['role'], main_trump=trump %}
+        {% include 'card_templates/user_card.html' %}
+    {% endwith %}
+{% else %}
+    {% with card=None, active=player.vars['active'], role=player.vars['role'] %}
+        {% include 'card_templates/player_card.html' %}
+    {% endwith %}
+{% endif %}

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Menu</title>
+    <link rel="stylesheet" href="/static/gen/styles/normalise.css">
+    <link rel="stylesheet" href="/static/menu/styles/main.css">
+    <link rel="stylesheet" href="/static/menu/styles/media.css">
+</head>
+<body>
+    <main class="main">
+        <section class="select-lobby__section">
+            <div class="wrapper top-offset">
+                <ul class="select-lobby__list">
+                    {% for lobby in lobbies %}
+                        <li class="select-lobby__list-item">
+                            <a href="/game/{{ lobby.lobby_index }}/">
+                                <div class="lobby-info lobby-info_borders">
+                                    <span class="lobby__info-item lobby-index">№_{{ lobby.lobby_index }}</span>
+                                    <span class="lobby__info-item lobby-name">"{{ lobby.name }}"</span>
+                                    <span class="lobby__info-item lobby-owner">Owner - {{ lobby.owner }}</span>
+                                    <span class="lobby__info-item lobby-player-count">max 🧍 {{ lobby.player_count }}</span>
+                                </div>
+                            </a>
+                        </li>
+                    {% endfor %}
+                    <div class="panel">
+                        <div class="wrapper">
+                            <button class="panel__button"
+                                    onclick="document.getElementById('create_lobby_form').classList.remove('hidden');this.style.display='none'">
+                                +
+                            </button>
+                        </div>
+                    </div>
+                    <form id="create_lobby_form" method="post" class="select-lobby__list-item hidden">
+                        <input type="hidden" value="{{ csrf_token() }}" name="csrf_token"/>
+                        <div class="lobby-info">
+                            <div class="lobby-info__field">
+                                <label class="lobby-info__label" for="name">Name</label>
+                                <input id="name" name="name" type="text" class="lobby-name" />
+                                <div class="field__line"></div>
+                            </div>
+                            <div class="lobby-info__field">
+                                <label class="lobby-info__label" for="player_count">Players' amount</label>
+                                <input id="player_count" name="player_count" type="number" class="lobby-player-count" min="2" max="6"/>
+                                <div class="field__line"></div>
+                            </div>
+                            <div class="lobby-info__field">
+                                <input class="create-lobby__button" type="submit" value="Create lobby">
+                            </div>
+                        </div>
+                    </form>
+                </ul>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

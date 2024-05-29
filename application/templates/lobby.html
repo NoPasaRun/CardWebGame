@@ -1,0 +1,46 @@
+<! DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport"
+              content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <link rel="stylesheet" href="/static/gen/styles/normalise.css">
+        <link rel="stylesheet" href="/static/game/styles/main.css">
+    <link rel="stylesheet" href="/static/game/styles/media.css">
+        <title>Game</title>
+        <script type="text/javascript" src="/static/gen/scripts/jquery.min.js"></script>
+        <script>
+            const lobby_id = {{ lobby.lobby_index }}
+        </script>
+        {% if request.path == "/game_lobby/" + lobby.lobby_index.__str__() + "/" %}
+            <script src="/static/game/scripts/ajax.js"></script>
+        {% else %}
+            <script src="/static/game/scripts/main.js"></script>
+        {% endif %}
+        <script src="/static/index/scripts/music.js"></script>
+    </head>
+    <body>
+        <div class="body">
+        {% if not game %}
+            {% if request.user == lobby.owner %}
+                <form class="start-game__form" method="post">
+                    <input name="start" type="hidden" value="start"/>
+                    <input name="csrf_token" type="hidden" id="csrf_token" value="{{ csrf_token() }}" />
+                    <input type="submit" onclick="iter_is_allowed = false" id="start-button" value="Start game" />
+                </form>
+            {% endif %}
+            <div class="table-wrapper">
+                {% with users=lobby.users %}
+                    {% include "lobby-users.html" %}
+                {% endwith %}
+            </div>
+        {% else %}
+            <div class="game">
+                {% include "game.html" %}
+            </div>
+        {% endif %}
+        </div>
+        <button id="music-button" class="music-button"></button>
+    </body>
+</html>

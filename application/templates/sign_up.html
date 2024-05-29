@@ -5,7 +5,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="/static/register/styles/normalise.css">
+    <link rel="stylesheet" href="/static/gen/styles/normalise.css">
     <link rel="stylesheet" href="/static/register/styles/main.css">
     <title>Sign Up</title>
 </head>
@@ -20,32 +20,46 @@
                 <div class="field">
                     <label for="username" class="label-field">Username</label>
                     <input id="username" placeholder="Enter nickname..." name="username" type="text" required />
+                    <span class="form-errors" style="color: red;">
+                        {% for error in form.errors["username"] %}
+                            {{ error }}
+                        {% endfor %}
+                    </span>
                 </div>
                 <!-- Password field(required) -->
                 <div class="field">
                     <label for="password" class="label-field">Password</label>
                     <input id="password" placeholder="Enter password..." name="password" type="password" minlength="10" required />
+                    <span class="form-errors" style="color: red;">
+                        {% for error in form.errors["password"] %}
+                            {{ error }}
+                        {% endfor %}
+                    </span>
+                </div>
+                <div class="field">
+                    <label for="password2" class="label-field">Password Matching</label>
+                    <input id="password2" placeholder="Enter the same password..." name="password2" type="password" minlength="10" required />
                 </div>
                 <!-- Age field(required) -->
-                <div class="field">
-                    <label for="age" class="label-field">Age</label>
-                    <input id="age" placeholder="Select your age..." name="age" type="number" required />
-                </div>
+{#                <div class="field">#}
+{#                    <label for="age" class="label-field">Age</label>#}
+{#                    <input id="age" placeholder="Select your age..." name="age" type="number" required />#}
+{#                </div>#}
                 <!-- Email field(required) -->
-                <div class="field">
-                    <label for="email" class="label-field">Email</label>
-                    <input id="email" placeholder="Enter email..." name="email" type="email" required />
-                </div>
+{#                <div class="field">#}
+{#                    <label for="email" class="label-field">Email</label>#}
+{#                    <input id="email" placeholder="Enter email..." name="email" type="email" required />#}
+{#                </div>#}
                 <!-- Name field -->
-                <div class="field">
-                    <label for="name" class="label-field">Name</label>
-                    <input id="name" placeholder="(Optional) Enter your name..." name="name" type="text" />
-                </div>
+{#                <div class="field">#}
+{#                    <label for="name" class="label-field">Name</label>#}
+{#                    <input id="name" placeholder="(Optional) Enter your name..." name="name" type="text" />#}
+{#                </div>#}
                 <!-- Surname field -->
-                <div class="field">
-                    <label for="surname" class="label-field">Surname</label>
-                    <input id="surname" placeholder="(Optional) Enter your surname..." name="surname" type="text" />
-                </div>
+{#                <div class="field">#}
+{#                    <label for="surname" class="label-field">Surname</label>#}
+{#                    <input id="surname" placeholder="(Optional) Enter your surname..." name="surname" type="text" />#}
+{#                </div>#}
                 <input type="submit" class="submit-but">
             </form>
         </div>

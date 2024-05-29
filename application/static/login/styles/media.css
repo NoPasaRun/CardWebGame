@@ -1,0 +1,21 @@
+@media (max-width: 500px) {
+    .wrapper {
+        height: 100vh;
+        width: calc(100% - 15px);
+    }
+
+    .form {
+        align-items: center;
+    }
+
+    .field {
+        height: auto;
+    }
+
+    .text-field {
+        display: inline-block;
+        height: 40px;
+        padding-left: 3px;
+        margin-top: 10px;
+    }
+}

@@ -1,0 +1,5 @@
+{% for card in cards %}
+    {% with player=player %}
+        {% include 'card_templates/cards_in_use.html' %}
+    {% endwith %}
+{% endfor %}

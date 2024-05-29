@@ -1,0 +1,156 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;
+}
+
+input {
+    max-width: 100%;
+    background: transparent;
+    outline: none;
+    border: none;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.63);
+}
+
+.field__line {
+    position: absolute;
+    width: 0;
+    height: 2px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: inline-block;
+    background-color: rgba(255, 255, 255, 0.63);
+    transition: width 0.6s ease-in-out;
+}
+
+input:focus + .field__line {
+    width: 100%;
+}
+
+.create-lobby__button {
+    cursor: pointer;
+}
+
+.top-offset {
+    margin-top: 20px;
+}
+
+ul {
+    list-style: none;
+}
+
+.hidden {
+    display: none;
+}
+
+.main {
+    display: flex;
+    z-index: -1;
+    width: 100%;
+    height: 100vh;
+    background-image: url('/static/menu/images/back.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    justify-content: center;
+}
+
+.select-lobby__section {
+    display: flex;
+    justify-content: center;
+    width: 80%;
+    height: 100%;
+    overflow-y: auto;
+    box-sizing: border-box;
+    background: linear-gradient(57deg, rgba(2, 2, 2, 0.8), rgba(29, 26, 26, 0.486) 50%, rgba(2, 2, 2, 0.63));
+}
+
+.wrapper {
+    width: 60%;
+}
+
+.panel,
+.panel .wrapper,
+.panel__button {
+    width: 100%
+}
+
+.panel__button {
+    cursor: crosshair;
+    height: 50px;
+}
+
+.select-lobby__list,
+.select-lobby__list-item,
+.lobby-info {
+    width: 100%;
+}
+
+.select-lobby__list {
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.lobby-info {
+    display: flex;
+    justify-content: flex-start;
+    overflow: hidden;
+    flex-wrap: wrap;
+    margin-bottom: 50px;
+    font-size: 3em;
+}
+
+.lobby-info_borders {    border-bottom: 2px solid silver;
+    border-top: 2px solid silver;
+    padding: 7px 0;
+}
+
+.lobby__info-item:not(:last-child) {
+    margin-right: 20px;
+}
+
+@keyframes glow {
+    0% {
+        text-shadow: silver 1px 0 1px;
+        filter: brightness(200%);
+    }
+    50% {
+        text-shadow: silver 1px 0 10px;
+        filter: brightness(500%);
+    }
+    100% {
+        text-shadow: silver 1px 0 1px;
+        filter: brightness(200%);
+    }
+}
+
+.lobby__info-item,
+.lobby-info__label{
+    color: #FFF;
+    filter: brightness(200%);
+    animation: 3s infinite glow;
+}
+
+.lobby-info__field {
+    position: relative;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.lobby-info__field:not(:last-child) {
+    margin-right: 15px;
+}
+

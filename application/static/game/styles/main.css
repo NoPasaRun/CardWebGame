@@ -11,15 +11,108 @@
     src: url("../fonts/poker_font.ttf");
 }
 
+ul {
+    list-style: none;
+}
+
 body {
     position: relative;
     height: 100vh;
-    background-image: url("/static/game/images/poker-table.jpg");
+    background-image: url('../images/poker-table.jpg');
     background-repeat: no-repeat;
     background-size: cover;
+    overscroll-behavior: contain;
 }
 
-/* Позицианирование footer */
+.table-wrapper {
+    width: 100%;
+    height: 100vh;
+}
+
+.start-game__form {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    left: 0;
+    right: 0;
+    top: 15%;
+    bottom: 0;
+}
+
+@keyframes rainbow {
+    0% {
+        background: linear-gradient(90deg, #1c5233, #0b6732, #04913d, #00ff6b);
+        background-clip: text;
+        text-shadow: 5px 5px 2px greenyellow, -3px -2px 2px purple, 5px -4px 2px blue;
+        filter: drop-shadow(5px 5px 3px white) drop-shadow(-5px -5px 3px white);
+    }
+    25% {
+        background: linear-gradient(90deg, #00ff6b, #1c5233, #0b6732, #04913d);
+        background-clip: text;
+        text-shadow: -2px -1px 2px purple;
+    }
+    50% {
+        background: linear-gradient(90deg, #04913d, #00ff6b, #1c5233, #0b6732);
+        background-clip: text;
+        text-shadow: 4px 4px 2px greenyellow, 4px -3px 2px blue;
+        filter: drop-shadow(1px 1px 3px white) drop-shadow(-1px -1px 3px white);
+    }
+    75% {
+        background: linear-gradient(90deg, #0b6732, #04913d, #00ff6b, #1c5233);
+        background-clip: text;
+    }
+    100% {
+        background: linear-gradient(90deg, #1c5233, #0b6732, #04913d, #00ff6b);
+        background-clip: text;
+        text-shadow: 5px 5px 2px greenyellow, -6px -4px 2px purple, 5px -4px 2px blue;
+        filter: drop-shadow(5px 5px 3px white) drop-shadow(-5px -5px 3px white);
+    }
+}
+
+#start-button {
+    cursor: pointer;
+    outline: none;
+    border: none;
+    color: #1c5233;
+    filter: brightness(500%);
+    font-size: 25px;
+    animation: 0.25s infinite rainbow ease-in;
+}
+
+#start-button:hover {
+    transform: translateY(3px);
+}
+
+.connected-users {
+    float: right;
+    background: rgba(47, 21, 21, 0.67);
+    height: 50%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 35%;
+    border-bottom-left-radius: 25px;
+    box-shadow: -5px 5px 40px 20px #0c5460;
+}
+
+.connected-user__item {
+    color: #7ad8e8;
+    filter: brightness(150%);
+    text-shadow: 1px 1px 10px #00bfa5;
+}
+
+.connected-user__item:not(:last-child) {
+    margin-bottom: 15px;
+}
+
+.connected-user__item::before {
+    content: "🎲";
+    text-shadow: none;
+    margin: 0 10px 0 10px;
+    filter: drop-shadow(1px 1px 2px #ffcf31) invert(100%);
+}
+
+/* Позиционирование footer */
 
 .footer {
     position: absolute;
@@ -29,7 +122,7 @@ body {
     right: 0;
 }
 
-/* Позицианирование колоды */
+/* Позиционирование колоды */
 
 .poker-table {
     display: flex;
@@ -38,34 +131,37 @@ body {
     align-items: center;
 }
 
-.coloda {
+.deck,
+.fake_card {
     position: absolute;
     height: 80px;
-    width: 140px;
-    left: 5%;
-    top: 48%;
+    width: 110px;
+    top: 5%;
+    left: 2%;
 }
 
-/* Позицианирование и трансформация содержимого колоды */
-
-.card_transform {
-    transform: rotateZ(90deg);
-    top: 0;
-    left: 30px;
-    box-shadow: none!important;
-}
-
-.coloda-card {
+.deck .card,
+.buffer-table .card{
     position: absolute;
-    top: 0;
-    left: 0;
+    z-index: 102;
+}
+
+/* Позиционирование и трансформация содержимого колоды */
+
+.deck .card:last-child,
+.fake_card {
+    z-index: 101;
+    transform: rotateZ(90deg) translateY(-15px);
+}
+
+.fake_card {
     width: 80px;
     height: 110px;
-    z-index: 2;
-    transform: rotateZ(90deg);
+    filter: drop-shadow(2px 2px 2px darkgray) drop-shadow(-2px -2px 2px darkgray) brightness(40%);
+    z-index: 100;
 }
 
-/* Позицианирование и размеры поля для игры */
+/* Позиционирование и размеры поля для игры */
 
 .player-nav-list {
     display: flex;
@@ -73,11 +169,11 @@ body {
     justify-content: center;
     align-items: center;
     border-radius: 50%;
-    height: 70%;
-    width: 70%;
+    height: 100vh;
+    width: 100%;
 }
 
-/* Позицианирование и размеры ячеек для карт */
+/* Позиционирование и размеры ячеек для карт */
 
 .placeholder-card-list {
     display: flex;
@@ -98,25 +194,28 @@ body {
     margin-bottom: auto;
 }
 
-/* Позицианирование пользовательской информации */
+/* Позиционирование пользовательской информации */
 
 .player-item {
     position: absolute;
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: auto;
 }
 
 .player-description {
     display: flex;
-    flex-direction: column;
+    flex-direction: column-reverse;
+    justify-content: space-between;
     align-items: center;
+    height: 200px;
 }
 
 /* Стилизация пользовательской информации */
 
 .player-name {
-    font-family: PokerFace;
+    font-family: sans-serif, PokerFace;
     font-size: 30px;
 }
 
@@ -129,16 +228,18 @@ body {
     max-height: 50px;
 }
 
-/* Позицианирование карт пользователя */
+/* Позиционирование карт пользователя */
 
 .player-cards {
     display: flex;
     position: relative;
     justify-content: space-between;
     align-items: flex-end;
-    width: 200px;
-    height: 80px;
-    margin-top: 20px;
+    height: 110px;
+}
+
+.player-cards .trump-card .card-content {
+    transform: rotateY(0deg);
 }
 
 /* Стилизация карт пользователя */
@@ -147,13 +248,40 @@ body {
 
 .card {
     position: absolute;
+    top: 0;
     box-shadow: -1px 1px 2px 2px rgba(255, 3, 3, 0.4);
+    perspective: 500px;
+    width: 80px;
+    height: 110px;
+    border-radius: 5px;
+    cursor: grab;
+    transition: transform 0.5s ease-in-out;
+}
+
+.card-content {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transition: transform 1s;
+    transform-style: preserve-3d;
+}
+
+.card-front,
+.card-back {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    backface-visibility: hidden;
+}
+
+.card-back {
+    transform: rotateY(180deg);
 }
 
 /* Стиль для карт расположенных в ячейках для карт(снизу) */
 
 .attack_card {
-    top: 0px;
+    top: 0;
     left: 8px;
     z-index: 0;
     transform: rotateZ(40deg);
@@ -174,7 +302,7 @@ body {
     box-shadow: -1px 1px 2px 2px rgb(0, 122, 47);
 }
 
-/* Позицианирование и размеры масти и цифры на карте */
+/* Позиционирование и размеры масти и цифры на карте */
 
 .card-info {
     position: absolute;
@@ -193,11 +321,16 @@ body {
 
 /* Задний фон и размеры карт */
 
+.card-back-layout {
+    position: absolute;
+    top: 0;
+}
+
 .card-layout {
     background-color: white;
     border-radius: 5px;
-    width: 80px;
-    height: 110px;
+    width: 100%;
+    height: 100%;
 }
 
 /* Стиль для карт, перетаскиваемых пользователем */
@@ -213,36 +346,73 @@ body {
     filter: brightness(200%);
 }
 
-/* Стилизация кнопки Начать Игру */
-
-.submit-button {
-    margin-top: 60px;
-    padding: 5px 7px;
-    cursor: pointer;
-    outline: none;
-    border: none;
-    border-radius: 10px;
-    color: darkgreen;
-    font-family: PokerFace;
-    font-size: 30px;
-    background: linear-gradient(45deg, rgb(4, 37, 4), rgb(0, 14, 0));
-    box-shadow: 3px 3px 5px 5px rgb(0, 14, 0);
-}
-
-.music-button {
+#music-button {
     position: fixed;
     width: 100px;
     height: 100px;
-    bottom: 5%;
+    top: 5%;
     right: 5%;
     background-size: contain;
-    background-image: url("/static/index/images/play-button.png");
+    background-image: url("../../index/images/stop-button.png");
     transition-duration: 0.2s;
     cursor: pointer;
     border-radius: 50%;
     background-color: transparent;
+    z-index: 200;
 }
 
-.music-button:active {
+#change_status_button {
+    position: fixed;
+    display: block;
+    right: 8%;
+    bottom: 5%;
+    cursor: pointer;
+    outline: none;
+    border: none;
+    background: transparent;
+    transition: all 0.25s ease-in-out;
+    z-index: 200;
+}
+
+.button-icon {
+    --pixel: 0.5px;
+    font-size: 80px;
+    text-shadow: var(--pixel) var(--pixel) 0 gray,
+                 calc(-1*var(--pixel)) calc(-1*var(--pixel)) 0 gray,
+                 var(--pixel) calc(-1*var(--pixel)) 0 gray,
+                 calc(-1*var(--pixel)) var(--pixel) 0 gray;
+}
+
+#change_status_button:hover .button-icon {
+    text-shadow: 2px 2px 2px red, -2px -2px 2px red;
+    filter: brightness(250%);
+}
+
+#music-button:focus {
     transform: translateY(2px);
+}
+
+.leave-button {
+    position: absolute;
+    left: 5%;
+    bottom: 5%;
+}
+
+.leave-button__icon {
+    transform: scaleX(-100%);
+    box-shadow: -2px 2px 2px 2px red;
+}
+
+.leave-button__icon:hover {
+    box-shadow: -4px 3px 2px 2px darkred;
+}
+
+.timer {
+    position: fixed;
+    z-index: 300;
+    top: 50%;
+    left: 50%;
+    font-size: 20px;
+    color: black;
+    font-family: PokerFace;
 }

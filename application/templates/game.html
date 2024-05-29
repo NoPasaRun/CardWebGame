@@ -1,24 +1,98 @@
-{% extends "game-info.html" %}
-{% block head %}
-    <html lang="ru">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport"
-                  content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-            <meta http-equiv="X-UA-Compatible" content="ie=edge">
-            <link rel="stylesheet" href="/static/index/styles/normalise.css">
-            <link rel="stylesheet" href="/static/game/styles/main.css">
-            <title>Game</title>
-            <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-            <script src="/static/game/scripts/main.js"></script>
-            <script src="/static/index/scripts/music.js"></script>
-        </head>
-        <body>
-            <div class="body">
-{% endblock %}
-{% block body %}
-            </div>
-            <button id="music-button" class="music-button"></button>
-        </body>
-    </html>
-{% endblock %}
+<!-- Main -->
+<main class="poker-table">
+    <!-- Deck of cards -->
+    <div class="deck">
+        {% for player, cards in deck_buffer.items() %}
+            {% with player=player, cards=cards %}
+                {% include 'card_templates/deck.html' %}
+            {% endwith %}
+        {% endfor %}
+        {% include 'card_templates/deck_last_cards.html' %}
+    </div>
+    <div class="fake_card" style="color: {{ game.trump.color }}">
+        <div class="card-info card-info_top-pos">
+            {{ game.trump }}
+        </div>
+        <div class="card-layout"></div>
+        <div class="card-info card-info_low-pos">
+            {{ game.trump }}
+        </div>
+    </div>
+    <!-- List of players -->
+    <ul class="player-nav-list">
+        <!-- List of card cells -->
+        <ul class="placeholder-card-list">
+            {% for place_id in [1, 2, 3, 4, 5, 6] %}
+                <!-- Card cell -->
+                <li id="{{ place_id }}" class="placeholder-card-field">
+                    {% for card_place, cards in table.get_items() %}
+                        {% if card_place == place_id %}
+                            {% for num_value, card in [1, 2]|zip(cards) %}
+                                {% if card %}
+                                    <!-- Here may lay cards -->
+                                    <div class="card {% if num_value == 1 %}attack_card{% else %}defend_card{% endif %}" style="color: {{ card.color }}">
+                                        <div class="card-info card-info_top-pos">
+                                            {{ card }}
+                                        </div>
+                                        <div class="card-layout"></div>
+                                        <div class="card-info card-info_low-pos">
+                                            {{ card }}
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+                </li>
+            {% endfor %}
+        </ul>
+        <div class="buffer-table"
+             style="display: flex; position: absolute; align-items: center; justify-content: center">
+            {% for i_player, table_cards in table_buffer.items() %}
+                {% for table_c in table_cards %}
+                    {% with player=i_player, card=table_c %}
+                        {% include 'card_templates/cards_in_use.html' %}
+                    {% endwith %}
+                {% endfor %}
+            {% endfor %}
+        </div>
+        {% for player in game.iter_players(request.player) %}
+            <!-- Player -->
+            <li class="player-item {% if player != request.player %}mobile-non-display{% endif %}">
+                <!-- Player info -->
+                <div class="player-description">
+                    <!-- Current player name -->
+                    <strong class="player-name">
+                        {% if player != request.player %}
+                            {{ player }}
+                        {% else %}
+                            You
+                        {% endif %}
+                    </strong>
+                    <!-- Current player cards -->
+                    <div class="player-cards {% if request.player == player %} my-cards {% endif %}" id="{{ player }}">
+                        {% for card in player.current_cards %}
+                            <!-- Current player card -->
+                            {% with player=player, card=card %}
+                                {% include 'card_templates/cards_in_use.html' %}
+                            {% endwith %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+    <button id="change_status_button" {% if not request.player.vars['role'] %} hidden {% endif %}>
+        <span class="button-icon">❌</span>
+    </button>
+    <div class="leave-button">
+        <a class="leave-button__link" href="/remove_myself/{{ game._id }}">
+            <img class="leave-button__icon" src="/static/game/images/leave-icon.png" alt="Go fucking yourself">
+        </a>
+    </div>
+    {% include "timer.html" %}
+</main>
+<!-- Footer -->
+<footer class="footer">
+    <input type="hidden" id="csrf_token" value="{{ csrf_token() }}" />
+</footer>

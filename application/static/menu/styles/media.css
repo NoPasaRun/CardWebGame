@@ -1,0 +1,9 @@
+@media (max-width: 600px) {
+    .main {
+        background-image: url('/static/menu/images/back_low-res.png');
+    }
+
+    .lobby-info {
+        font-size: 1.5em;
+    }
+}

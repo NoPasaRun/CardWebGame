@@ -5,8 +5,9 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="/static/login/styles/normalise.css">
+    <link rel="stylesheet" href="/static/gen/styles/normalise.css">
     <link rel="stylesheet" href="/static/login/styles/main.css">
+    <link rel="stylesheet" href="/static/login/styles/media.css">
     <title>Login</title>
 </head>
 <body>
@@ -17,11 +18,11 @@
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                 <div class="field">
                     <label for="username" class="label-field">Username</label>
-                    <input id="username" type="text" name="username" placeholder="Enter username..." required/>
+                    <input class="text-field" id="username" type="text" name="username" placeholder="Enter username..." required/>
                 </div>
                 <div class="field">
                     <label for="password" class="label-field">Password</label>
-                    <input id="password" type="password" name="password" placeholder="Enter password" required/>
+                    <input class="text-field" id="password" type="password" name="password" placeholder="Enter password" required/>
                 </div>
                 <input class="submit-but" type="submit">
             </form>

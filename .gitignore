@@ -1,3 +1,9 @@
 /venv/
-token.txt
-/application/application/base.db
+/venv_3.8/
+./token.txt
+/application/app/base.db
+/application/app/__pycache__/
+/application/tests/__pycache__/
+/.idea/
+/my_scripts/
+/application/__pycache__/
